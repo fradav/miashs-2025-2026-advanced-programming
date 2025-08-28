@@ -1,6 +1,6 @@
 ---
 title: Code Assistants
-subtitle: History, where we are now, and where we are going
+subtitle: How Far We’ve Come & What’s Next
 ---
 # History of code editors/assistants 
 
