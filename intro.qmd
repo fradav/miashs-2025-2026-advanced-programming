@@ -1,0 +1,164 @@
+# Prerequisites
+
+## Software required
+
+You will need to install the following software on your computer:
+[Visual Studio Code](https://code.visualstudio.com/) (VSCode), a free and open-source code editor. You’ll have to install the following extensions:
+
+- ![](images/python-ext.png){ width=60 } [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) to have everything you need to work with Python.
+- ![](images/liveshare-ext.png){ width=60 } [Live Share](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare) to enable collaborative editing.
+- ![](images/continue-ext.svg){ width=60 } [Continue.dev](https://marketplace.visualstudio.com/items?itemName=Continue.continue) to have the AI Code Assistant we will use as example in this course.
+
+## AI Assistant, getting API Key.
+
+For the practical work, you’ll need to get API Keys from [Mistral.ai’s "La Plateforme"](https://console.mistral.ai/home) (it’s completely free). You will need a valid cell phone number for the registration to work. Contact me if this is a problem.
+
+![Mistral Login](../images/mistral-login.png)
+
+The first time, you’ll have to create an account. Then, you’ll be able to get your API Key.
+
+Once there, Click on "API Keys" tab.
+
+![Mistral API Keys Tab](images/mistral-apikey-tab.png)
+
+Click on "Choose a plan".
+
+![No plan](images/mistral-no-plan.png)
+
+Choose "Experiment" plan.
+
+![Experiment plan](images/mistral-free-plan.png)
+
+Accept the conditions.
+
+![Accept](images/mistral-accept-conditions.png)
+
+Give a phone number for the final check.
+
+![Phone number check](images/mistral-register-phone.png)
+
+Confirm the code.
+
+![Code received](images/mistral-phone-confirm.png)
+
+If successful, return on the "AI Keys" Tab and choose "Create a new key"
+
+![Create a new key](images/mistral-create-key.png)
+
+Choose a name and an expiration date for your key (could be never if not set).
+
+![Key name and expiration date](images/mistral-name-date-key.png)
+
+Copy the key and save it somewhere.
+
+![Key to copy](images/mistral-key-tocopy.png)
+
+::: {.callout-tip}
+You may also create a specific key for Codestral model, which could be used for auto-completion role. Auto-completion role needs specifically tailored models for this task, and the models you can access with the "generic" mistral key aren’t.
+:::
+
+## VSCode setup
+
+When you installed your continue vscode extension, it created a `.continue` folder in your home directory, which is `~/.continue` on Linux and Mac, and `%USERPROFILE%\.continue` on Windows. Create a `.env` file there and put your mistral key in it, like this:
+
+```
+MISTRAL_API_KEY=your_key_here
+```
+
+Optionally if you got a codestral key put it too:
+
+```
+CODESTRAL_API_KEY=your_codestral_key_here
+```
+
+Open/Create `config.yaml` file in the same folder and put this in it:
+
+```yaml
+name: miashs/mistral
+version: 1.0.0
+schema: v1
+models:
+## Uncomment this block if you want to use Codestral for auto-completion, needs a specific key
+#   - name: Codestral
+#     provider: mistral
+#     model: codestral-2508
+#     apiBase: https://codestral.mistral.ai/v1
+#     apiKey: ${{ secrets.CODESTRAL_API_KEY }}
+#     roles:
+#       - autocomplete
+#     defaultCompletionOptions:
+#       contextLength: 256000
+  - name: Devstral
+    provider: mistral
+    model: devstral-medium-latest
+    apiKey: ${{ secrets.MISTRAL_API_KEY }}
+    roles:
+      - chat
+      - edit
+      - apply
+    defaultCompletionOptions:
+      contextLength: 131072
+    capabilities:
+      - tool_use
+# You may choose mistral over devstral if you need image input
+  - name: Mistral
+    provider: mistral
+    model: mistral-medium-latest
+    apiKey: ${{ secrets.MISTRAL_API_KEY }}
+    roles:
+      - chat
+      - edit
+      - apply
+    defaultCompletionOptions:
+      contextLength: 131072
+    capabilities:
+      - tool_use
+      - image_input
+  - name: Codestral Embed
+    provider: mistral
+    model: codestral-embed
+    apiKey: ${{ secrets.MISTRAL_API_KEY }}
+    apiBase: https://api.mistral.ai/v1
+    roles:
+      - embed
+context:
+  - provider: code
+  - provider: docs
+    params:
+      maxdepth: 5
+  - provider: diff
+  - provider: terminal
+  - provider: problems
+  - provider: codebase
+    params:
+      nRetrieve: 60
+      nFinal: 25
+  - provider: folder
+    params:
+      nRetrieve: 60
+      nFinal: 25
+  - provider: open
+  - provider: web
+  - provider: tree
+  - provider: clipboard
+  - provider: debugger
+  - provider: repo-map
+  - provider: os
+  - provider: search
+  - provider: url
+```
+
+Congratulations, you are now set for use of `continue` AI Code Assistant. You can open the chat panel either by clicking on the `Continue` in the right bottom status of vscode window or with Cmd + L (Mac) or Ctrl + L (Windows/Linux).
+
+
+## Collaborative editing
+
+- In the discord channel, I’ll provide you a link to join a collaborative editing session. Don’t click on it, just copy it: ![](images/liveshare-link.png)
+- Then open a new “blank” window in VSCode, which will be exclusively for collaborative session. ![](images/blank-vsode.png)
+- Then, click on the “Live Share” button in the bottom left corner of the window ![](images/liveshare-button.png)
+- Click on the “Join” button ![](images/liveshare-join.png)
+- Either choose anonymous or sign in with your github/microsoft account ![](images/anon-or-signin.png)
+
+:::{.callout-note title="Anonymous Guest Name"}
+If you choose to sign in, you’ll have to authorize VSCode to access your github/microsoft account. If you choose anonymous, you’ll have to choose a username. Please choose a username that is easily identifiable as yours.
+:::

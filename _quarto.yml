@@ -1,0 +1,29 @@
+profile:
+  default: slides
+
+author:
+  - name: François-David Collin
+    email: francois-david.collin@umontpellier.fr
+    affiliations: 
+      - CNRS
+      - IMAG
+  # - name: Ghislain Durif
+  #   email: ghislain.durif@ens-lyon.fr
+  #   affiliations: 
+  #     - CNRS
+  #     - LBMC
+
+fig-cap-location: top
+
+institute: Paul-Valéry Montpellier 3 University
+
+license: CC BY-SA
+
+bibliography: references.bib
+
+filters:
+  - list-table
+
+execute: 
+  freeze: auto
+  cache: true

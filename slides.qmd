@@ -1,0 +1,7 @@
+---
+title: "Slides in reveal.js"
+listing: 
+    contents: slides.yml
+    template: slides.ejs
+    sort: "name"
+---

@@ -1,0 +1,58 @@
+project:
+  type: book
+  output-dir: docs
+  resources:
+    - "docs-resources/Slides/**/*"
+    - "!docs-resources/Slides/docs/"
+    - "docs-resources/Notebooks/**/Applications/*"
+    - "docs-resources/Notebooks/**/Solutions/*-sol.*"
+    - "docs-resources/Notebooks/Courses/tikz-figures/*.svg"
+    - "docs-resources/Notebooks/Courses/figs/*.png"
+    - "docs-resources/Notebooks/**/Solutions/*-sol_files/**/*"
+    - "docs-resources/Notebooks/**/Applications/*_files/**/*"
+    - "!docs-resources/Notebooks/docs/"
+book:
+  title: "Advanced programming and parallel computing"
+  date: "2025-08-27"
+  date-format: full
+  page-footer: 
+    left: Licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-SA 4.0</a>.
+    right: Built with <a href="https://quarto.org/">Quarto</a>.
+  chapters: 
+    - index.qmd
+    - intro.qmd
+    - Courses/01_Code-Assistant.qmd
+    - summary.qmd
+    - references.qmd
+  appendices: 
+    - applications.qmd
+    - slides.qmd
+
+theme:
+  dark: [darkly, styles.scss]
+  light: [flatly, styles.scss]
+  
+format:
+  html:
+    number-depth: 3
+    toc-depth: 4
+    html-math-method: katex
+  # pdf:
+  #   documentclass: scrreprt
+  #   pdf-engine: latexmk
+  #   pdf-engine-opt: -lualatex
+  #   include-in-header: 
+  #     text: |
+
+  #         \usepackage{newunicodechar}
+  #         \usepackage{animate}
+  #         \usepackage{emoji}
+  #         \usepackage{setspace}
+  #         \newunicodechar{ᵉ}{$^\text{e}$}
+  #         \newunicodechar{😬}{\emoji{grimacing-face}}
+  #         \newcommand\Warning{\makebox[1.4em][c]{\makebox[0pt][c]{\raisebox{.1em}{\small!}}\makebox[0pt][c]{\color{red}\Large$\bigtriangleup$}}}
+  #         \newunicodechar{⚠}{\Warning}
+
+
+filters: 
+  - ./filters/unclutter-slides.lua

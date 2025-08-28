@@ -1,0 +1,976 @@
+---
+title: Code Assistants
+subtitle: History, where we are now, and where we are going
+---
+# History of code editors/assistants 
+
+History of code editor features, with a focus on the last three years (2022–2025) and the transformative impact of **Large Language Models (LLMs)**:
+
+## Early Days: Text Editors 
+
+- **1960s–1970s**: `vi` (1976), `Emacs` (1976)
+
+Basic text manipulation, macros, and syntax highlighting.
+
+:::{ layout-ncol="2" }
+
+![Vi](../images/vi.gif){ .noinvert }
+
+![Emacs](../images/emacs.gif){ .noinvert width="700px"}
+
+:::
+
+## The Rise of IDEs
+
+:::{ layout-ncol="2" }
+
+::::{}
+**1980s–1990s**: Turbo Pascal (1983), Visual Basic (1991)
+
+- Integrated debugging
+- project management
+- basic autocompletion.
+
+::::
+
+::::{}
+![Turbo Pascal](../images/turbo-pascal.jpg){ .noinvert height="300px"}
+
+![Visual Basic](../images/visual-basic.png){ .noinvert height="300px"}
+::::
+
+:::
+
+## Modern Era: Powerful, Extensible IDEs 
+
+::: { layout-ncol="2" }
+
+::::{}
+**2000s**: Visual Studio, Eclipse, IntelliJ IDEA
+
+$\Rightarrow$ Advanced autocompletion, refactoring, static analysis, and plugin ecosystems.
+::::
+
+![Visual Studio](../images/visual-studio.jpg){ .noinvert height="300px"}
+:::
+
+## Modern Era: Powerful, Extensible IDEs (2)
+
+::: { layout-ncol="2" }
+
+::::{}
+**2015**: VSCode (based on Electron/Node.js)
+
+$\Rightarrow$ Lightweight, open-source, and extensible via marketplace.
+::::
+
+![VSCode](../images/vscode.png){ .noinvert height="300px"}
+:::
+
+## The Language Server Protocol (LSP)
+
+
+**2016**: Microsoft introduces the Language Server Protocol (LSP)
+
+- Standardizes communication between editors/IDEs and language-specific servers.
+- Enables features like autocompletion, go-to-definition, linting, and refactoring across many languages.
+- Decouples editor development from language tooling.
+
+## The Language Server Protocol (LSP) (2)
+
+![LSP Architecture](../images/lsp-architecture.svg)
+
+## Impact of LSP on Developer Experience
+
+- Unified experience: VSCode, Vim, Emacs, Sublime Text, and more support LSP.
+- Rapid adoption: Hundreds of languages now have LSP servers.
+- Consistent, high-quality tooling regardless of editor.
+- Paved the way for advanced features and easier integration of AI assistants.
+
+# The LLM Revolution (2022–2025)
+
+## 2022: The Breakthrough Year
+
+::: { layout-ncol="2" }
+::::{}
+**GitHub Copilot** (June 2022)
+
+- First mainstream LLM-powered code assistant (OpenAI Codex).
+- **Key features**:
+
+  - Code generation from comments or snippets.
+  - Multi-language support (Python, JavaScript, Java, etc.).
+::::
+
+![GitHub Copilot Autocomplete Demo](../images/copilot-autocomplete.gif){ .noinvert }
+
+:::
+
+## 2023: AI Becomes Ubiquitous
+
+- **GitHub Copilot X** (March 2023)
+  - Integrated ChatGPT-4 for explanations, test generation, and PR reviews.
+  - **New features**:
+    - Natural language explanations of complex code.
+    - Automatic test generation.
+    - AI-assisted debugging.
+
+## 2023: AI Becomes Ubiquitous (2)
+
+- **JetBrains AI Assistant**
+  - Native integration in IntelliJ, PyCharm, etc.
+
+- **Collaboration tools**:
+  - Copilot for Pull Requests, Amazon Q.
+
+- **VSCode forks**:
+  - Cursor, Windsurf (by Codeium).
+
+## 2024: The Rise of Autonomous Agents
+
+::: { layout-ncol="2" }
+::::{}
+**Claude Code** (Anthropic, 2024)
+
+- **Agentic capabilities**: Executes tasks (file creation, commits, tests, PRs).
+- **Terminal integration**: Works directly in the terminal.
+- **Holistic understanding**: Cross-file refactors and dependency analysis.
+- **Security**: Restrictions for risky commands:refs[1-6,9].
+::::
+
+![Claude Code Demo](../images/claude-code-demo.gif){ .noinvert }
+
+:::
+
+## 2024: The Rise of Autonomous Agents (2)
+
+- **GitHub Copilot Enterprise**
+  - Customization for company codebases.
+  - Extended context (internal docs, Jira tickets).
+- **Advanced features**:
+  - Multi-step agents.
+  - Real-time visualization (e.g., Artifacts in Claude).
+
+
+## 2025: Maturation and Specialization
+
+- **Deep integration**:
+  - VSCode: Native support for AI agents (Cline, Augment).
+  - JetBrains: Claude 3.5 and Mellum models:refs[3-4].
+  - Cursor/Windsurf: Popular AI-driven alternatives.
+
+- **New features**:
+  - Multi-modal editing (code from diagrams, screenshots).
+  - Specialized agents for DevOps and security.
+  - Extreme customization and collaboration.
+
+- **Challenges**:
+  - Technical debt from "black box" AI-generated code.
+  - IP concerns and performance issues.
+
+## Summary: Evolution of Code Editor Features (2022–2025)
+
+:::{.list-table widths=1,1,1 aligns=r}
+* - 2022
+  - LLM-powered code generation
+  - GitHub Copilot, TabNine
+* - 2023
+  - Explanations, tests, PR reviews
+  - Copilot X, Amazon Q, JetBrains AI
+* - 2024
+  - Autonomous agents, task execution
+  - Claude Code, Copilot Enterprise
+* - 2025
+  - Specialization, multi-modality
+  - Cursor, Windsurf, Qodo, Continue
+:::
+
+## Future Trends
+
+:::list-table
+  * - Trend
+    - Benefits
+    - Challenges
+  * - *AI as Co-Pilot*
+    - Faster development, skill augmentation
+    - Over-reliance, quality control
+  * - *Self-Healing Editors*
+    - Fewer bugs, improved code quality
+    - False positives, transparency
+  * - *Low-Code/No-Code*
+    - Accessibility, rapid prototyping
+    - Limited customization, maintenance
+  * - *Regulation and Ethics*
+    - Safer, more transparent tools
+    - Compliance complexity, global fragmentation
+:::
+
+## A Paradigm Shift
+
+- From **manual editing** → **contextual assistance** → **AI co-creation**.
+- **Challenge**: Mastering tools without compromising quality or security.
+
+# A short detour to what is a LLM
+
+## AI domains
+
+:::r-stack
+
+::: { .fragment .fade-in .absolute top=200 style="background: #2780e3; width: 800px; height: 700px; border-radius: 400px;"}
+Artificial Intelligence (AI)
+:::
+
+::: { .fragment .fade-in .absolute top=350 left=50 style="background: #3fb618; width: 600px; height: 500px; border-radius: 300px;"}
+Machine Learning (ML)
+:::
+
+::: { .fragment .fade-in .absolute top=500 left=100 style="background: #e83e8c; width: 400px; height: 300px; border-radius: 200px;"}
+Deep Learning (DL)
+:::
+
+::: { .fragment .fade-in  .absolute top=575 left=150 style="background: #683e8c; width: 200px; height: 200px; border-radius: 200px;"}
+Large Language Models (LLM)
+:::
+
+:::
+
+## Train a neural network
+
+![](../images/train_a_network.png)
+
+## Training a supervised Machine learning model
+
+:::{.incremental}
+
+- Class of prediction functions $f_\theta$: linear, quadratic, trees
+- Loss $\mathcal{L}$: $L^2$ norm, CrossEntropy, purity score
+- Optimizer: SGD, Adam, ...
+    - learning rate $\eta$: $\theta_{k+1} \gets \theta_k - \eta \nabla_\theta \mathcal{L}$
+    - other hyperparameters
+- Dataset:
+    - training: $\{(x_i, y_i)\}_{i}$ to compute loss between prediction $f_{\theta}(x_i)$ and label $y_i$ to update $\theta$
+    - test: only compute performance scores (no more updates !)
+:::
+
+# A quick survey of Deep Learning
+
+## Foreword, beware the Alchemy
+
+:::{ layout-ncol="2"}
+
+![](../images/alchemy.jpg){.noinvert}
+
+::::{#alchemy}
+- More or less theoretical guarantees
+    - field of research
+    - type of network
+    - from theory to applications: a gap
+- Myriad of ad-hoc choices, engeenering tricks and empirical observations
+
+- Current choices are critical for success: what are their pros and cons?
+- Try $\rightarrow$ Fail $\rightarrow$ Try again is the current pipeline
+::::
+
+:::
+
+# The main ingredients
+
+<!-- TODO
+Agrements with the visus from Ghislain
+article : https://gitbio.ens-lyon.fr/LBMC/hub/fidle_deep_learning/-/blob/main/notes/neural_network.qmd
+generation des images : https://gitbio.ens-lyon.fr/LBMC/hub/fidle_deep_learning/-/tree/main/src/neural_network
+ -->
+
+:::::{ layout-ncol="2"}
+:::{#ingredients}
+
+- Tensor algebra (linear algebra)
+- Automatic differentiation
+- (Stochastic) Gradient descent
+- Optimizers
+- Non-linearities
+- Large datasets
+
+Also, on hardware side:
+
+- GPU
+- Distributed computing
+
+:::
+
+:::{#shapes}
+![](../images/4-axis_block.png){.noinvert}
+
+shape=(batch, height, width, features)
+:::
+::::::
+
+## Tensor algebra
+
+- Linear algebra operations on tensors
+- MultiLayerPerceptron = sequence of linear operations and non-linear activations
+
+$\Rightarrow$ input can be anything: images, videos, text, sound, …
+
+## Automatic differentiation
+
+::::{ layout-ncol="2"}
+:::{#chain-rule}
+- chain rule to compute gradient with respect to $\theta$
+- key tool: *backpropagation*
+    - don't need to store the computation graph entirely
+    - gradient is fast to compute (a single pass)
+    - but memory intensive
+:::
+
+:::{#chain-rule-formula}
+$$f(x)=\nabla\frac{x_{1}x_{2} sin(x_3) +e^{x_{1}x_{2}}}{x_3}$$
+
+![](../images/flow.png){ style="float: left;" }
+
+$$
+\begin{darray}{rcl}
+ x_4 & = & x_{1}x_{2}, \\
+ x_5 & = & sin(x_3), \\
+ x_6 & = & e^{x_4}, \\
+ x_7 & = & x_{4}x_{5}, \\
+ x_8 & = & x_{6}+x_7, \\
+ x_9 & = & x_{8}/x_3.
+\end{darray}
+$$
+:::
+
+::::
+
+## Gradient descent
+
+Example with a non-convex function
+
+$f(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2$
+
+::::{ layout="[[30,20,50]]" }
+
+:::{#descent-surface }
+```{ojs}
+Plotly = require("plotly.js@2.35.2/dist/plotly.min.js");
+```
+
+```{ojs}
+minX = -5;
+maxX = 5;
+```
+
+```{ojs}
+f = ([x1, x2]) => (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;
+
+{
+  const linspace = d3.scaleLinear().domain([0, 49]).range([minX, maxX]);
+  const X1 = Array.from({length: 50}, (_, i) => linspace(i));
+  const X2 = Array.from({length: 50}, (_, i) => linspace(i));
+
+  // Define your function f here
+  const f = ([x1, x2]) => (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;
+
+  const Z = X1.map((x1,i) => X2.map((x2,j) => f([x1,x2])));
+
+  const data = [{
+    x: X1.flat(),
+    y: X2.flat(),
+    z: Z,
+    type: 'surface'
+  }];
+
+  const layout = {
+    // title: '',
+    // autosize: true,
+    // width: 100,
+    // height: 100,
+    paper_bgcolor: "rgba(0,0,0,0)",
+    plot_bgcolor: "rgba(0,0,0,0)",
+    template: 'plotly_dark',
+    // margin: {
+    //   l: 65,
+    //   r: 50,
+    //   b: 65,
+    //   t: 90,
+    // }
+  };
+
+  const div = document.createElement('div');
+  Plotly.newPlot(div, data, layout,{displayModeBar: false});
+  return div;
+}
+```
+
+:::
+
+:::{#descent-surface-interaction}
+
+```{ojs}
+
+function grad_descent(x1,x2,step,max_iter) {
+  let grad = f_grad(x1, x2);
+  let iterations = [[x1, x2]];
+  function f_grad(x1, x2) {
+    let df_x1 = 2 * (-7 + x1 + x2**2 + 2 * x1 * (-11 + x1**2 + x2));
+    let df_x2 = 2 * (-11 + x1**2 + x2 + 2 * x2 * (-7 + x1 + x2**2));
+    return [df_x1, df_x2];
+  }
+  var count = 0;
+  while (count < max_iter) {
+    x1 -= step * grad[0];
+    x2 -= step * grad[1];
+    grad = f_grad(x1, x2);
+    if (isFinite(x1) && isFinite(x2) &&
+      (minX < x1) && (x1 < maxX) &&
+      (minX < x2) && (x2 < maxX))
+        iterations.push([x1, x2]);
+    else iterations.push(iterations[count])
+    count += 1
+  }
+  return iterations;
+}
+```
+
+```{ojs}
+viewof descent_params = Inputs.form({
+  x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),
+  x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),
+  step: Inputs.range([0.001, 0.04], {step: 0.001, value: 0.01, label: 'Step size'})
+})
+```
+:::
+
+:::{style="width: 300px;"}
+```{ojs}
+{
+  var iterations = grad_descent(descent_params.x1,descent_params.x2,descent_params.step,20)
+  return Plot.plot({
+    aspectRatio: 1,
+    x: {tickSpacing: 50, label: "x1 →"},
+    y: {tickSpacing: 50, label: "x2 →"},
+    width: 600,
+    style: {
+      backgroundColor: 'rgba(0,0,0,0)'
+    },
+    marks: [
+      Plot.contour({
+        fill: (x1, x2) => Math.sqrt((x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2),
+        x1: minX,
+        y1: minX,
+        x2: maxX,
+        y2: maxX,
+        showlegend: false,
+        colorscale: 'RdBu',
+        ncontours: 30
+      }),
+      Plot.line(iterations,{marker: true})
+    ]
+  })
+}
+```
+:::
+
+::::
+
+Sensitivity to initial point and step size
+
+## (Stochastic) Gradient descent
+
+::::{ layout-ncol="2" }
+
+:::{#sgd}
+
+- not use all the data at once to compute the gradient
+    - not feasible in practice (memory wise)
+- Use mini-batch of data (boostrap samples)
+    - one more hyperparameter...
+
+:::
+
+:::{#sgd-formula}
+$$
+\theta_{k+1} \leftarrow \theta_k - \frac{\eta}{n}\sum_{i\in\text{batch}}\nabla_\theta \mathcal{L}(f_\theta(x_i), y_i)
+$$
+:::
+
+::::
+
+$\Rightarrow$ No general guarantees of convergence in DL setting
+
+## Optimizers
+
+SGD, Adam, RMSProp
+
+- Non-convex optimization research on the subject is still very active, and there is no clear consensus on what is the best optimizer to use in a given situation.
+- No guarantee of global minimum, only local minimum
+- No guarantee of convergence, only convergence in probability
+
+## (More than) a pinch of non-linearities {.center}
+
+:::{layout="[[40,60]]"}
+
+- Linear Transformations + Non-linear activation functions
+- radically enhance the expressive power of the model
+- ability to explore the space of functions in gradient descent.
+
+![](../images/activation-functions.svg){ width="600px" style="margin-top: -50px;" }
+
+:::
+
+# Train a Large Language Model (LLM)
+
+## From text to numbers
+
+- Main problem: we can't multiply or do convolutions with words
+- Second problem: many words (for a single language)
+- Third problem: how to capture semantics?
+
+## Embeddings {auto-animate=true auto-animate-easing="ease-in-out"}
+
+- Distance between words should not be character based
+
+::: {.r-hstack}
+::: {data-id="box1" auto-animate-delay="0" style="background: #2780e3; width: 200px; height: 150px; margin: 10px; text-align: center; display: flex; align-items: center; justify-content: center;"}
+women
+:::
+::: {data-id="box2" auto-animate-delay="0.1" style="background: #3fb618; width: 200px; height: 150px; margin: 10px; text-align: center; display: flex; align-items: center; justify-content: center;"}
+woman
+:::
+::: {data-id="box3" auto-animate-delay="0.2" style="background: #e83e8c; width: 200px; height: 150px; margin: 10px; text-align: center; display: flex; align-items: center; justify-content: center;"}
+window
+:::
+::: {data-id="box4" auto-animate-delay=".3" style="background: #9f33ff; width: 200px; height: 150px; margin: 10px; text-align: center; display: flex; align-items: center; justify-content: center;"}
+widow
+:::
+:::
+
+## Embeddings {auto-animate=true auto-animate-easing="ease-in-out" .unnumbered .unlisted }
+- Distance between words should not be caracter based
+
+::: {.r-hstack}
+::: {data-id="box4" style="background: #9f33ff; width: 150px; height: 150px; border-radius: 200px; text-align: center; display: flex; align-items: center; justify-content: center;"}
+widow
+:::
+:::
+::: {.r-stack}
+::: {data-id="box1" style="background: #2780e3; width: 350px; height: 350px; border-radius: 200px; text-align: center;"}
+women
+:::
+::: {data-id="box2" style="background: #3fb618; width: 200px; height: 200px; border-radius: 150px; text-align: center; display: flex; align-items: center; justify-content: center;"}
+woman
+:::
+:::
+
+::: {.r-stretch}
+::: {data-id="box3" style="background: #e83e8c; width: 150px; height: 150px; border-radius: 200px; text-align: center; display: flex; align-items: center; justify-content: center;"}
+window
+:::
+:::
+
+## Multi-scale learning from text
+
+- DL layers = capture different levels of dependencies  in the data
+- *attention mechansim*  applies “multi-scale learning” to data sequences
+  $\Rightarrow$ e.g. not only words in sentences, but sentences in paragraphs, paragraphs in documents and so on.
+
+*Previously*, recurrent networks limited in sequential dependencies,
+
+$\Rightarrow$ transformers capture dependencies in the “whole” in parallel (much faster)
+
+## Multi-facets learning from text
+
+*Multi-head attention mechanism* extends the attention mechanism to multifaceted dependencies of the same text components.
+
+In the sentence "the cat sat on the rug, and after a few hours, it moved to the mat." :
+
+- cat/rug/mat 
+- rug/mat
+- cat/he
+- sat/moved to
+
+All those groups of words/tokens are multiple facets of the same text and its meaning.
+
+## Transformers
+
+![](tikz-figures/attention-network.svg)
+
+:::attribution
+@vaswani2017attention
+:::
+
+## Heart of Transformers: Attention mechanism
+
+<!-- TODO
+Complete with F. Fleuret’s docs https://fleuret.org/dlc/
+ -->
+
+$$
+\text{Attention}(Q,K,V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+$$
+
+:::{layout="[[60,40]]"}
+
+:::{.incremental}
+- Three matrices: *Q*uery, *K*ey, *V*alue, derived from the input sequence
+- $d_k$: dimension of the key matrix, typically 64 or 128
+- we want to compute a weighted sum of the values $V$ with weights given by the compatibility between the query and the keys
+- *softmax* to get a probability distribution
+- *multi-head* attention: several attention mechanisms in parallel
+:::
+
+![](tikz-figures/multihead-attention.svg){ height="700px" style="float: right;"}
+
+:::
+
+
+:::attribution
+@vaswani2017attention
+:::
+
+## Head view of attention
+
+::::{layout="[[40,60]]"}
+::: {#fig-attention}
+
+<!-- ```{python}
+from bertviz import head_view, model_view
+
+sentence_a = "The cat sat on the mat"
+sentence_b = "The cat lay on the rug"
+inputs = tokenizer.encode_plus(sentence_a, sentence_b, return_tensors='pt')
+input_ids = inputs['input_ids']
+token_type_ids = inputs['token_type_ids']
+attention = model(input_ids, token_type_ids=token_type_ids)[-1]
+sentence_b_start = token_type_ids[0].tolist().index(1)
+input_id_list = input_ids[0].tolist() # Batch index 0
+tokens = tokenizer.convert_ids_to_tokens(input_id_list) 
+head_view(attention, tokens, sentence_b_start)
+``` -->
+
+<iframe style="background-color:white;" height=430 width=400 src="../materials/bert_head_view.html"></iframe>
+
+The model view visualizes attention across all heads in a single Transformer layer. 
+
+:::
+
+- Each line shows the attention from one token (left) to another (right).
+- Line weight reflects the attention value (ranges from 0 to 1),
+- line color identifies the attention head
+
+::::
+
+
+<!-- The head view visualizes attention in one or more heads from a single Transformer layer. Each line shows the attention from one token (left) to another (right). Line weight reflects the attention value (ranges from 0 to 1), while line color identifies the attention head. When multiple heads are selected (indicated by the colored tiles at the top), the corresponding visualizations are overlaid onto one another. -->
+<!-- summarize further, bullet mode -->
+
+
+## BERT: Bidirectional Encoder Representations from Transformers
+
+- embeddings: represent words as vectors in high dimensions
+
+<!-- ![](../images/bert.png){ style="margin-left: 25%;"} -->
+![](tikz-figures/encoder-network.svg)
+
+
+
+## GPT : Generative Pre-trained Transformer
+
+- autoregressive model
+- generates text by predicting the next token
+- pre-trained on large corpora of text
+
+<!-- ![](../images/gpt.png){ style="margin-left: 25%;"} -->
+![](tikz-figures/decoder-network.svg)
+
+## BERT vs GPT
+
+:::{ layout-ncol="2" }
+
+![BERT](../images/bert.svg){ width="500px" }
+
+![GPT](../images/gpt.svg){ width="500px" }
+
+:::
+
+## Summary of LLM types { .smaller }
+
+:::list-table
+  * - Type
+    - Architecture
+    - Training Objective
+    - Attention
+    - Use Cases
+  * - **BERT (Encoder-Only)**
+    - Encoder stack only
+    - Masked Language Modeling (MLM)
+    - Bidirectional (sees left and right context)
+    - Classification, QA, NER, sentiment analysis
+  * - **GPT (Decoder-Only)**
+    - Decoder stack only
+    - Autoregressive Language Modeling (next token prediction)
+    - Unidirectional (left-to-right, autoregressive)
+    - Text generation, chatbots, open-ended tasks
+  * - **Seq2Seq (Encoder-Decoder)**
+    - Encoder + Decoder stacks
+    - Sequence-to-sequence (e.g., translation, summarization)
+    - Encoder: Bidirectional; Decoder: Unidirectional (autoregressive)
+    - Translation, summarization, speech recognition, data-to-text
+:::
+
+## Summary of LLM types (2) { .smaller }
+
+:::list-table
+  * - Type
+    - Strengths
+    - Weaknesses
+    - Example Models
+    - Training Data
+    - Inference Speed
+  * - **BERT (Encoder-Only)**
+    - Deep understanding of input; strong for discriminative tasks
+    - Not designed for generation
+    - BERT, RoBERTa, DistilBERT
+    - Large corpus (masked tokens)
+    - Fast (parallelizable)
+  * - **GPT (Decoder-Only)**
+    - Coherent, fluent generation; open-ended creativity
+    - No bidirectional context; limited to left-to-right generation
+    - GPT-3, GPT-4, Llama
+    - Large corpus (autoregressive)
+    - Slower (autoregressive)
+  * - **Seq2Seq (Encoder-Decoder)**
+    - Explicit input-output mapping; handles sequence transformation
+    - More complex; requires aligned input-output pairs
+    - T5, BART, Transformer (original), Whisper
+    - Parallel corpora (input-output pairs)
+    - Moderate (depends on sequence length)
+:::
+
+## Generative LLMs, Base vs Instruct
+
+- Base models are just predicting the next word (pre-training phase, no task-specific fine-tuning)
+- Instruct models are fine-tuned on specific tasks and follow user instructions more effectively.
+
+::: {.callout-important}
+Never use the base model for specific tasks without fine-tuning.
+:::
+
+## Generative LLMs, Reasoning vs non-Reasoning
+
+- (Non-reasoning) models focus on generating coherent text without explicit reasoning capabilities
+- Reasoning models are designed to perform complex reasoning tasks and can handle multi-step problems, at the cost of increased computational requirements (and budget)
+
+::: {.callout-tip}
+Reasoning addition to LLM have been a breakthrough in the field since end of 2024. 
+:::
+
+## The importance of the context window
+
+- The context window is crucial for understanding and generating text.
+- It determines how much information the model can consider at once.
+- Larger context windows allow for better understanding of complex queries and generation of more coherent responses
+- Typical max context window are in a 16k tokens, latest open-weights local llms are 128/256/512k tokens, frontier llms are 1M+ tokens
+- long context window are computationally expensive and require more memory/gpu ressources.
+
+## What happens when the context window is exceeded?
+
+- When the context window is exceeded, the model may lose track of important information, leading to less coherent responses.
+- Strategies to handle this include:
+  - Summarizing previous context
+  - Using external memory stores
+  - Chunking input data
+
+::: {.callout-caution}
+Very large context (when permitted by the model) isn’t always a good thing: there is chances that the model may become overwhelmed with information, leading to decreased performance AND quality.
+:::
+
+## RAG (Retrieval-Augmented Generation)
+
+:::{ layout-ncol="2" }
+
+:::{}
+
+- RAG combines retrieval-based and generation-based approaches.
+- It retrieves relevant documents from a knowledge base and uses them to inform the generation process.
+- This allows for more accurate and contextually relevant responses.
+:::
+
+![](../images/RAG_diagram.svg)
+
+:::
+
+# AI Agents 
+
+AI agents are just a programming paradigm involving either:
+
+- **Reactive** agents: respond to specific inputs with pre-defined actions.
+- **Pipelined** agents: process inputs through a series of stages or components.
+
+Reactive/Pipeline agents are defined by the control flow :
+
+- internal if reactive (that’s the llm which "reacts" and decides)
+- external if pipeline (that’s the programmer which decides to call llm and what to do with it)
+
+
+
+## Reactive agents
+
+:::{ layout-ncol="2"}
+
+::::{}
+Examples:
+
+- Chatbots that respond to user queries with pre-defined answers.
+- Simple automation scripts that trigger actions based on specific events, like web search.
+- Agentic mode in Code Assistants
+
+::: {.callout-warning .fragment}
+$\Rightarrow$ Control is done by the LLM itself with all risks : infinite loops, dangerous unsupervised and potentially dangerous actions etc.
+:::
+
+::::
+
+![](../images/reactive-agent.svg){ style="margin-top: -300px;"}
+
+:::
+
+## Pipeline Agents
+
+:::{ layout-ncol="2"}
+
+::::{}
+Examples:
+
+- RAG queries
+- Summarizing documents
+- Communicating with other agents
+
+::: {.callout-note}
+$\Rightarrow$ Control is done by normal, program logic
+:::
+
+::::
+
+![](../images/pipeline-agent.svg){ style="margin-top: -300px;"}
+
+:::
+
+## Reactive agent 2025 : MCP
+
+![](../images/mcp-explained.gif)
+
+:::attribution
+Ujjwal Khadka
+[Source](https://medium.com/@khadkaujjwal47/model-context-protocol-mcp-68fa753f297a)
+:::
+
+## AI for pipelines/graphs
+
+- Low level (API, almost request-level)
+  - OpenAI API (ubiquitous)
+  - Huggingface
+- High level (Framework)
+  - Langchain (most popular)
+  - Semantic Kernel (Microsoft)
+  - Haystack
+  - and many many others…
+
+## AI for pipelines/graphs (2)
+
+Simple request with OpenAI API :
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5",
+    input="Write a one-sentence bedtime story about a unicorn."
+)
+
+print(response.output_text)
+```
+
+Simple request with LangChain :
+
+```python
+from langchain.chat_models import init_chat_model
+from langchain_core.messages import HumanMessage, SystemMessage
+
+model = init_chat_model("gpt-4o-mini", model_provider="openai")
+
+messages = [
+    SystemMessage("Translate the following from English into Italian"),
+    HumanMessage("hi!"),
+]
+
+model.invoke(messages)
+```
+
+## MCP Server example
+
+```python
+from datetime import datetime
+from model_context_protocol.server import MCPServer
+from model_context_protocol.types import Request, Response
+
+def get_date_handler(request: Request) -> Response:
+    today = datetime.today().strftime('%Y-%m-%d')
+    return Response(result=today)
+
+if __name__ == '__main__':
+    server = MCPServer(
+        tool_name="date-tool",
+        tool_description="Returns the current date in YYYY-MM-DD format."
+    )
+    server.register_method('get_date', get_date_handler)
+    print("MCP server started. Listening for 'get_date' requests...")
+    server.serve()
+```
+
+# Conclusion and Take-home Messages
+
+it is **possible** to have get a balance between:
+
+:::{ .incremental }
+- generative AI capabilities
+- high quality development practice.
+:::
+
+But for this we have to:
+
+:::{ .incremental }
+- keep a *critical* and *alert* eye on LLM outputs.
+- accept to **learn LLM specific engineering** (prompts, configuration, choice of model, tuning, RAG etc.)...
+- **orient** this engineering to help to reach our standards and quality requirements.
+:::
+
+## The real question
+
+::::{ layout-ncol="2"}
+
+> Are the benefits of using generative AI worth the cost of extra supervision and the additional engineering effort?
+
+:::{}
+The general answer is:
+
+![](../images/itdepends.jpg){ fig-align="center" .notransparent .fragment .noinvert height="400px"}
+:::
+::::
+
+## On the other hand...
+
+::::{ layout-ncol="2"} 
+
+::: {.callout-caution title="Beware of vibe-coding" }
+
+![](../images/vibecoding-danger.png){ fig-align="center" .noinvert style=""}
+:::
+
+:::{}
+![](../images/vibe-coding.webp){ fig-align="center" .fragment .noinvert }
+:::
+
+::::
+

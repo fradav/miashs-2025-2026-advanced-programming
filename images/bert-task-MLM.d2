@@ -1,0 +1,15 @@
+# left to right direction
+input: "Input Sentence"
+mask: "Masked Token"
+bert: "BERT Model"
+output: "Predicted Token"
+
+input -> mask: "Mask a word"
+mask -> bert: "Feed masked sentence"
+bert -> output: "Predict masked word"
+
+input: "The [MASK] sat on the mat."
+output: "[MASK] = mat"
+
+input -> bert: ""
+bert -> output: ""

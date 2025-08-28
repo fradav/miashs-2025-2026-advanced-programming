@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@lancedb/vectordb-darwin-arm64": "^0.21.2"
+  }
+}

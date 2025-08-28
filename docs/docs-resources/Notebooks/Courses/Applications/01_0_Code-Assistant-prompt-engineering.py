@@ -1,0 +1,384 @@
+# %% [markdown]
+r"""
+# Prompt engineering exercises
+
+Pimp your prompts
+
+François-David Collin (CNRS, IMAG, Paul-Valéry Montpellier 3
+University)  
+Wednesday, August 27, 2025
+
+# Simple assignment for testing AI Code
+
+Prompt your AI assistant for creating an http server answering something
+useful (like the current time) and make it test itself.
+
+# Prompt engineering exercises
+
+Here are some **prompt engineering exercises** designed for a lecture on
+**AI Code Assistants** (like GitHub Copilot, Amazon CodeWhisperer, or
+similar tools). These exercises will help to understand how to
+effectively interact with AI assistants to generate, debug, and optimize
+code.
+
+------------------------------------------------------------------------
+
+### **1. Basic Code Generation**
+
+**Objective:** Learn to generate simple code snippets using clear and
+concise prompts.
+
+**Exercises:** 1. **Hello World:**
+
+-   Prompt: *“Write a Python function that prints ‘Hello, World!’ when
+    called.”*
+-   Follow-up: Ask the AI to explain the code line by line.
+
+1.  **Data Types:**
+
+    -   Prompt: *“Generate a Python script that declares and prints
+        variables of the following data types: integer, float, string,
+        boolean, and list.”*
+    -   Follow-up: Ask the AI to add type hints to the variables.
+
+2.  **Conditional Logic:**
+
+    -   Prompt: *“Write a Python function that takes an integer as input
+        and returns ‘Even’ if the number is even and ‘Odd’ if the number
+        is odd.”*
+    -   Follow-up: Ask the AI to rewrite the function using a ternary
+        operator.
+
+------------------------------------------------------------------------
+
+### **2. Debugging and Error Handling**
+
+**Objective:** Use AI to identify and fix errors in code.
+
+**Exercises:** 1. **Buggy Code:**
+
+-   Provide the following buggy code:
+
+    ``` python
+    def divide(a, b):
+        return a / b
+    ```
+
+-   Prompt: *“This function sometimes crashes. Add error handling to
+    manage division by zero and return ‘Cannot divide by zero’ in such
+    cases.”*
+
+1.  **Syntax Errors:**
+
+    -   Provide the following code:
+
+        ``` python
+        def greet(name)
+            print("Hello, " + name)
+        ```
+
+    -   Prompt: *“Fix the syntax errors in this Python function.”*
+
+2.  **Logical Errors:**
+
+    -   Provide the following code:
+
+        ``` python
+        def is_prime(n):
+            if n < 2:
+                return False
+            for i in range(2, n):
+                if n % i == 0:
+                    return True
+            return False
+        ```
+
+    -   Prompt: *“This function is supposed to check if a number is
+        prime, but it doesn’t work correctly. Fix it.”*
+
+------------------------------------------------------------------------
+
+### **3. Code Optimization**
+
+**Objective:** Improve the efficiency or readability of existing code.
+
+**Exercises:** 1. **Inefficient Loop:**
+
+-   Provide the following code:
+
+    ``` python
+    def sum_of_squares(n):
+        result = 0
+        for i in range(1, n+1):
+            result += i * i
+        return result
+    ```
+
+-   Prompt: *“Optimize this function to calculate the sum of squares of
+    the first `n` natural numbers using a mathematical formula instead
+    of a loop.”*
+
+1.  **Redundant Code:**
+
+    -   Provide the following code:
+
+        ``` python
+        def calculate_area(radius):
+            pi = 3.14159
+            area = pi * radius * radius
+            return area
+        ```
+
+    -   Prompt: *“Refactor this function to use Python’s `math` module
+        for the value of pi and improve its readability.”*
+
+------------------------------------------------------------------------
+
+### **4. Complex Tasks**
+
+**Objective:** Generate more complex code with specific requirements.
+
+**Exercises:** 1. **API Interaction:**
+
+-   Prompt: *“Write a Python script that fetches the latest Bitcoin
+    price using the CoinGecko API and prints it. Use the `requests`
+    library.”*
+
+1.  **File Handling:**
+
+    -   Prompt: *“Write a Python function that reads a CSV file named
+        ‘data.csv’ and returns the average value of a column named
+        ‘price’.”*
+
+2.  **Object-Oriented Programming:**
+
+    -   Prompt: *“Create a Python class called `BankAccount` with
+        methods for depositing, withdrawing, and checking the balance.
+        Include error handling for insufficient funds.”*
+
+------------------------------------------------------------------------
+
+### **5. Explaining Code**
+
+**Objective:** Use AI to explain how code works.
+
+**Exercises:** 1. **Code Explanation:**
+
+-   Provide the following code:
+
+    ``` python
+    def fibonacci(n):
+        a, b = 0, 1
+        for _ in range(n):
+            print(a, end=" ")
+            a, b = b, a + b
+    ```
+
+-   Prompt: *“Explain how this Fibonacci sequence generator works, line
+    by line.”*
+
+1.  **Algorithm Explanation:**
+
+    -   Prompt: *“Explain the time complexity of the following sorting
+        algorithm: QuickSort.”*
+
+------------------------------------------------------------------------
+
+### **6. Multi-Step Prompts**
+
+**Objective:** Break down complex tasks into smaller steps.
+
+**Exercises:** 1. **Web Scraping:**
+
+-   Prompt: *“Write a Python script to scrape the titles of the top 10
+    headlines from a news website (e.g., BBC News). Use the `requests`
+    and `BeautifulSoup` libraries. Break this task into steps: fetching
+    the webpage, parsing the HTML, and extracting the headlines.”*
+
+1.  **Data Visualization:**
+
+    -   Prompt: *“Create a Python script that generates a bar chart of
+        the following data using `matplotlib`: {‘Apples’: 10, ‘Bananas’:
+        15, ‘Oranges’: 7}.”*
+
+------------------------------------------------------------------------
+
+### **7. Edge Cases and Robustness**
+
+**Objective:** Ensure code handles edge cases gracefully.
+
+**Exercises:** 1. **Input Validation:**
+
+-   Prompt: *“Write a Python function that takes a list of numbers and
+    returns the largest number. Add input validation to ensure all
+    elements in the list are numbers.”*
+
+1.  **Handling Missing Data:**
+
+    -   Prompt: *“Write a Python function that reads a JSON file and
+        extracts the value associated with the key ‘temperature’. Handle
+        cases where the key or file might not exist.”*
+
+------------------------------------------------------------------------
+
+### **8. Creative Problem-Solving**
+
+**Objective:** Use AI to brainstorm solutions to open-ended problems.
+
+**Exercises:** 1. **Game Development:**
+
+-   Prompt: *“Suggest a simple game idea that can be implemented in
+    Python using the `pygame` library. Provide a basic code skeleton for
+    the game.”*
+
+1.  **Automation:**
+
+    -   Prompt: *“Write a Python script to automate renaming all files
+        in a directory by adding a prefix ‘processed\_’ to their
+        names.”*
+
+------------------------------------------------------------------------
+
+### **9. Comparing Solutions**
+
+**Objective:** Generate multiple solutions and compare their pros and
+cons.
+
+**Exercises:** 1. **Sorting Algorithms:**
+
+-   Prompt: *“Provide three different Python implementations for sorting
+    a list of numbers: using built-in functions, Bubble Sort, and Merge
+    Sort. Compare their time complexities.”*
+
+1.  **String Manipulation:**
+
+    -   Prompt: *“Write two different Python functions to reverse a
+        string. One should use slicing, and the other should use a loop.
+        Discuss the advantages of each approach.”*
+
+------------------------------------------------------------------------
+
+### **10. Ethical and Security Considerations**
+
+**Objective:** Understand the ethical implications of AI-generated code.
+
+**Exercises:** 1. **Security Vulnerabilities:**
+
+-   Prompt: \*“Identify potential security vulnerabilities in the
+    following Python code and suggest fixes:
+
+    ``` python
+    import pickle
+    def load_data(file):
+        with open(file, 'rb') as f:
+            return pickle.load(f)
+    ```
+
+1.  **Bias in AI:**
+
+    -   Prompt: *“How can bias creep into AI-generated code? Provide an
+        example and suggest ways to mitigate it.”*
+
+------------------------------------------------------------------------
+
+### **11. Customizing AI Output**
+
+**Objective:** Learn to refine prompts for specific outputs.
+
+**Exercises:** 1. **Style Guidelines:**
+
+-   Prompt: *“Write a Python function to calculate the factorial of a
+    number, following PEP 8 style guidelines and including docstrings.”*
+
+1.  **Language-Specific Syntax:**
+
+    -   Prompt: *“Generate the same ‘Hello, World!’ program in
+        JavaScript, Java, and C++. Highlight the differences in syntax
+        between the languages.”*
+
+------------------------------------------------------------------------
+
+### **12. Real-World Scenarios**
+
+**Objective:** Apply prompt engineering to real-world coding challenges.
+
+**Exercises:** 1. **Database Interaction:**
+
+-   Prompt: *“Write a Python script to connect to a SQLite database,
+    create a table called ‘users’ with columns ‘id’ and ‘name’, and
+    insert 5 sample records.”*
+
+1.  **Machine Learning:**
+
+    -   Prompt: *“Write a Python script to train a simple linear
+        regression model on sample data using `scikit-learn`. Include
+        comments to explain each step.”*
+
+------------------------------------------------------------------------
+
+### **13. Collaborative Coding**
+
+**Objective:** Use AI as a pair-programming partner.
+
+**Exercises:** 1. **Iterative Development:**
+
+-   Prompt: *“Let’s build a to-do list application step by step. Start
+    by creating a class to represent a single task with attributes for
+    the task name and completion status.”*
+
+1.  **Code Review:**
+
+    -   Prompt: \*“Review the following Python code for best practices
+        and suggest improvements:
+
+        ``` python
+        def add_numbers(a, b):
+            return a + b
+        ```
+
+------------------------------------------------------------------------
+
+### **14. Fun Challenges**
+
+**Objective:** Engage with creative and fun exercises.
+
+**Exercises:** 1. **ASCII Art:**
+
+-   Prompt: *“Generate Python code to print a Christmas tree using ASCII
+    characters. The tree should have a height specified by the user.”*
+
+1.  **Mad Libs:**
+
+    -   Prompt: *“Write a Python program that generates a Mad Libs story
+        by asking the user for inputs like nouns, verbs, and
+        adjectives.”*
+
+------------------------------------------------------------------------
+
+### **15. Reflection and Improvement**
+
+**Objective:** Reflect on the effectiveness of prompts.
+
+**Exercises:** 1. **Prompt Refinement:**
+
+-   Provide a vague prompt: *“Write a function to process data.”*
+-   Refine the prompt to make it specific and actionable.
+
+1.  **Feedback Loop:**
+
+    -   Prompt: *“Ask the AI to generate a Python function, then ask it
+        to critique its own output. How would you improve the function
+        further?”*
+
+------------------------------------------------------------------------
+
+### **Tips for Effective Prompt Engineering:**
+
+-   **Be specific:** Include details like language, libraries, and
+    expected output.
+-   **Break down tasks:** For complex problems, divide the prompt into
+    smaller steps.
+-   **Iterate:** Refine prompts based on the AI’s output.
+-   **Ask for explanations:** Use follow-up prompts to understand the
+    AI’s reasoning.
+"""
