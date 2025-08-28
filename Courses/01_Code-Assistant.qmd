@@ -884,12 +884,16 @@ Simple request with OpenAI API :
 from openai import OpenAI
 client = OpenAI()
 
-response = client.responses.create(
-    model="gpt-5",
-    input="Write a one-sentence bedtime story about a unicorn."
+chat_response = client.chat.completions.create(
+    model= "gpt-4o",
+    messages = [
+        {
+            "role": "user",
+            "content": "What is the best French cheese?",
+        },
+    ]
 )
-
-print(response.output_text)
+print(chat_response.choices[0].message.content)
 ```
 
 Simple request with LangChain :
