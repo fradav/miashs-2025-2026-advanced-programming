@@ -916,21 +916,15 @@ model.invoke(messages)
 
 ```python
 from datetime import datetime
-from model_context_protocol.server import MCPServer
-from model_context_protocol.types import Request, Response
+from mcp.server.fastmcp import FastMCP
 
-def get_date_handler(request: Request) -> Response:
-    today = datetime.today().strftime('%Y-%m-%d')
-    return Response(result=today)
+# Create an MCP server
+mcp = FastMCP("GetTime")
 
-if __name__ == '__main__':
-    server = MCPServer(
-        tool_name="date-tool",
-        tool_description="Returns the current date in YYYY-MM-DD format."
-    )
-    server.register_method('get_date', get_date_handler)
-    print("MCP server started. Listening for 'get_date' requests...")
-    server.serve()
+@mcp.tool()
+def get_date() -> str:
+    """Returns the current date in YYYY-MM-DD format."""
+    return datetime.today().strftime('%Y-%m-%d')
 ```
 
 # Conclusion and Take-home Messages

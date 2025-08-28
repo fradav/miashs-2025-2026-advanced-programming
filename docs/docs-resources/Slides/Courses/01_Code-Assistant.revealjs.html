@@ -1458,21 +1458,15 @@ head_view(attention, tokens, sentence_b_start)
 <section id="mcp-server-example" class="slide level2 center">
 <h2>MCP Server example</h2>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model_context_protocol.server <span class="im">import</span> MCPServer</span>
-<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model_context_protocol.types <span class="im">import</span> Request, Response</span>
-<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_date_handler(request: Request) <span class="op">-&gt;</span> Response:</span>
-<span id="cb4-6"><a href="" aria-hidden="true" tabindex="-1"></a>    today <span class="op">=</span> datetime.today().strftime(<span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st">'</span>)</span>
-<span id="cb4-7"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Response(result<span class="op">=</span>today)</span>
-<span id="cb4-8"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
-<span id="cb4-10"><a href="" aria-hidden="true" tabindex="-1"></a>    server <span class="op">=</span> MCPServer(</span>
-<span id="cb4-11"><a href="" aria-hidden="true" tabindex="-1"></a>        tool_name<span class="op">=</span><span class="st">"date-tool"</span>,</span>
-<span id="cb4-12"><a href="" aria-hidden="true" tabindex="-1"></a>        tool_description<span class="op">=</span><span class="st">"Returns the current date in YYYY-MM-DD format."</span></span>
-<span id="cb4-13"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-14"><a href="" aria-hidden="true" tabindex="-1"></a>    server.register_method(<span class="st">'get_date'</span>, get_date_handler)</span>
-<span id="cb4-15"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"MCP server started. Listening for 'get_date' requests..."</span>)</span>
-<span id="cb4-16"><a href="" aria-hidden="true" tabindex="-1"></a>    server.serve()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mcp.server.fastmcp <span class="im">import</span> FastMCP</span>
+<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an MCP server</span></span>
+<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a>mcp <span class="op">=</span> FastMCP(<span class="st">"GetTime"</span>)</span>
+<span id="cb4-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>()</span>
+<span id="cb4-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_date() <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb4-9"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Returns the current date in YYYY-MM-DD format."""</span></span>
+<span id="cb4-10"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> datetime.today().strftime(<span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section></section>
 <section>
 <section id="conclusion-and-take-home-messages" class="title-slide slide level1 center">

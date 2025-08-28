@@ -504,7 +504,7 @@
     "href": "Courses/01_Code-Assistant.html#mcp-server-example",
     "title": "2  Code Assistants",
     "section": "9.5 MCP Server example",
-    "text": "9.5 MCP Server example\nfrom datetime import datetime\nfrom model_context_protocol.server import MCPServer\nfrom model_context_protocol.types import Request, Response\n\ndef get_date_handler(request: Request) -&gt; Response:\n    today = datetime.today().strftime('%Y-%m-%d')\n    return Response(result=today)\n\nif __name__ == '__main__':\n    server = MCPServer(\n        tool_name=\"date-tool\",\n        tool_description=\"Returns the current date in YYYY-MM-DD format.\"\n    )\n    server.register_method('get_date', get_date_handler)\n    print(\"MCP server started. Listening for 'get_date' requests...\")\n    server.serve()",
+    "text": "9.5 MCP Server example\nfrom datetime import datetime\nfrom mcp.server.fastmcp import FastMCP\n\n# Create an MCP server\nmcp = FastMCP(\"GetTime\")\n\n@mcp.tool()\ndef get_date() -&gt; str:\n    \"\"\"Returns the current date in YYYY-MM-DD format.\"\"\"\n    return datetime.today().strftime('%Y-%m-%d')",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
