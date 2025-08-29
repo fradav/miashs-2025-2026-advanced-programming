@@ -8,7 +8,7 @@
 
 <meta name="author" content="François-David Collin">
 
-<title>1&nbsp; Prerequisites – Advanced programming and parallel computing</title>
+<title>1&nbsp; Software Prerequisites – Advanced programming and parallel computing</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -280,7 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prerequisites</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Software Prerequisites</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -317,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./intro.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prerequisites</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Software Prerequisites</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -375,6 +375,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ai-assistant-getting-api-key." id="toc-ai-assistant-getting-api-key." class="nav-link" data-scroll-target="#ai-assistant-getting-api-key."><span class="header-section-number">1.2</span> AI Assistant, getting API Key.</a></li>
   <li><a href="#vscode-setup" id="toc-vscode-setup" class="nav-link" data-scroll-target="#vscode-setup"><span class="header-section-number">1.3</span> VSCode setup</a></li>
   <li><a href="#collaborative-editing" id="toc-collaborative-editing" class="nav-link" data-scroll-target="#collaborative-editing"><span class="header-section-number">1.4</span> Collaborative editing</a></li>
+  <li><a href="#python-environment-management" id="toc-python-environment-management" class="nav-link" data-scroll-target="#python-environment-management"><span class="header-section-number">2</span> Python Environment Management</a>
+  <ul>
+  <li><a href="#installing-uv" id="toc-installing-uv" class="nav-link" data-scroll-target="#installing-uv"><span class="header-section-number">2.1</span> Installing uv</a></li>
+  <li><a href="#creating-a-new-environment" id="toc-creating-a-new-environment" class="nav-link" data-scroll-target="#creating-a-new-environment"><span class="header-section-number">2.2</span> Creating a new environment</a></li>
+  <li><a href="#adding-packages" id="toc-adding-packages" class="nav-link" data-scroll-target="#adding-packages"><span class="header-section-number">2.3</span> Adding packages</a></li>
+  <li><a href="#running-a-script-online-with-just-a-dependency" id="toc-running-a-script-online-with-just-a-dependency" class="nav-link" data-scroll-target="#running-a-script-online-with-just-a-dependency"><span class="header-section-number">2.4</span> running a script online with just a dependency</a></li>
+  <li><a href="#running-script-with-a-directory" id="toc-running-script-with-a-directory" class="nav-link" data-scroll-target="#running-script-with-a-directory"><span class="header-section-number">2.5</span> running script with a directory</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -384,7 +392,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prerequisites</span></h1>
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Software Prerequisites</span></h1>
 </div>
 
 
@@ -619,8 +627,38 @@ Anonymous Guest Name
 <p>If you choose to sign in, you’ll have to authorize VSCode to access your github/microsoft account. If you choose anonymous, you’ll have to choose a username. Please choose a username that is easily identifiable as yours.</p>
 </div>
 </div>
+</section>
+<section id="python-environment-management" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Python Environment Management</h1>
+<p>As 2025, the recommended way to manage python environments is to use <code>uv</code>, by far. It is a directory-env based, that is, it installs environment and packages in the current directory.</p>
+<section id="installing-uv" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="installing-uv"><span class="header-section-number">2.1</span> Installing uv</h2>
+<p>See <a href="https://docs.astral.sh/uv/getting-started/installation/">uv installation</a> for your platform.</p>
+</section>
+<section id="creating-a-new-environment" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="creating-a-new-environment"><span class="header-section-number">2.2</span> Creating a new environment</h2>
+<p>To create a new environment, use the following command:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> init</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will create a new environment within the current directory.</p>
+</section>
+<section id="adding-packages" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="adding-packages"><span class="header-section-number">2.3</span> Adding packages</h2>
+<p>To add packages to your environment, use the following command:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add package_name</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Replace <code>package_name</code> with the name of the package you want to install. This will install the package in your current environment.</p>
+</section>
+<section id="running-a-script-online-with-just-a-dependency" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="running-a-script-online-with-just-a-dependency"><span class="header-section-number">2.4</span> running a script online with just a dependency</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run <span class="at">--with</span> dependency script.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will execute the <code>script.py</code> file using just the specified dependency as the environment.</p>
+</section>
+<section id="running-script-with-a-directory" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="running-script-with-a-directory"><span class="header-section-number">2.5</span> running script with a directory</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run <span class="at">--directory</span> dir_env script.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will execute the <code>script.py</code> file using the specified directory as the working directory.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

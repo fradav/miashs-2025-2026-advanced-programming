@@ -1,0 +1,406 @@
+---
+title: AI Agent
+subtitle: Taking the bull by the horns
+---
+
+For this practical work, you need the following python packages:
+
+- `openai`
+- `python-dotenv`
+- `faiss-cpu`
+- `numpy`
+
+and also a nicely format function for markdown output of LLM:
+
+```{python}
+from IPython.display import Markdown, display
+
+def format_markdown_output(response):
+    # Create a boxed effect using HTML and CSS
+    boxed_content = f"""
+<div style="border: 2px solid #f15006ff; padding: 10px; border-radius: 5px; background-color: #493f3fff;">
+    {response}
+</div>
+"""
+    return display(Markdown(boxed_content))
+```
+
+# Hello World 
+
+Make work the example of the course.
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+chat_response = client.chat.completions.create(
+    model= "gpt-4o",
+    messages = [
+        {
+            "role": "user",
+            "content": "What is the best French cheese?",
+        },
+    ]
+)
+print(chat_response.choices[0].message.content)
+```
+
+Look at the documentation of the `OpenAI()` constructor in order to take your own model. Modify the model name accordingly.
+
+::: {.callout-important}
+**Never, ever** put your API key in the code. Use environment variables instead. For example, use python `dotenv` to load the API key from a `.env` file.
+:::
+
+::: {.callout-tip}
+The openai compatible endpoint for mistral.ai is `https://api.mistral.ai/v1`. `mistral-small-latest` as the model should be sufficient.
+:::
+
+::: {.callout-tip}
+If you have locally installed llm with ollama/lmstudio for example, don’t hesitate to adapt the code to use your local model.
+:::
+
+```{python}
+#| tags: [solution]
+#| output-location: column
+from openai import OpenAI
+import dotenv
+import os
+from IPython.display import display, Markdown
+
+dotenv.load_dotenv("/Users/fradav/.continue/.env",verbose=True)
+api_key = os.getenv("MISTRAL_API_KEY")
+base_url = "https://api.mistral.ai/v1"
+model = "mistral-small-latest"
+
+client = OpenAI(api_key=api_key, base_url=base_url)
+
+chat_response = client.chat.completions.create(
+    model= model,
+    messages = [
+        {
+            "role": "user",
+            "content": "What is the best French cheese?",
+        },
+    ]
+)
+format_markdown_output(chat_response.choices[0].message.content)
+```
+
+# Build a RAG Agent
+
+## Split the document in chunks
+
+Get the [alice.txt](https://fradav.github.io/miashs-2025-2026-advanced-programming/docs-resources/Notebooks/materials/alice.txt) and split it in 2048 characters.
+
+```{python}
+#| tags: [solution]
+with open("../../materials/alice.txt", "r") as f:
+    text = f.read()
+chunk_size = 2048
+chunks = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+len(chunks)
+```
+
+## Encode the chunks
+
+A simple function to get an embedding is:
+
+```{python}
+from time import sleep
+
+def get_text_embedding(input):
+    sleep(0.5) # Rate-limiting
+    embeddings_response = client.embeddings.create(
+          model="mistral-embed",
+          input=input
+      )
+    return embeddings_response.data[0].embedding
+```
+
+It does return a 1024 list of float (the embedding of the input).
+
+Make a `numpy` array of all chunk embeddings from the text. Save the array to a file to avoid recomputing it.
+
+```{python}
+#| tags: [solution]
+
+import numpy as np
+from tqdm import tqdm
+
+if not os.path.exists("embeddings.npy"):
+    embeddings = np.array([get_text_embedding(chunk) for chunk in tqdm(chunks)])
+    np.save("embeddings.npy", embeddings)
+    print("Embeddings saved to embeddings.npy")
+else:
+    embeddings = np.load("embeddings.npy")
+    print("Embeddings loaded from embeddings.npy")
+```
+
+(Should take one and half minute)
+
+::: {.callout-tip}
+An optimal version of this should use the [batch feature](https://platform.openai.com/docs/guides/batch) of OpenAI APi
+:::
+
+## Store embeddings in vector database
+
+```{python}
+import faiss
+
+index = faiss.IndexFlatL2(embeddings.shape[1])
+index.add(embeddings)
+```
+
+# Query
+
+## Make an example query
+
+Make an embedding for a question like "À quels obstacles est confrontée Alice?"
+
+```{python}
+#| tags: [solution]
+
+question = "À quels obstacles est confrontée Alice?"
+question_embeddings = np.array([get_text_embedding(question)])
+```
+
+## Search for the most semantically similar chunks
+
+```{python}
+D, I = index.search(question_embeddings, k=2) # distance, index
+```
+
+## Retrieve the chunks
+
+```{python}
+#| tags: [solution]
+retrieved_chunk = [chunks[i] for i in I.tolist()[0]]
+```
+
+## RAG prompt
+
+Make the RAG query with the following prompt
+```{python}
+prompt = f"""
+Context information is below.
+---------------------
+{retrieved_chunk}
+---------------------
+Given the context information and not prior knowledge, answer the query.
+Query: {question}
+Answer:
+"""
+```
+
+```{python}
+#| output-location: column
+def run_mistral(user_message, model="mistral-small-latest"):
+    sleep(1) # Rate-limit
+    messages = [
+        {
+            "role": "user", "content": user_message
+        }
+    ]
+    chat_response = client.chat.completions.create(
+        model=model,
+        messages=messages
+    )
+    return (chat_response.choices[0].message.content)
+
+format_markdown_output(run_mistral(prompt))
+```
+
+# Put it together
+
+Make a function for any question about the book.
+
+```{python}
+#| tags: [solution]
+
+def ask_book(question):
+    question_embeddings = np.array([get_text_embedding(question)])
+    D, I = index.search(question_embeddings, k=2) # distance, index
+    retrieved_chunk = [chunks[i] for i in I.tolist()[0]]
+    prompt = f"""
+Context information is below.
+---------------------
+{retrieved_chunk}
+---------------------
+Given the context information and not prior knowledge, answer the query.
+Query: {question}
+Answer:
+"""
+    return run_mistral(prompt)
+```
+
+## Areas for improvement
+
+- Chunking strategies: chunk sizes, overlap, metadata
+- LLM parameters: context size, temperature, top_p, etc.
+- reranking 
+- hybrid retrieval
+
+# MCP server
+
+## How to test/install a python MCP server
+
+As simple mcp server requires to be just a complete one-liner script to run, simply create a new python file (e.g. `mcp_server.py`) and add the following code:
+
+```python
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("MyMCPServer")
+
+@mcp.tool()
+def my_tool():
+    """
+    This is my tool, it does nothing.
+
+    Args:
+        None
+
+    Returns:
+        dict: A dictionary with the status of the tool.
+    """
+    return {"message": "Hello from my_tool!"}
+```
+
+
+```bash
+uv run --with fastmcp mcp run path/to/mcp_server.py
+```
+
+in a yaml/json file for mcp server:
+
+::: {.panel-tabset}
+## YAML
+
+```yaml
+    command: uv
+    args:
+      - run
+      - --with
+      - fastmcp
+      - mcp
+      - run
+      - mcp_server.py
+```
+## JSON
+
+```json
+{
+  "command": "uv",
+  "args": [
+    "run",
+    "--with",
+    "fastmcp",
+    "mcp",
+    "run",
+    "mcp_server.py"
+  ]
+}
+```
+
+:::
+
+## First draft
+
+We want to make an MCP server which logs useful stuff in standard logging format to a file specified by environment variable `MCP_LOGGING_FILE`.
+
+Use [FastMCP](https://gofastmcp.com/getting-started/welcome) as MCP SDK.
+
+We should use standard `logging` python package.
+
+```{python}
+#| tags: [solution]
+
+import os
+import logging
+from mcp.server.fastmcp import FastMCP
+
+# Configure logging
+logging.basicConfig(
+    filename=os.getenv('MCP_LOGGING_FILE', 'default.log'),
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+# Create an MCP server
+mcp = FastMCP("MCPLogging")
+
+@mcp.tool()
+def log_message(message: str):
+    """
+    Logs a message to the specified log file.
+
+    Args:
+        message (str): The message to log.
+
+    Returns:
+        dict: A dictionary with the status of the logging operation.
+    """
+    logging.info(message)
+    return {"status": "Message logged"}
+```
+
+## Refining
+
+We want to let the LLM choose the logging level
+
+```{python}
+#| tags: [solution]
+import os
+import logging
+from mcp.server.fastmcp import FastMCP
+
+# Configure logging
+logging.basicConfig(
+    filename=os.getenv('MCP_LOGGING_FILE', 'default.log'),
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+# Create an MCP server
+mcp = FastMCP("MCPLogging")
+
+@mcp.tool()
+def log_message(message: str, level: str = "INFO"):
+    """
+    Logs a message to the specified log file at the specified level.
+
+    Args:
+        message (str): The message to log.
+        level (str): The logging level (e.g., "INFO", "WARNING", "ERROR"). Defaults to "INFO".
+
+    Returns:
+        dict: A dictionary with the status of the logging operation.
+    """
+    level = level.upper()
+    if level == "INFO":
+        logging.info(message)
+    elif level == "WARNING":
+        logging.warning(message)
+    elif level == "ERROR":
+        logging.error(message)
+    else:
+        return {"status": "Invalid logging level"}
+    return {"status": "Message logged"}
+```
+
+## Playing with it
+
+Make a rule to use the tool at each LLM request, test it. Pay attention to the workflow, especially with devstral.
+
+:::solution
+```markdown
+# Logging each answer
+
+Each time your answer:
+- Choose a concise summary of your answer
+- Choose a level of importance `INFO`, `WARNING`, `ERROR`
+- log that
+- after logging, if successful, just say "Logged."
+
+DO NOT FORGET TO LOG EACH TIME
+```
+:::

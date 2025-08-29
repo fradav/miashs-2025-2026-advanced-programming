@@ -15,6 +15,24 @@ For this practical work, you need the following python packages:
 -   `faiss-cpu`
 -   `numpy`
 
+and also a nicely format function for markdown output of LLM:
+"""
+
+# %%
+from IPython.display import Markdown, display
+
+def format_markdown_output(response):
+    # Create a boxed effect using HTML and CSS
+    boxed_content = f"""
+<div style="border: 2px solid #f15006ff; padding: 10px; border-radius: 5px; background-color: #493f3fff;">
+    {response}
+</div>
+"""
+    return display(Markdown(boxed_content))
+
+
+# %% [markdown]
+"""
 # Hello World
 
 Make work the example of the course.
@@ -121,14 +139,7 @@ D, I = index.search(question_embeddings, k=2) # distance, index
 # %% [markdown]
 """
 ## Retrieve the chunks
-"""
 
-# %%
-#! tags: [solution]
-retrieved_chunk = [chunks[i] for i in I.tolist()[0]]
-
-# %% [markdown]
-"""
 ## RAG prompt
 
 Make the RAG query with the following prompt
@@ -160,7 +171,7 @@ def run_mistral(user_message, model="mistral-small-latest"):
     )
     return (chat_response.choices[0].message.content)
 
-display(Markdown(run_mistral(prompt)))
+format_markdown_output(run_mistral(prompt))
 
 # %% [markdown]
 """
@@ -176,6 +187,66 @@ Make a function for any question about the book.
 -   hybrid retrieval
 
 # MCP server
+
+## How to test/install a python MCP server
+
+As simple mcp server requires to be just a complete one-liner script to
+run, simply create a new python file (e.g. `mcp_server.py`) and add the
+following code:
+
+``` python
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("MyMCPServer")
+
+@mcp.tool()
+def my_tool():
+    """
+    This is my tool, it does nothing.
+
+    Args:
+        None
+
+    Returns:
+        dict: A dictionary with the status of the tool.
+    """
+    return {"message": "Hello from my_tool!"}
+```
+
+``` bash
+uv run --with fastmcp mcp run path/to/mcp_server.py
+```
+
+in a yaml/json file for mcp server:
+
+## YAML
+
+``` yaml
+    command: uv
+    args:
+      - run
+      - --with
+      - fastmcp
+      - mcp
+      - run
+      - mcp_server.py
+```
+
+## JSON
+
+``` json
+{
+  "command": "uv",
+  "args": [
+    "run",
+    "--with",
+    "fastmcp",
+    "mcp",
+    "run",
+    "mcp_server.py"
+  ]
+}
+```
 
 ## First draft
 
@@ -196,8 +267,9 @@ We want to let the LLM choose the logging level
 Make a rule to use the tool at each LLM request, test it. Pay attention
 to the workflow, especially with devstral.
 
+<span class="proof-title">*Solution*. </span>
+
 ``` markdown
-<!-- | tags: [solution] -->
 # Logging each answer
 
 Each time your answer:

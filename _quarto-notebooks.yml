@@ -2,7 +2,7 @@ project:
   render:
     - Courses/Applications/*.qmd
     - Courses/Solutions/01_0_Code-Assistant-prompt-engineering-sol.qmd
-    - Courses/Solutions/01_1_AI-Agent.qmd
+    - Courses/Solutions/01_1_AI-Agent-sol.qmd
     # - Courses/Solutions/0_Numpy_Workout-sol.qmd
     # - Courses/Solutions/1_0_MultiProcessing_tutorial-sol.qmd
     # - Courses/Solutions/1_1_MultiProcessing-sol.qmd

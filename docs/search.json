@@ -12,51 +12,101 @@
   {
     "objectID": "intro.html",
     "href": "intro.html",
-    "title": "1  Prerequisites",
+    "title": "1  Software Prerequisites",
     "section": "",
     "text": "1.1 Software required\nYou will need to install the following software on your computer: Visual Studio Code (VSCode), a free and open-source code editor. You’ll have to install the following extensions:",
     "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Prerequisites</span>"
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
     ]
   },
   {
     "objectID": "intro.html#software-required",
     "href": "intro.html#software-required",
-    "title": "1  Prerequisites",
+    "title": "1  Software Prerequisites",
     "section": "",
     "text": "Python extension to have everything you need to work with Python.\n Live Share to enable collaborative editing.\n Continue.dev to have the AI Code Assistant we will use as example in this course.",
     "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Prerequisites</span>"
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
     ]
   },
   {
     "objectID": "intro.html#ai-assistant-getting-api-key.",
     "href": "intro.html#ai-assistant-getting-api-key.",
-    "title": "1  Prerequisites",
+    "title": "1  Software Prerequisites",
     "section": "1.2 AI Assistant, getting API Key.",
     "text": "1.2 AI Assistant, getting API Key.\nFor the practical work, you’ll need to get API Keys from Mistral.ai’s “La Plateforme” (it’s completely free). You will need a valid cell phone number for the registration to work. Contact me if this is a problem.\n\n\nMistral Login\n\n\n\nThe first time, you’ll have to create an account. Then, you’ll be able to get your API Key.\nOnce there, Click on “API Keys” tab.\n\n\nMistral API Keys Tab\n\n\n\nClick on “Choose a plan”.\n\n\nNo plan\n\n\n\nChoose “Experiment” plan.\n\n\nExperiment plan\n\n\n\nAccept the conditions.\n\n\nAccept\n\n\n\nGive a phone number for the final check.\n\n\nPhone number check\n\n\n\nConfirm the code.\n\n\nCode received\n\n\n\nIf successful, return on the “AI Keys” Tab and choose “Create a new key”\n\n\nCreate a new key\n\n\n\nChoose a name and an expiration date for your key (could be never if not set).\n\n\nKey name and expiration date\n\n\n\nCopy the key and save it somewhere.\n\n\nKey to copy\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nYou may also create a specific key for Codestral model, which could be used for auto-completion role. Auto-completion role needs specifically tailored models for this task, and the models you can access with the “generic” mistral key aren’t.",
     "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Prerequisites</span>"
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
     ]
   },
   {
     "objectID": "intro.html#vscode-setup",
     "href": "intro.html#vscode-setup",
-    "title": "1  Prerequisites",
+    "title": "1  Software Prerequisites",
     "section": "1.3 VSCode setup",
     "text": "1.3 VSCode setup\nWhen you installed your continue vscode extension, it created a .continue folder in your home directory, which is ~/.continue on Linux and Mac, and %USERPROFILE%\\.continue on Windows. Create a .env file there and put your mistral key in it, like this:\nMISTRAL_API_KEY=your_key_here\nOptionally if you got a codestral key put it too:\nCODESTRAL_API_KEY=your_codestral_key_here\nOpen/Create config.yaml file in the same folder and put this in it:\nname: miashs/mistral\nversion: 1.0.0\nschema: v1\nmodels:\n## Uncomment this block if you want to use Codestral for auto-completion, needs a specific key\n#   - name: Codestral\n#     provider: mistral\n#     model: codestral-2508\n#     apiBase: https://codestral.mistral.ai/v1\n#     apiKey: ${{ secrets.CODESTRAL_API_KEY }}\n#     roles:\n#       - autocomplete\n#     defaultCompletionOptions:\n#       contextLength: 256000\n  - name: Devstral\n    provider: mistral\n    model: devstral-medium-latest\n    apiKey: ${{ secrets.MISTRAL_API_KEY }}\n    roles:\n      - chat\n      - edit\n      - apply\n    defaultCompletionOptions:\n      contextLength: 131072\n    capabilities:\n      - tool_use\n# You may choose mistral over devstral if you need image input\n  - name: Mistral\n    provider: mistral\n    model: mistral-medium-latest\n    apiKey: ${{ secrets.MISTRAL_API_KEY }}\n    roles:\n      - chat\n      - edit\n      - apply\n    defaultCompletionOptions:\n      contextLength: 131072\n    capabilities:\n      - tool_use\n      - image_input\n  - name: Codestral Embed\n    provider: mistral\n    model: codestral-embed\n    apiKey: ${{ secrets.MISTRAL_API_KEY }}\n    apiBase: https://api.mistral.ai/v1\n    roles:\n      - embed\ncontext:\n  - provider: code\n  - provider: docs\n    params:\n      maxdepth: 5\n  - provider: diff\n  - provider: terminal\n  - provider: problems\n  - provider: codebase\n    params:\n      nRetrieve: 60\n      nFinal: 25\n  - provider: folder\n    params:\n      nRetrieve: 60\n      nFinal: 25\n  - provider: open\n  - provider: web\n  - provider: tree\n  - provider: clipboard\n  - provider: debugger\n  - provider: repo-map\n  - provider: os\n  - provider: search\n  - provider: url\nCongratulations, you are now set for use of continue AI Code Assistant. You can open the chat panel either by clicking on the Continue in the right bottom status of vscode window or with Cmd + L (Mac) or Ctrl + L (Windows/Linux).",
     "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Prerequisites</span>"
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
     ]
   },
   {
     "objectID": "intro.html#collaborative-editing",
     "href": "intro.html#collaborative-editing",
-    "title": "1  Prerequisites",
+    "title": "1  Software Prerequisites",
     "section": "1.4 Collaborative editing",
     "text": "1.4 Collaborative editing\n\nIn the discord channel, I’ll provide you a link to join a collaborative editing session. Don’t click on it, just copy it: \nThen open a new “blank” window in VSCode, which will be exclusively for collaborative session. \nThen, click on the “Live Share” button in the bottom left corner of the window \nClick on the “Join” button \nEither choose anonymous or sign in with your github/microsoft account \n\n\n\n\n\n\n\nAnonymous Guest Name\n\n\n\nIf you choose to sign in, you’ll have to authorize VSCode to access your github/microsoft account. If you choose anonymous, you’ll have to choose a username. Please choose a username that is easily identifiable as yours.",
     "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Prerequisites</span>"
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#installing-uv",
+    "href": "intro.html#installing-uv",
+    "title": "1  Software Prerequisites",
+    "section": "2.1 Installing uv",
+    "text": "2.1 Installing uv\nSee uv installation for your platform.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#creating-a-new-environment",
+    "href": "intro.html#creating-a-new-environment",
+    "title": "1  Software Prerequisites",
+    "section": "2.2 Creating a new environment",
+    "text": "2.2 Creating a new environment\nTo create a new environment, use the following command:\nuv init\nThis will create a new environment within the current directory.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#adding-packages",
+    "href": "intro.html#adding-packages",
+    "title": "1  Software Prerequisites",
+    "section": "2.3 Adding packages",
+    "text": "2.3 Adding packages\nTo add packages to your environment, use the following command:\nuv add package_name\nReplace package_name with the name of the package you want to install. This will install the package in your current environment.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#running-a-script-online-with-just-a-dependency",
+    "href": "intro.html#running-a-script-online-with-just-a-dependency",
+    "title": "1  Software Prerequisites",
+    "section": "2.4 running a script online with just a dependency",
+    "text": "2.4 running a script online with just a dependency\nuv run --with dependency script.py\nThis will execute the script.py file using just the specified dependency as the environment.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#running-script-with-a-directory",
+    "href": "intro.html#running-script-with-a-directory",
+    "title": "1  Software Prerequisites",
+    "section": "2.5 running script with a directory",
+    "text": "2.5 running script with a directory\nuv run --directory dir_env script.py\nThis will execute the script.py file using the specified directory as the working directory.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Software Prerequisites</span>"
     ]
   },
   {
@@ -194,7 +244,7 @@
     "href": "Courses/01_Code-Assistant.html#ai-domains",
     "title": "2  Code Assistants",
     "section": "5.1 AI domains",
-    "text": "5.1 AI domains\n\n\nArtificial Intelligence (AI)\n\n\nMachine Learning (ML)\n\n\nDeep Learning (DL)\n\n\nLarge Language Models (LLM)",
+    "text": "5.1 AI domains",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -254,7 +304,7 @@
     "href": "Courses/01_Code-Assistant.html#gradient-descent",
     "title": "2  Code Assistants",
     "section": "7.3 Gradient descent",
-    "text": "7.3 Gradient descent\nExample with a non-convex function\nf(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2\nPlotly = require(\"plotly.js@2.35.2/dist/plotly.min.js\");\nminX = -5;\nmaxX = 5;\nf = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n{\n  const linspace = d3.scaleLinear().domain([0, 49]).range([minX, maxX]);\n  const X1 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n  const X2 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n\n  // Define your function f here\n  const f = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n  const Z = X1.map((x1,i) =&gt; X2.map((x2,j) =&gt; f([x1,x2])));\n\n  const data = [{\n    x: X1.flat(),\n    y: X2.flat(),\n    z: Z,\n    type: 'surface'\n  }];\n\n  const layout = {\n    // title: '',\n    // autosize: true,\n    // width: 100,\n    // height: 100,\n    paper_bgcolor: \"rgba(0,0,0,0)\",\n    plot_bgcolor: \"rgba(0,0,0,0)\",\n    template: 'plotly_dark',\n    // margin: {\n    //   l: 65,\n    //   r: 50,\n    //   b: 65,\n    //   t: 90,\n    // }\n  };\n\n  const div = document.createElement('div');\n  Plotly.newPlot(div, data, layout,{displayModeBar: false});\n  return div;\n}\nfunction grad_descent(x1,x2,step,max_iter) {\n  let grad = f_grad(x1, x2);\n  let iterations = [[x1, x2]];\n  function f_grad(x1, x2) {\n    let df_x1 = 2 * (-7 + x1 + x2**2 + 2 * x1 * (-11 + x1**2 + x2));\n    let df_x2 = 2 * (-11 + x1**2 + x2 + 2 * x2 * (-7 + x1 + x2**2));\n    return [df_x1, df_x2];\n  }\n  var count = 0;\n  while (count &lt; max_iter) {\n    x1 -= step * grad[0];\n    x2 -= step * grad[1];\n    grad = f_grad(x1, x2);\n    if (isFinite(x1) && isFinite(x2) &&\n      (minX &lt; x1) && (x1 &lt; maxX) &&\n      (minX &lt; x2) && (x2 &lt; maxX))\n        iterations.push([x1, x2]);\n    else iterations.push(iterations[count])\n    count += 1\n  }\n  return iterations;\n}\nviewof descent_params = Inputs.form({\n  x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),\n  x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),\n  step: Inputs.range([0.001, 0.04], {step: 0.001, value: 0.01, label: 'Step size'})\n})\n{\n  var iterations = grad_descent(descent_params.x1,descent_params.x2,descent_params.step,20)\n  return Plot.plot({\n    aspectRatio: 1,\n    x: {tickSpacing: 50, label: \"x1 →\"},\n    y: {tickSpacing: 50, label: \"x2 →\"},\n    width: 600,\n    style: {\n      backgroundColor: 'rgba(0,0,0,0)'\n    },\n    marks: [\n      Plot.contour({\n        fill: (x1, x2) =&gt; Math.sqrt((x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2),\n        x1: minX,\n        y1: minX,\n        x2: maxX,\n        y2: maxX,\n        showlegend: false,\n        colorscale: 'RdBu',\n        ncontours: 30\n      }),\n      Plot.line(iterations,{marker: true})\n    ]\n  })\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSensitivity to initial point and step size",
+    "text": "7.3 Gradient descent\nExample with a non-convex function\nf(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2\n\nCode\nPlotly = require(\"plotly.js@2.35.2/dist/plotly.min.js\");\nminX = -5;\nmaxX = 5;\nf = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n{\n  const linspace = d3.scaleLinear().domain([0, 49]).range([minX, maxX]);\n  const X1 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n  const X2 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n\n  // Define your function f here\n  const f = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n  const Z = X1.map((x1,i) =&gt; X2.map((x2,j) =&gt; f([x1,x2])));\n\n  const data = [{\n    x: X1.flat(),\n    y: X2.flat(),\n    z: Z,\n    type: 'surface'\n  }];\n\n  const layout = {\n    // title: '',\n    // autosize: true,\n    // width: 100,\n    // height: 100,\n    paper_bgcolor: \"rgba(0,0,0,0)\",\n    plot_bgcolor: \"rgba(0,0,0,0)\",\n    template: 'plotly_dark',\n    // margin: {\n    //   l: 65,\n    //   r: 50,\n    //   b: 65,\n    //   t: 90,\n    // }\n  };\n\n  const div = document.createElement('div');\n  Plotly.newPlot(div, data, layout,{displayModeBar: false});\n  return div;\n}\nfunction grad_descent(x1,x2,step,max_iter) {\n  let grad = f_grad(x1, x2);\n  let iterations = [[x1, x2]];\n  function f_grad(x1, x2) {\n    let df_x1 = 2 * (-7 + x1 + x2**2 + 2 * x1 * (-11 + x1**2 + x2));\n    let df_x2 = 2 * (-11 + x1**2 + x2 + 2 * x2 * (-7 + x1 + x2**2));\n    return [df_x1, df_x2];\n  }\n  var count = 0;\n  while (count &lt; max_iter) {\n    x1 -= step * grad[0];\n    x2 -= step * grad[1];\n    grad = f_grad(x1, x2);\n    if (isFinite(x1) && isFinite(x2) &&\n      (minX &lt; x1) && (x1 &lt; maxX) &&\n      (minX &lt; x2) && (x2 &lt; maxX))\n        iterations.push([x1, x2]);\n    else iterations.push(iterations[count])\n    count += 1\n  }\n  return iterations;\n}\nviewof descent_params = Inputs.form({\n  x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),\n  x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),\n  step: Inputs.range([0.001, 0.04], {step: 0.001, value: 0.01, label: 'Step size'})\n})\n{\n  var iterations = grad_descent(descent_params.x1,descent_params.x2,descent_params.step,20)\n  return Plot.plot({\n    aspectRatio: 1,\n    x: {tickSpacing: 50, label: \"x1 →\"},\n    y: {tickSpacing: 50, label: \"x2 →\"},\n    width: 600,\n    style: {\n      backgroundColor: 'rgba(0,0,0,0)'\n    },\n    marks: [\n      Plot.contour({\n        fill: (x1, x2) =&gt; Math.sqrt((x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2),\n        x1: minX,\n        y1: minX,\n        x2: maxX,\n        y2: maxX,\n        showlegend: false,\n        colorscale: 'RdBu',\n        ncontours: 30\n      }),\n      Plot.line(iterations,{marker: true})\n    ]\n  })\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSensitivity to initial point and step size",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -300,21 +350,11 @@
     ]
   },
   {
-    "objectID": "Courses/01_Code-Assistant.html#embeddings",
-    "href": "Courses/01_Code-Assistant.html#embeddings",
+    "objectID": "Courses/01_Code-Assistant.html#embeddings-2",
+    "href": "Courses/01_Code-Assistant.html#embeddings-2",
     "title": "2  Code Assistants",
     "section": "8.2 Embeddings",
-    "text": "8.2 Embeddings\n\nDistance between words should not be character based\n\n\n\nwomen\n\n\nwoman\n\n\nwindow\n\n\nwidow\n\n\n\nTanguy Lefort, 2023",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#embeddings-1",
-    "href": "Courses/01_Code-Assistant.html#embeddings-1",
-    "title": "2  Code Assistants",
-    "section": "Embeddings",
-    "text": "Embeddings\n\nDistance between words should not be character based\n\n\n\nwidow\n\n\n\n\nwomen\n\n\nwoman\n\n\n\n\nwindow\n\n\n\nTanguy Lefort, 2023",
+    "text": "8.2 Embeddings\n\nDistance between words should not be character based\n\n\n\n\n\n\n\n\\Rightarrow\n\n\n\n\n\n\n\nTanguy Lefort, 2023",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -324,177 +364,7 @@
     "href": "Courses/01_Code-Assistant.html#multi-scale-learning-from-text",
     "title": "2  Code Assistants",
     "section": "8.3 Multi-scale learning from text",
-    "text": "8.3 Multi-scale learning from text\n\nDL layers = capture different levels of dependencies in the data\nattention mechansim applies “multi-scale learning” to data sequences \\Rightarrow e.g. not only words in sentences, but sentences in paragraphs, paragraphs in documents and so on.\n\nPreviously, recurrent networks limited in sequential dependencies,\n\\Rightarrow transformers capture dependencies in the “whole” in parallel (much faster)",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#multi-facets-learning-from-text",
-    "href": "Courses/01_Code-Assistant.html#multi-facets-learning-from-text",
-    "title": "2  Code Assistants",
-    "section": "8.4 Multi-facets learning from text",
-    "text": "8.4 Multi-facets learning from text\nMulti-head attention mechanism extends the attention mechanism to multifaceted dependencies of the same text components.\nIn the sentence “the cat sat on the rug, and after a few hours, it moved to the mat.” :\n\ncat/rug/mat\nrug/mat\ncat/he\nsat/moved to\n\nAll those groups of words/tokens are multiple facets of the same text and its meaning.",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#transformers",
-    "href": "Courses/01_Code-Assistant.html#transformers",
-    "title": "2  Code Assistants",
-    "section": "8.5 Transformers",
-    "text": "8.5 Transformers\n\n\nVaswani et al. (2017)",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#heart-of-transformers-attention-mechanism",
-    "href": "Courses/01_Code-Assistant.html#heart-of-transformers-attention-mechanism",
-    "title": "2  Code Assistants",
-    "section": "8.6 Heart of Transformers: Attention mechanism",
-    "text": "8.6 Heart of Transformers: Attention mechanism\n\n\n\\text{Attention}(Q,K,V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V\n\n\n\n\n\nThree matrices: Query, Key, Value, derived from the input sequence\nd_k: dimension of the key matrix, typically 64 or 128\nwe want to compute a weighted sum of the values V with weights given by the compatibility between the query and the keys\nsoftmax to get a probability distribution\nmulti-head attention: several attention mechanisms in parallel\n\n\n\n\n\n\n\n\nVaswani et al. (2017)",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#head-view-of-attention",
-    "href": "Courses/01_Code-Assistant.html#head-view-of-attention",
-    "title": "2  Code Assistants",
-    "section": "8.7 Head view of attention",
-    "text": "8.7 Head view of attention\n\n\n\n\n\n\nFigure 8.1: The model view visualizes attention across all heads in a single Transformer layer.\n\n\n\n\n\n\n\n\n\n\n\nEach line shows the attention from one token (left) to another (right).\nLine weight reflects the attention value (ranges from 0 to 1),\nline color identifies the attention head",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#bert-bidirectional-encoder-representations-from-transformers",
-    "href": "Courses/01_Code-Assistant.html#bert-bidirectional-encoder-representations-from-transformers",
-    "title": "2  Code Assistants",
-    "section": "8.8 BERT: Bidirectional Encoder Representations from Transformers",
-    "text": "8.8 BERT: Bidirectional Encoder Representations from Transformers\n\nembeddings: represent words as vectors in high dimensions",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#gpt-generative-pre-trained-transformer",
-    "href": "Courses/01_Code-Assistant.html#gpt-generative-pre-trained-transformer",
-    "title": "2  Code Assistants",
-    "section": "8.9 GPT : Generative Pre-trained Transformer",
-    "text": "8.9 GPT : Generative Pre-trained Transformer\n\nautoregressive model\ngenerates text by predicting the next token\npre-trained on large corpora of text",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#bert-vs-gpt",
-    "href": "Courses/01_Code-Assistant.html#bert-vs-gpt",
-    "title": "2  Code Assistants",
-    "section": "8.10 BERT vs GPT",
-    "text": "8.10 BERT vs GPT\n\n\n\n\n\nBERT\n\n\n\n\n\n\n\nGPT",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#summary-of-llm-types",
-    "href": "Courses/01_Code-Assistant.html#summary-of-llm-types",
-    "title": "2  Code Assistants",
-    "section": "8.11 Summary of LLM types",
-    "text": "8.11 Summary of LLM types\n\n\n\nType\nArchitecture\nTraining Objective\nAttention\nUse Cases\n\n\n\n\nBERT (Encoder-Only)\nEncoder stack only\nMasked Language Modeling (MLM)\nBidirectional (sees left and right context)\nClassification, QA, NER, sentiment analysis\n\n\nGPT (Decoder-Only)\nDecoder stack only\nAutoregressive Language Modeling (next token prediction)\nUnidirectional (left-to-right, autoregressive)\nText generation, chatbots, open-ended tasks\n\n\nSeq2Seq (Encoder-Decoder)\nEncoder + Decoder stacks\nSequence-to-sequence (e.g., translation, summarization)\nEncoder: Bidirectional; Decoder: Unidirectional (autoregressive)\nTranslation, summarization, speech recognition, data-to-text\n\n\n\n\n\n\nType\nStrengths\nWeaknesses\nExample Models\nTraining Data\nInference Speed\n\n\n\n\nBERT (Encoder-Only)\nDeep understanding of input; strong for discriminative tasks\nNot designed for generation\nBERT, RoBERTa, DistilBERT\nLarge corpus (masked tokens)\nFast (parallelizable)\n\n\nGPT (Decoder-Only)\nCoherent, fluent generation; open-ended creativity\nNo bidirectional context; limited to left-to-right generation\nGPT-3, GPT-4, Llama\nLarge corpus (autoregressive)\nSlower (autoregressive)\n\n\nSeq2Seq (Encoder-Decoder)\nExplicit input-output mapping; handles sequence transformation\nMore complex; requires aligned input-output pairs\nT5, BART, Transformer (original), Whisper\nParallel corpora (input-output pairs)\nModerate (depends on sequence length)",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#generative-llms-base-vs-instruct",
-    "href": "Courses/01_Code-Assistant.html#generative-llms-base-vs-instruct",
-    "title": "2  Code Assistants",
-    "section": "8.12 Generative LLMs, Base vs Instruct",
-    "text": "8.12 Generative LLMs, Base vs Instruct\n\nBase models are just predicting the next word (pre-training phase, no task-specific fine-tuning)\nInstruct models are fine-tuned on specific tasks and follow user instructions more effectively.\n\n\n\n\n\n\n\nImportant\n\n\n\nNever use the base model for specific tasks without fine-tuning.",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#generative-llms-reasoning-vs-non-reasoning",
-    "href": "Courses/01_Code-Assistant.html#generative-llms-reasoning-vs-non-reasoning",
-    "title": "2  Code Assistants",
-    "section": "8.13 Generative LLMs, Reasoning vs non-Reasoning",
-    "text": "8.13 Generative LLMs, Reasoning vs non-Reasoning\n\n(Non-reasoning) models focus on generating coherent text without explicit reasoning capabilities\nReasoning models are designed to perform complex reasoning tasks and can handle multi-step problems, at the cost of increased computational requirements (and budget)\n\n\n\n\n\n\n\nTip\n\n\n\nReasoning addition to LLM have been a breakthrough in the field since end of 2024.",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#the-importance-of-the-context-window",
-    "href": "Courses/01_Code-Assistant.html#the-importance-of-the-context-window",
-    "title": "2  Code Assistants",
-    "section": "8.14 The importance of the context window",
-    "text": "8.14 The importance of the context window\n\nThe context window is crucial for understanding and generating text.\nIt determines how much information the model can consider at once.\nLarger context windows allow for better understanding of complex queries and generation of more coherent responses\nTypical max context window are in a 16k tokens, latest open-weights local llms are 128/256/512k tokens, frontier llms are 1M+ tokens\nlong context window are computationally expensive and require more memory/gpu ressources.",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#what-happens-when-the-context-window-is-exceeded",
-    "href": "Courses/01_Code-Assistant.html#what-happens-when-the-context-window-is-exceeded",
-    "title": "2  Code Assistants",
-    "section": "8.15 What happens when the context window is exceeded?",
-    "text": "8.15 What happens when the context window is exceeded?\n\nWhen the context window is exceeded, the model may lose track of important information, leading to less coherent responses.\nStrategies to handle this include:\n\nSummarizing previous context\nUsing external memory stores\nChunking input data\n\n\n\n\n\n\n\n\nCaution\n\n\n\nVery large context (when permitted by the model) isn’t always a good thing: there is chances that the model may become overwhelmed with information, leading to decreased performance AND quality.",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#rag-retrieval-augmented-generation",
-    "href": "Courses/01_Code-Assistant.html#rag-retrieval-augmented-generation",
-    "title": "2  Code Assistants",
-    "section": "8.16 RAG (Retrieval-Augmented Generation)",
-    "text": "8.16 RAG (Retrieval-Augmented Generation)\n\n\n\n\nRAG combines retrieval-based and generation-based approaches.\nIt retrieves relevant documents from a knowledge base and uses them to inform the generation process.\nThis allows for more accurate and contextually relevant responses.\n\n\n\n\n\n\n\n\nTurtlecrown, Wikipedia",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#reactive-agents",
-    "href": "Courses/01_Code-Assistant.html#reactive-agents",
-    "title": "2  Code Assistants",
-    "section": "9.1 Reactive agents",
-    "text": "9.1 Reactive agents\n\n\n\nExamples:\n\nChatbots that respond to user queries with pre-defined answers.\nSimple automation scripts that trigger actions based on specific events, like web search.\nAgentic mode in Code Assistants\n\n\n\n\n\n\n\nWarning\n\n\n\n\\Rightarrow Control is done by the LLM itself with all risks : infinite loops, unsupervised and potentially dangerous actions etc.",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#pipeline-agents",
-    "href": "Courses/01_Code-Assistant.html#pipeline-agents",
-    "title": "2  Code Assistants",
-    "section": "9.2 Pipeline Agents",
-    "text": "9.2 Pipeline Agents\n\n\n\nExamples:\n\nRAG queries\nSummarizing documents\nCommunicating with other agents\n\n\n\n\n\n\n\nNote\n\n\n\n\\Rightarrow Control is done by normal, program logic",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#reactive-agent-2025-mcp",
-    "href": "Courses/01_Code-Assistant.html#reactive-agent-2025-mcp",
-    "title": "2  Code Assistants",
-    "section": "9.3 Reactive agent 2025 : MCP",
-    "text": "9.3 Reactive agent 2025 : MCP\n\n\nUjjwal Khadka Source",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/01_Code-Assistant.html#ai-for-pipelinesgraphs",
-    "href": "Courses/01_Code-Assistant.html#ai-for-pipelinesgraphs",
-    "title": "2  Code Assistants",
-    "section": "9.4 AI for pipelines/graphs",
-    "text": "9.4 AI for pipelines/graphs\n\nLow level (API, almost request-level)\n\nOpenAI API (ubiquitous)\nHuggingface\n\nHigh level (Framework)\n\nLangchain (most popular)\nSemantic Kernel (Microsoft)\nHaystack\nand many many others…\n\n\nSimple request with OpenAI API :\nfrom openai import OpenAI\nclient = OpenAI()\n\nchat_response = client.chat.completions.create(\n    model= \"gpt-4o\",\n    messages = [\n        {\n            \"role\": \"user\",\n            \"content\": \"What is the best French cheese?\",\n        },\n    ]\n)\nprint(chat_response.choices[0].message.content)\nSimple request with LangChain :\nfrom langchain.chat_models import init_chat_model\nfrom langchain_core.messages import HumanMessage, SystemMessage\n\nmodel = init_chat_model(\"gpt-4o-mini\", model_provider=\"openai\")\n\nmessages = [\n    SystemMessage(\"Translate the following from English into Italian\"),\n    HumanMessage(\"hi!\"),\n]\n\nmodel.invoke(messages)",
+    "text": "8.3 Multi-scale learning from text\n\nDL layers = capture different levels of dependencies in the data\nattention mechansim applies “multi-scale learning” to data sequences \\Rightarrow e.g. not only words in sentences, but sentences in paragraphs, paragraphs in documents and so on.\n\n\\Rightarrow transformers capture dependencies in the “whole”\n\nP1[Paragraph 1] D –&gt; P2[Paragraph 2] P1 –&gt; S11[Sentence 1.1] P1 –&gt; S12[Sentence 1.2] P2 –&gt; S21[Sentence 2.1] P2 –&gt; S22[Sentence 2.2]\n%% Attention at different scales\n%% Word-level (within sentences)\nS11 -.-&gt;|word attn| S11\nS12 -.-&gt;|word attn| S12\nS21 -.-&gt;|word attn| S21\nS22 -.-&gt;|word attn| S22\n\n%% Sentence-level (within paragraphs)\nP1 -.-|sentence attn| P1\nP2 -.-|sentence attn| P2\n\n%% Paragraph-level (within document)\nD ==&gt;|paragraph attn| D\n\n%% Legend\nsubgraph Legend\n    C1[Word-level attention] --&gt;|dashed line| C1\n    C2[Sentence-level attention] --&gt;|dotted line| C2\n    C3[Paragraph-level attention] --&gt;|bold line| C3\nend\n\n## Multi-facets learning from text\n\n*Multi-head attention mechanism* extends the attention mechanism to multifaceted dependencies of the same text components.\n\nIn the sentence \"the cat sat on the rug, and after a few hours, it moved to the mat.\" :\n\n- cat/rug/mat \n- rug/mat\n- cat/he\n- sat/moved to\n\n$\\Rightarrow$ All those groups of words/tokens are multiple facets of the same text and its meaning.\n\n&lt;!-- ```{mermaid}\n%%| fig-align: center\ngraph TB\n    %% Words in order\n    W1(the) --&gt; W2(cat)\n    W2 --&gt; W3(sat)\n    W3 --&gt; W4(on)\n    W4 --&gt; W5(rug)\n    W5 --&gt; W6(,)\n    W6 --&gt; W7(and)\n    W7 --&gt; W8(after)\n    W8 --&gt; W9(a)\n    W9 --&gt; W10(few)\n    W10 --&gt; W11(hours)\n    W11 --&gt; W12(,)\n    W12 --&gt; W13(it)\n    W13 --&gt; W14(moved)\n    W14 --&gt; W15(to)\n    W15 --&gt; W16(the)\n    W16 --&gt; W17(mat)\n    W17 --&gt; W18(.)\n\n    %% Facet connections\n    %% Objects: cat ↔ rug, rug ↔ mat, cat ↔ mat\n    W2 --- W5\n    W5 --- W17\n    W2 --- W17\n\n    %% Coreference: cat ↔ it\n    W2 -.-&gt; W13\n\n    %% Actions: sat ↔ moved, moved ↔ to\n    W3 ==&gt; W14\n    W14 ==&gt; W15\n\n    %% Legend\n    subgraph Legend\n        O1[Objects] --- O2\n        C1[Coreference] -.-&gt; C2\n        A1[Actions] ==&gt; A2\n    end\n``` --&gt;\n\n## Transformers\n\n![](tikz-figures/attention-network.svg)\n\n:::attribution\n@vaswani2017attention\n:::\n\n## Heart of Transformers: Attention mechanism\n\n&lt;!-- TODO\nComplete with F. Fleuret’s docs https://fleuret.org/dlc/\n --&gt;\n\n$$\n\\text{Attention}(Q,K,V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V\n$$\n\n:::{layout=\"[[60,40]]\"}\n\n:::{.incremental}\n- Three matrices: *Q*uery, *K*ey, *V*alue, derived from the input sequence\n- $d_k$: dimension of the key matrix, typically 64 or 128\n- we want to compute a weighted sum of the values $V$ with weights given by the compatibility between the query and the keys\n- *softmax* to get a probability distribution\n- *multi-head* attention: several attention mechanisms in parallel\n:::\n\n![](tikz-figures/multihead-attention.svg){ height=\"700px\" style=\"float: right;\"}\n\n:::\n\n\n:::attribution\n@vaswani2017attention\n:::\n\n## Head view of attention\n\n::::{layout=\"[[40,60]]\"}\n::: {#fig-attention}\n\n&lt;!-- ```{python}\nfrom bertviz import head_view, model_view\n\nsentence_a = \"The cat sat on the mat\"\nsentence_b = \"The cat lay on the rug\"\ninputs = tokenizer.encode_plus(sentence_a, sentence_b, return_tensors='pt')\ninput_ids = inputs['input_ids']\ntoken_type_ids = inputs['token_type_ids']\nattention = model(input_ids, token_type_ids=token_type_ids)[-1]\nsentence_b_start = token_type_ids[0].tolist().index(1)\ninput_id_list = input_ids[0].tolist() # Batch index 0\ntokens = tokenizer.convert_ids_to_tokens(input_id_list) \nhead_view(attention, tokens, sentence_b_start)\n``` --&gt;\n\n&lt;iframe style=\"background-color:white;\" height=430 width=400 src=\"../materials/bert_head_view.html\"&gt;&lt;/iframe&gt;\n\nThe model view visualizes attention across all heads in a single Transformer layer. \n\n:::\n\n- Each line shows the attention from one token (left) to another (right).\n- Line weight reflects the attention value (ranges from 0 to 1),\n- line color identifies the attention head\n\n::::\n\n\n&lt;!-- The head view visualizes attention in one or more heads from a single Transformer layer. Each line shows the attention from one token (left) to another (right). Line weight reflects the attention value (ranges from 0 to 1), while line color identifies the attention head. When multiple heads are selected (indicated by the colored tiles at the top), the corresponding visualizations are overlaid onto one another. --&gt;\n&lt;!-- summarize further, bullet mode --&gt;\n\n\n## BERT: Bidirectional Encoder Representations from Transformers\n\n- embeddings: represent words as vectors in high dimensions\n\n&lt;!-- ![](../images/bert.png){ style=\"margin-left: 25%;\"} --&gt;\n![](tikz-figures/encoder-network.svg)\n\n\n\n## GPT : Generative Pre-trained Transformer\n\n- autoregressive model\n- generates text by predicting the next token\n- pre-trained on large corpora of text\n\n&lt;!-- ![](../images/gpt.png){ style=\"margin-left: 25%;\"} --&gt;\n![](tikz-figures/decoder-network.svg)\n\n## BERT vs GPT\n\n:::{ layout-ncol=\"2\" }\n\n![BERT](../images/bert.svg){ width=\"500px\" }\n\n![GPT](../images/gpt.svg){ width=\"500px\" }\n\n:::\n\n## Summary of LLM types { .smaller }\n\n:::list-table\n  * - Type\n    - Architecture\n    - Training Objective\n    - Attention\n    - Use Cases\n  * - **BERT (Encoder-Only)**\n    - Encoder stack only\n    - Masked Language Modeling (MLM)\n    - Bidirectional (sees left and right context)\n    - Classification, QA, NER, sentiment analysis\n  * - **GPT (Decoder-Only)**\n    - Decoder stack only\n    - Autoregressive Language Modeling (next token prediction)\n    - Unidirectional (left-to-right, autoregressive)\n    - Text generation, chatbots, open-ended tasks\n  * - **Seq2Seq (Encoder-Decoder)**\n    - Encoder + Decoder stacks\n    - Sequence-to-sequence (e.g., translation, summarization)\n    - Encoder: Bidirectional; Decoder: Unidirectional (autoregressive)\n    - Translation, summarization, speech recognition, data-to-text\n:::\n\n## Summary of LLM types (2) { .smaller }\n\n:::list-table\n  * - Type\n    - Strengths\n    - Weaknesses\n    - Example Models\n    - Training Data\n    - Inference Speed\n  * - **BERT (Encoder-Only)**\n    - Deep understanding of input; strong for discriminative tasks\n    - Not designed for generation\n    - BERT, RoBERTa, DistilBERT\n    - Large corpus (masked tokens)\n    - Fast (parallelizable)\n  * - **GPT (Decoder-Only)**\n    - Coherent, fluent generation; open-ended creativity\n    - No bidirectional context; limited to left-to-right generation\n    - GPT-3, GPT-4, Llama\n    - Large corpus (autoregressive)\n    - Slower (autoregressive)\n  * - **Seq2Seq (Encoder-Decoder)**\n    - Explicit input-output mapping; handles sequence transformation\n    - More complex; requires aligned input-output pairs\n    - T5, BART, Transformer (original), Whisper\n    - Parallel corpora (input-output pairs)\n    - Moderate (depends on sequence length)\n:::\n\n## Generative LLMs, Base vs Instruct\n\n- Base models are just predicting the next word (pre-training phase, no task-specific fine-tuning)\n- Instruct models are fine-tuned on specific tasks and follow user instructions more effectively.\n\n::: {.callout-important}\nNever use the base model for specific tasks without fine-tuning.\n:::\n\n## Generative LLMs, Reasoning vs non-Reasoning\n\n- (Non-reasoning) models focus on generating coherent text without explicit reasoning capabilities\n- Reasoning models are designed to perform complex reasoning tasks and can handle multi-step problems, at the cost of increased computational requirements (and budget)\n\n::: {.callout-tip}\nReasoning addition to LLM have been a breakthrough in the field since end of 2024. \n:::\n\n## The importance of the context window\n\n- The context window is crucial for understanding and generating text.\n- It determines how much information the model can consider at once.\n- Larger context windows allow for better understanding of complex queries and generation of more coherent responses\n- Typical max context window are in a 16k tokens, latest open-weights local llms are 128/256/512k tokens, frontier llms are 1M+ tokens\n- long context window are computationally expensive and require more memory/gpu ressources.\n\n## What happens when the context window is exceeded?\n\n- When the context window is exceeded, the model may lose track of important information, leading to less coherent responses.\n- Strategies to handle this include:\n  - Summarizing previous context\n  - Using external memory stores\n  - Chunking input data\n\n::: {.callout-caution}\nVery large context (when permitted by the model) isn’t always a good thing: there is chances that the model may become overwhelmed with information, leading to decreased performance AND quality.\n:::\n\n## RAG (Retrieval-Augmented Generation)\n\n:::{ layout-ncol=\"2\" }\n\n:::{}\n\n- RAG combines retrieval-based and generation-based approaches.\n- It retrieves relevant documents from a knowledge base and uses them to inform the generation process.\n- This allows for more accurate and contextually relevant responses.\n:::\n\n![](../images/RAG_diagram.svg)\n\n:::\n\n:::attribution\nTurtlecrown, [Wikipedia](https://en.wikipedia.org/wiki/File:RAG_diagram.svg)\n:::\n\n# AI Agents \n\nAI agents are just a programming paradigm involving either:\n\n- **Reactive** agents: respond to specific inputs with pre-defined actions.\n- **Pipelined** agents: process inputs through a series of stages or components.\n\nReactive/Pipeline agents are defined by the control flow :\n\n- internal if reactive (that’s the llm which \"reacts\" and decides)\n- external if pipeline (that’s the programmer which decides to call llm and what to do with it)\n\n\n\n## Reactive agents\n\n:::{ layout-ncol=\"2\"}\n\n::::{}\nExamples:\n\n- Chatbots that respond to user queries with pre-defined answers.\n- Simple automation scripts that trigger actions based on specific events, like web search.\n- Agentic mode in Code Assistants\n\n::: {.callout-warning .fragment}\n$\\Rightarrow$ Control is done by the LLM itself with all risks : infinite loops, unsupervised and potentially dangerous actions etc.\n:::\n\n::::\n\n![](../images/reactive-agent.svg)\n\n:::\n\n## Pipeline Agents\n\n:::{ layout-ncol=\"2\"}\n\n::::{}\nExamples:\n\n- RAG queries\n- Summarizing documents\n- Communicating with other agents\n\n::: {.callout-note}\n$\\Rightarrow$ Control is done by normal, program logic\n:::\n\n::::\n\n![](../images/pipeline-agent.svg)\n\n:::\n\n## Reactive agent 2025 : MCP\n\n![](../images/mcp-explained.gif)\n\n:::attribution\nUjjwal Khadka\n[Source](https://medium.com/@khadkaujjwal47/model-context-protocol-mcp-68fa753f297a)\n:::\n\n## AI for pipelines/graphs\n\n- Low level (API, almost request-level)\n  - OpenAI API (ubiquitous)\n  - Huggingface\n- High level (Framework)\n  - Langchain (most popular)\n  - Semantic Kernel (Microsoft)\n  - Haystack\n  - and many many others…\n\n## AI for pipelines/graphs (2)\n\nSimple request with OpenAI API :\n\n```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nchat_response = client.chat.completions.create(\n    model= \"gpt-4o\",\n    messages = [\n        {\n            \"role\": \"user\",\n            \"content\": \"What is the best French cheese?\",\n        },\n    ]\n)\nprint(chat_response.choices[0].message.content)\nSimple request with LangChain :\nfrom langchain.chat_models import init_chat_model\nfrom langchain_core.messages import HumanMessage, SystemMessage\n\nmodel = init_chat_model(\"gpt-4o-mini\", model_provider=\"openai\")\n\nmessages = [\n    SystemMessage(\"Translate the following from English into Italian\"),\n    HumanMessage(\"hi!\"),\n]\n\nmodel.invoke(messages)",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -503,8 +373,8 @@
     "objectID": "Courses/01_Code-Assistant.html#mcp-server-example",
     "href": "Courses/01_Code-Assistant.html#mcp-server-example",
     "title": "2  Code Assistants",
-    "section": "9.5 MCP Server example",
-    "text": "9.5 MCP Server example\nfrom datetime import datetime\nfrom mcp.server.fastmcp import FastMCP\n\n# Create an MCP server\nmcp = FastMCP(\"GetTime\")\n\n@mcp.tool()\ndef get_date() -&gt; str:\n    \"\"\"Returns the current date in YYYY-MM-DD format.\"\"\"\n    return datetime.today().strftime('%Y-%m-%d')",
+    "section": "8.4 MCP Server example",
+    "text": "8.4 MCP Server example\nfrom datetime import datetime\nfrom mcp.server.fastmcp import FastMCP\n\n# Create an MCP server\nmcp = FastMCP(\"GetTime\")\n\n@mcp.tool()\ndef get_date() -&gt; str:\n    \"\"\"Returns the current date in YYYY-MM-DD format.\"\"\"\n    return datetime.today().strftime('%Y-%m-%d')",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -513,8 +383,8 @@
     "objectID": "Courses/01_Code-Assistant.html#the-real-question",
     "href": "Courses/01_Code-Assistant.html#the-real-question",
     "title": "2  Code Assistants",
-    "section": "10.1 The real question",
-    "text": "10.1 The real question\n\n\n\n\nAre the benefits of using generative AI worth the cost of extra supervision and the additional engineering effort?\n\n\n\nThe general answer is:",
+    "section": "9.1 The real question",
+    "text": "9.1 The real question\n\n\n\n\nAre the benefits of using generative AI worth the cost of extra supervision and the additional engineering effort?\n\n\n\nThe general answer is:",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -523,8 +393,8 @@
     "objectID": "Courses/01_Code-Assistant.html#on-the-other-hand",
     "href": "Courses/01_Code-Assistant.html#on-the-other-hand",
     "title": "2  Code Assistants",
-    "section": "10.2 On the other hand…",
-    "text": "10.2 On the other hand…\n\n\n\n\n\n\n\n\n\nBeware of vibe-coding\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. “Attention Is All You Need.” Advances in Neural Information Processing Systems 30.",
+    "section": "9.2 On the other hand…",
+    "text": "9.2 On the other hand…\n\n\n\n\n\n\n\n\n\nBeware of vibe-coding",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -540,21 +410,11 @@
     ]
   },
   {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "References",
-    "section": "",
-    "text": "Vaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion\nJones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017.\n“Attention Is All You Need.” Advances in Neural\nInformation Processing Systems 30.",
-    "crumbs": [
-      "References"
-    ]
-  },
-  {
     "objectID": "applications.html",
     "href": "applications.html",
     "title": "Appendix A — Applications",
     "section": "",
-    "text": "Original (In Percent Format)\nOnline Html (Corrected)\nNotebook (Corrected)\n\n\n\n\nPrompt engineering exercises\nSolution\nNotebook\n\n\nAI Agent\n\n\n\n\n\nNo matching items",
+    "text": "Original (In Percent Format)\nOnline Html (Corrected)\nNotebook (Corrected)\n\n\n\n\nPrompt engineering exercises\nSolution\nNotebook\n\n\nAI Agent\nSolution\nNotebook\n\n\n\nNo matching items",
     "crumbs": [
       "Appendices",
       "<span class='chapter-number'>A</span>  <span class='chapter-title'>Applications</span>"
