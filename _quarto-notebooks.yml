@@ -25,7 +25,7 @@ project:
   resources:
     - "Courses/tikz-figures/*.svg"
     - "Courses/figs/*.png"
-    - "materials/*"
+    - "materials/alice.txt"
     - "!/docs"
     - "!/docs-resources"
 

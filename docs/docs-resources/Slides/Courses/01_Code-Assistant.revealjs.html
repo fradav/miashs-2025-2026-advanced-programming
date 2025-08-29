@@ -97,7 +97,27 @@
     code span.va { color: #00e0e0; } /* Variable */
     code span.vs { color: #abe338; } /* VerbatimString */
     code span.wa { color: #dcc6e0; } /* Warning */
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="01_Code-Assistant_files/libs/revealjs/dist/theme/quarto-1cba0f46c05595d3a1391eb2efe6a96a.css">
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
@@ -603,7 +623,10 @@ François-David Collin
 <section id="train-a-neural-network" class="slide level2 center">
 <h2>Train a neural network</h2>
 
-<img data-src="../images/train_a_network-transparent.png" class="r-stretch"></section>
+<img data-src="../images/train_a_network-transparent.png" class="r-stretch"><div class="attribution">
+<p>Tanguy Lefort, 2023</p>
+</div>
+</section>
 <section id="training-a-supervised-machine-learning-model" class="slide level2 center">
 <h2>Training a supervised Machine learning model</h2>
 <ul>
@@ -725,100 +748,100 @@ x_9 &amp; = &amp; x_{8}/x_3.
 <h2>Gradient descent</h2>
 <p>Example with a non-convex function</p>
 <p><span class="math inline">f(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2</span></p>
-<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="354" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 353;"><span id="cb1-354"><a href="" aria-hidden="true" tabindex="-1"></a>Plotly <span class="op">=</span> <span class="pp">require</span>(<span class="st">"plotly.js@2.35.2/dist/plotly.min.js"</span>)<span class="op">;</span></span>
-<span id="cb1-355"><a href="" aria-hidden="true" tabindex="-1"></a>minX <span class="op">=</span> <span class="op">-</span><span class="dv">5</span><span class="op">;</span></span>
-<span id="cb1-356"><a href="" aria-hidden="true" tabindex="-1"></a>maxX <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
-<span id="cb1-357"><a href="" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> ([x1<span class="op">,</span> x2]) <span class="kw">=&gt;</span> (x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span><span class="op">;</span></span>
-<span id="cb1-358"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-359"><a href="" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb1-360"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> linspace <span class="op">=</span> d3<span class="op">.</span><span class="fu">scaleLinear</span>()<span class="op">.</span><span class="fu">domain</span>([<span class="dv">0</span><span class="op">,</span> <span class="dv">49</span>])<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX])<span class="op">;</span></span>
-<span id="cb1-361"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> X1 <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">50</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="fu">linspace</span>(i))<span class="op">;</span></span>
-<span id="cb1-362"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> X2 <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">50</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="fu">linspace</span>(i))<span class="op">;</span></span>
-<span id="cb1-363"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-364"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Define your function f here</span></span>
-<span id="cb1-365"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> f <span class="op">=</span> ([x1<span class="op">,</span> x2]) <span class="kw">=&gt;</span> (x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span><span class="op">;</span></span>
-<span id="cb1-366"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-367"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> Z <span class="op">=</span> X1<span class="op">.</span><span class="fu">map</span>((x1<span class="op">,</span>i) <span class="kw">=&gt;</span> X2<span class="op">.</span><span class="fu">map</span>((x2<span class="op">,</span>j) <span class="kw">=&gt;</span> <span class="fu">f</span>([x1<span class="op">,</span>x2])))<span class="op">;</span></span>
-<span id="cb1-368"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-369"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> data <span class="op">=</span> [{</span>
-<span id="cb1-370"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> X1<span class="op">.</span><span class="fu">flat</span>()<span class="op">,</span></span>
-<span id="cb1-371"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> X2<span class="op">.</span><span class="fu">flat</span>()<span class="op">,</span></span>
-<span id="cb1-372"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">z</span><span class="op">:</span> Z<span class="op">,</span></span>
-<span id="cb1-373"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">type</span><span class="op">:</span> <span class="st">'surface'</span></span>
-<span id="cb1-374"><a href="" aria-hidden="true" tabindex="-1"></a>  }]<span class="op">;</span></span>
-<span id="cb1-375"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-376"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> layout <span class="op">=</span> {</span>
-<span id="cb1-377"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// title: '',</span></span>
-<span id="cb1-378"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// autosize: true,</span></span>
-<span id="cb1-379"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// width: 100,</span></span>
-<span id="cb1-380"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// height: 100,</span></span>
-<span id="cb1-381"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">paper_bgcolor</span><span class="op">:</span> <span class="st">"rgba(0,0,0,0)"</span><span class="op">,</span></span>
-<span id="cb1-382"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">plot_bgcolor</span><span class="op">:</span> <span class="st">"rgba(0,0,0,0)"</span><span class="op">,</span></span>
-<span id="cb1-383"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">template</span><span class="op">:</span> <span class="st">'plotly_dark'</span><span class="op">,</span></span>
-<span id="cb1-384"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// margin: {</span></span>
-<span id="cb1-385"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   l: 65,</span></span>
-<span id="cb1-386"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   r: 50,</span></span>
-<span id="cb1-387"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   b: 65,</span></span>
-<span id="cb1-388"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   t: 90,</span></span>
-<span id="cb1-389"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// }</span></span>
-<span id="cb1-390"><a href="" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb1-391"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-392"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> div <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">'div'</span>)<span class="op">;</span></span>
-<span id="cb1-393"><a href="" aria-hidden="true" tabindex="-1"></a>  Plotly<span class="op">.</span><span class="fu">newPlot</span>(div<span class="op">,</span> data<span class="op">,</span> layout<span class="op">,</span>{<span class="dt">displayModeBar</span><span class="op">:</span> <span class="kw">false</span>})<span class="op">;</span></span>
-<span id="cb1-394"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> div<span class="op">;</span></span>
-<span id="cb1-395"><a href="" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-396"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">grad_descent</span>(x1<span class="op">,</span>x2<span class="op">,</span>step<span class="op">,</span>max_iter) {</span>
-<span id="cb1-397"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> grad <span class="op">=</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2)<span class="op">;</span></span>
-<span id="cb1-398"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> iterations <span class="op">=</span> [[x1<span class="op">,</span> x2]]<span class="op">;</span></span>
-<span id="cb1-399"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2) {</span>
-<span id="cb1-400"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> df_x1 <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (<span class="op">-</span><span class="dv">7</span> <span class="op">+</span> x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> x1 <span class="op">*</span> (<span class="op">-</span><span class="dv">11</span> <span class="op">+</span> x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2))<span class="op">;</span></span>
-<span id="cb1-401"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> df_x2 <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (<span class="op">-</span><span class="dv">11</span> <span class="op">+</span> x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> x2 <span class="op">*</span> (<span class="op">-</span><span class="dv">7</span> <span class="op">+</span> x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span>))<span class="op">;</span></span>
-<span id="cb1-402"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [df_x1<span class="op">,</span> df_x2]<span class="op">;</span></span>
-<span id="cb1-403"><a href="" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-404"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb1-405"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (count <span class="op">&lt;</span> max_iter) {</span>
-<span id="cb1-406"><a href="" aria-hidden="true" tabindex="-1"></a>    x1 <span class="op">-=</span> step <span class="op">*</span> grad[<span class="dv">0</span>]<span class="op">;</span></span>
-<span id="cb1-407"><a href="" aria-hidden="true" tabindex="-1"></a>    x2 <span class="op">-=</span> step <span class="op">*</span> grad[<span class="dv">1</span>]<span class="op">;</span></span>
-<span id="cb1-408"><a href="" aria-hidden="true" tabindex="-1"></a>    grad <span class="op">=</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2)<span class="op">;</span></span>
-<span id="cb1-409"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="pp">isFinite</span>(x1) <span class="op">&amp;&amp;</span> <span class="pp">isFinite</span>(x2) <span class="op">&amp;&amp;</span></span>
-<span id="cb1-410"><a href="" aria-hidden="true" tabindex="-1"></a>      (minX <span class="op">&lt;</span> x1) <span class="op">&amp;&amp;</span> (x1 <span class="op">&lt;</span> maxX) <span class="op">&amp;&amp;</span></span>
-<span id="cb1-411"><a href="" aria-hidden="true" tabindex="-1"></a>      (minX <span class="op">&lt;</span> x2) <span class="op">&amp;&amp;</span> (x2 <span class="op">&lt;</span> maxX))</span>
-<span id="cb1-412"><a href="" aria-hidden="true" tabindex="-1"></a>        iterations<span class="op">.</span><span class="fu">push</span>([x1<span class="op">,</span> x2])<span class="op">;</span></span>
-<span id="cb1-413"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> iterations<span class="op">.</span><span class="fu">push</span>(iterations[count])</span>
-<span id="cb1-414"><a href="" aria-hidden="true" tabindex="-1"></a>    count <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb1-415"><a href="" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-416"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> iterations<span class="op">;</span></span>
-<span id="cb1-417"><a href="" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-418"><a href="" aria-hidden="true" tabindex="-1"></a>viewof descent_params <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">form</span>({</span>
-<span id="cb1-419"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x1</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'x1 initial'</span>})<span class="op">,</span></span>
-<span id="cb1-420"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x2</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'x2 initial'</span>})<span class="op">,</span></span>
-<span id="cb1-421"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="fl">0.001</span><span class="op">,</span> <span class="fl">0.04</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.001</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'Step size'</span>})</span>
-<span id="cb1-422"><a href="" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb1-423"><a href="" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb1-424"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> iterations <span class="op">=</span> <span class="fu">grad_descent</span>(descent_params<span class="op">.</span><span class="at">x1</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">x2</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">step</span><span class="op">,</span><span class="dv">20</span>)</span>
-<span id="cb1-425"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb1-426"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">aspectRatio</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
-<span id="cb1-427"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x1 →"</span>}<span class="op">,</span></span>
-<span id="cb1-428"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x2 →"</span>}<span class="op">,</span></span>
-<span id="cb1-429"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">600</span><span class="op">,</span></span>
-<span id="cb1-430"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">style</span><span class="op">:</span> {</span>
-<span id="cb1-431"><a href="" aria-hidden="true" tabindex="-1"></a>      <span class="dt">backgroundColor</span><span class="op">:</span> <span class="st">'rgba(0,0,0,0)'</span></span>
-<span id="cb1-432"><a href="" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
-<span id="cb1-433"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb1-434"><a href="" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">contour</span>({</span>
-<span id="cb1-435"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> (x1<span class="op">,</span> x2) <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span>((x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span>)<span class="op">,</span></span>
-<span id="cb1-436"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> minX<span class="op">,</span></span>
-<span id="cb1-437"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y1</span><span class="op">:</span> minX<span class="op">,</span></span>
-<span id="cb1-438"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x2</span><span class="op">:</span> maxX<span class="op">,</span></span>
-<span id="cb1-439"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y2</span><span class="op">:</span> maxX<span class="op">,</span></span>
-<span id="cb1-440"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">showlegend</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb1-441"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">colorscale</span><span class="op">:</span> <span class="st">'RdBu'</span><span class="op">,</span></span>
-<span id="cb1-442"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ncontours</span><span class="op">:</span> <span class="dv">30</span></span>
-<span id="cb1-443"><a href="" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
-<span id="cb1-444"><a href="" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(iterations<span class="op">,</span>{<span class="dt">marker</span><span class="op">:</span> <span class="kw">true</span>})</span>
-<span id="cb1-445"><a href="" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb1-446"><a href="" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb1-447"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="358" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 357;"><span id="cb1-358"><a href="" aria-hidden="true" tabindex="-1"></a>Plotly <span class="op">=</span> <span class="pp">require</span>(<span class="st">"plotly.js@2.35.2/dist/plotly.min.js"</span>)<span class="op">;</span></span>
+<span id="cb1-359"><a href="" aria-hidden="true" tabindex="-1"></a>minX <span class="op">=</span> <span class="op">-</span><span class="dv">5</span><span class="op">;</span></span>
+<span id="cb1-360"><a href="" aria-hidden="true" tabindex="-1"></a>maxX <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
+<span id="cb1-361"><a href="" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> ([x1<span class="op">,</span> x2]) <span class="kw">=&gt;</span> (x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span><span class="op">;</span></span>
+<span id="cb1-362"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-363"><a href="" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb1-364"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> linspace <span class="op">=</span> d3<span class="op">.</span><span class="fu">scaleLinear</span>()<span class="op">.</span><span class="fu">domain</span>([<span class="dv">0</span><span class="op">,</span> <span class="dv">49</span>])<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX])<span class="op">;</span></span>
+<span id="cb1-365"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> X1 <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">50</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="fu">linspace</span>(i))<span class="op">;</span></span>
+<span id="cb1-366"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> X2 <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> <span class="dv">50</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="fu">linspace</span>(i))<span class="op">;</span></span>
+<span id="cb1-367"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-368"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Define your function f here</span></span>
+<span id="cb1-369"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> f <span class="op">=</span> ([x1<span class="op">,</span> x2]) <span class="kw">=&gt;</span> (x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span><span class="op">;</span></span>
+<span id="cb1-370"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-371"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> Z <span class="op">=</span> X1<span class="op">.</span><span class="fu">map</span>((x1<span class="op">,</span>i) <span class="kw">=&gt;</span> X2<span class="op">.</span><span class="fu">map</span>((x2<span class="op">,</span>j) <span class="kw">=&gt;</span> <span class="fu">f</span>([x1<span class="op">,</span>x2])))<span class="op">;</span></span>
+<span id="cb1-372"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-373"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> data <span class="op">=</span> [{</span>
+<span id="cb1-374"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> X1<span class="op">.</span><span class="fu">flat</span>()<span class="op">,</span></span>
+<span id="cb1-375"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> X2<span class="op">.</span><span class="fu">flat</span>()<span class="op">,</span></span>
+<span id="cb1-376"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">z</span><span class="op">:</span> Z<span class="op">,</span></span>
+<span id="cb1-377"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">type</span><span class="op">:</span> <span class="st">'surface'</span></span>
+<span id="cb1-378"><a href="" aria-hidden="true" tabindex="-1"></a>  }]<span class="op">;</span></span>
+<span id="cb1-379"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-380"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> layout <span class="op">=</span> {</span>
+<span id="cb1-381"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// title: '',</span></span>
+<span id="cb1-382"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// autosize: true,</span></span>
+<span id="cb1-383"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// width: 100,</span></span>
+<span id="cb1-384"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// height: 100,</span></span>
+<span id="cb1-385"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">paper_bgcolor</span><span class="op">:</span> <span class="st">"rgba(0,0,0,0)"</span><span class="op">,</span></span>
+<span id="cb1-386"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">plot_bgcolor</span><span class="op">:</span> <span class="st">"rgba(0,0,0,0)"</span><span class="op">,</span></span>
+<span id="cb1-387"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">template</span><span class="op">:</span> <span class="st">'plotly_dark'</span><span class="op">,</span></span>
+<span id="cb1-388"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// margin: {</span></span>
+<span id="cb1-389"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   l: 65,</span></span>
+<span id="cb1-390"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   r: 50,</span></span>
+<span id="cb1-391"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   b: 65,</span></span>
+<span id="cb1-392"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   t: 90,</span></span>
+<span id="cb1-393"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">// }</span></span>
+<span id="cb1-394"><a href="" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb1-395"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-396"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> div <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">'div'</span>)<span class="op">;</span></span>
+<span id="cb1-397"><a href="" aria-hidden="true" tabindex="-1"></a>  Plotly<span class="op">.</span><span class="fu">newPlot</span>(div<span class="op">,</span> data<span class="op">,</span> layout<span class="op">,</span>{<span class="dt">displayModeBar</span><span class="op">:</span> <span class="kw">false</span>})<span class="op">;</span></span>
+<span id="cb1-398"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> div<span class="op">;</span></span>
+<span id="cb1-399"><a href="" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-400"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">grad_descent</span>(x1<span class="op">,</span>x2<span class="op">,</span>step<span class="op">,</span>max_iter) {</span>
+<span id="cb1-401"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> grad <span class="op">=</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2)<span class="op">;</span></span>
+<span id="cb1-402"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> iterations <span class="op">=</span> [[x1<span class="op">,</span> x2]]<span class="op">;</span></span>
+<span id="cb1-403"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2) {</span>
+<span id="cb1-404"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> df_x1 <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (<span class="op">-</span><span class="dv">7</span> <span class="op">+</span> x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> x1 <span class="op">*</span> (<span class="op">-</span><span class="dv">11</span> <span class="op">+</span> x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2))<span class="op">;</span></span>
+<span id="cb1-405"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> df_x2 <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (<span class="op">-</span><span class="dv">11</span> <span class="op">+</span> x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> x2 <span class="op">*</span> (<span class="op">-</span><span class="dv">7</span> <span class="op">+</span> x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span>))<span class="op">;</span></span>
+<span id="cb1-406"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [df_x1<span class="op">,</span> df_x2]<span class="op">;</span></span>
+<span id="cb1-407"><a href="" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-408"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-409"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (count <span class="op">&lt;</span> max_iter) {</span>
+<span id="cb1-410"><a href="" aria-hidden="true" tabindex="-1"></a>    x1 <span class="op">-=</span> step <span class="op">*</span> grad[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb1-411"><a href="" aria-hidden="true" tabindex="-1"></a>    x2 <span class="op">-=</span> step <span class="op">*</span> grad[<span class="dv">1</span>]<span class="op">;</span></span>
+<span id="cb1-412"><a href="" aria-hidden="true" tabindex="-1"></a>    grad <span class="op">=</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2)<span class="op">;</span></span>
+<span id="cb1-413"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="pp">isFinite</span>(x1) <span class="op">&amp;&amp;</span> <span class="pp">isFinite</span>(x2) <span class="op">&amp;&amp;</span></span>
+<span id="cb1-414"><a href="" aria-hidden="true" tabindex="-1"></a>      (minX <span class="op">&lt;</span> x1) <span class="op">&amp;&amp;</span> (x1 <span class="op">&lt;</span> maxX) <span class="op">&amp;&amp;</span></span>
+<span id="cb1-415"><a href="" aria-hidden="true" tabindex="-1"></a>      (minX <span class="op">&lt;</span> x2) <span class="op">&amp;&amp;</span> (x2 <span class="op">&lt;</span> maxX))</span>
+<span id="cb1-416"><a href="" aria-hidden="true" tabindex="-1"></a>        iterations<span class="op">.</span><span class="fu">push</span>([x1<span class="op">,</span> x2])<span class="op">;</span></span>
+<span id="cb1-417"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> iterations<span class="op">.</span><span class="fu">push</span>(iterations[count])</span>
+<span id="cb1-418"><a href="" aria-hidden="true" tabindex="-1"></a>    count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb1-419"><a href="" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-420"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> iterations<span class="op">;</span></span>
+<span id="cb1-421"><a href="" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-422"><a href="" aria-hidden="true" tabindex="-1"></a>viewof descent_params <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">form</span>({</span>
+<span id="cb1-423"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x1</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'x1 initial'</span>})<span class="op">,</span></span>
+<span id="cb1-424"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x2</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'x2 initial'</span>})<span class="op">,</span></span>
+<span id="cb1-425"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="fl">0.001</span><span class="op">,</span> <span class="fl">0.04</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.001</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'Step size'</span>})</span>
+<span id="cb1-426"><a href="" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-427"><a href="" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb1-428"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> iterations <span class="op">=</span> <span class="fu">grad_descent</span>(descent_params<span class="op">.</span><span class="at">x1</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">x2</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">step</span><span class="op">,</span><span class="dv">20</span>)</span>
+<span id="cb1-429"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb1-430"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">aspectRatio</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb1-431"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x1 →"</span>}<span class="op">,</span></span>
+<span id="cb1-432"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x2 →"</span>}<span class="op">,</span></span>
+<span id="cb1-433"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">600</span><span class="op">,</span></span>
+<span id="cb1-434"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">style</span><span class="op">:</span> {</span>
+<span id="cb1-435"><a href="" aria-hidden="true" tabindex="-1"></a>      <span class="dt">backgroundColor</span><span class="op">:</span> <span class="st">'rgba(0,0,0,0)'</span></span>
+<span id="cb1-436"><a href="" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb1-437"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb1-438"><a href="" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">contour</span>({</span>
+<span id="cb1-439"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> (x1<span class="op">,</span> x2) <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span>((x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span>)<span class="op">,</span></span>
+<span id="cb1-440"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> minX<span class="op">,</span></span>
+<span id="cb1-441"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y1</span><span class="op">:</span> minX<span class="op">,</span></span>
+<span id="cb1-442"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x2</span><span class="op">:</span> maxX<span class="op">,</span></span>
+<span id="cb1-443"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y2</span><span class="op">:</span> maxX<span class="op">,</span></span>
+<span id="cb1-444"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">showlegend</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb1-445"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">colorscale</span><span class="op">:</span> <span class="st">'RdBu'</span><span class="op">,</span></span>
+<span id="cb1-446"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ncontours</span><span class="op">:</span> <span class="dv">30</span></span>
+<span id="cb1-447"><a href="" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb1-448"><a href="" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(iterations<span class="op">,</span>{<span class="dt">marker</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb1-449"><a href="" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb1-450"><a href="" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb1-451"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-layout-panel" data-layout="[[30,20,50]]">
 <div class="quarto-layout-row">
 <div id="descent-surface" class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
@@ -974,11 +997,14 @@ x_9 &amp; = &amp; x_{8}/x_3.
 <p>widow</p>
 </div>
 </div>
+<div class="attribution">
+<p>Tanguy Lefort, 2023</p>
+</div>
 </section>
 <section id="embeddings-1" class="slide level2 unnumbered unlisted center" data-auto-animate="true" data-auto-animate-easing="ease-in-out">
 <h2 data-id="quarto-animate-title">Embeddings</h2>
 <ul>
-<li>Distance between words should not be caracter based</li>
+<li>Distance between words should not be character based</li>
 </ul>
 <div class="r-hstack">
 <div data-id="box4" style="background: #9f33ff; width: 150px; height: 150px; border-radius: 200px; text-align: center; display: flex; align-items: center; justify-content: center;">
@@ -997,6 +1023,9 @@ x_9 &amp; = &amp; x_{8}/x_3.
 <div data-id="box3" style="background: #e83e8c; width: 150px; height: 150px; border-radius: 200px; text-align: center; display: flex; align-items: center; justify-content: center;">
 <p>window</p>
 </div>
+</div>
+<div class="attribution">
+<p>Tanguy Lefort, 2023</p>
 </div>
 </section>
 <section id="multi-scale-learning-from-text" class="slide level2 center">
@@ -1024,7 +1053,7 @@ x_9 &amp; = &amp; x_{8}/x_3.
 <h2>Transformers</h2>
 
 <img data-src="tikz-figures/attention-network.svg" class="r-stretch"><div class="attribution">
-<p><span class="citation" data-cites="vaswani2017attention">(<a href="" role="doc-biblioref" onclick="return false;"><strong>vaswani2017attention?</strong></a>)</span></p>
+<p><span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#/on-the-other-hand" role="doc-biblioref" onclick="">2017</a>)</span></p>
 </div>
 </section>
 <section id="heart-of-transformers-attention-mechanism" class="slide level2 center">
@@ -1052,7 +1081,7 @@ Complete with F. Fleuret’s docs https://fleuret.org/dlc/
 </div>
 </div>
 <div class="attribution">
-<p><span class="citation" data-cites="vaswani2017attention">(<a href="" role="doc-biblioref" onclick="return false;"><strong>vaswani2017attention?</strong></a>)</span></p>
+<p><span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#/on-the-other-hand" role="doc-biblioref" onclick="">2017</a>)</span></p>
 </div>
 </section>
 <section id="head-view-of-attention" class="slide level2 center">
@@ -1323,6 +1352,9 @@ head_view(attention, tokens, sentence_b_start)
 </div>
 </div>
 </div>
+<div class="attribution">
+<p>Turtlecrown, <a href="https://en.wikipedia.org/wiki/File:RAG_diagram.svg">Wikipedia</a></p>
+</div>
 </section></section>
 <section>
 <section id="ai-agents" class="title-slide slide level1 center">
@@ -1359,14 +1391,14 @@ head_view(attention, tokens, sentence_b_start)
 <p><strong>Warning</strong></p>
 </div>
 <div class="callout-content">
-<p><span class="math inline">\Rightarrow</span> Control is done by the LLM itself with all risks : infinite loops, dangerous unsupervised and potentially dangerous actions etc.</p>
+<p><span class="math inline">\Rightarrow</span> Control is done by the LLM itself with all risks : infinite loops, unsupervised and potentially dangerous actions etc.</p>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><img data-src="../images/reactive-agent.svg" style="margin-top: -300px;"></p>
+<p><img data-src="../images/reactive-agent.svg"></p>
 </div>
 </div>
 </div>
@@ -1471,7 +1503,7 @@ head_view(attention, tokens, sentence_b_start)
 <section>
 <section id="conclusion-and-take-home-messages" class="title-slide slide level1 center">
 <h1>Conclusion and Take-home Messages</h1>
-<p>it is <strong>possible</strong> to have get a balance between:</p>
+<p>it is <strong>possible</strong> to get a balance between:</p>
 <ul>
 <li class="fragment">generative AI capabilities</li>
 <li class="fragment">high quality development practice.</li>
@@ -1503,7 +1535,7 @@ head_view(attention, tokens, sentence_b_start)
 </div>
 </div>
 </section>
-<section id="on-the-other-hand" class="slide level2 center">
+<section id="on-the-other-hand" class="slide level2 smaller scrollable">
 <h2>On the other hand…</h2>
 <div class="quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -1550,6 +1582,11 @@ head_view(attention, tokens, sentence_b_start)
 </div>
 <div class="sb-title">
 <p> </p>
+</div>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-vaswani2017attention" class="csl-entry" role="listitem">
+Vaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. <span>“Attention Is All You Need.”</span> <em>Advances in Neural Information Processing Systems</em> 30.
 </div>
 </div>
 </section></section>

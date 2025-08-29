@@ -59,7 +59,9 @@ your own model. Modify the model name accordingly.
 
 ## Split the document in chunks
 
-Get the alice.txt and split it in 2048 characters.
+Get the
+[alice.txt](https://fradav.github.io/miashs-2025-2026-advanced-programming/docs-resources/Notebooks/materials/alice.txt)
+and split it in 2048 characters.
 
 ## Encode the chunks
 
@@ -70,21 +72,27 @@ A simple function to get an embedding is:
 from time import sleep
 
 def get_text_embedding(input):
-    sleep(1) # Rate-limiting
-    embeddings_batch_response = client.embeddings.create(
+    sleep(0.5) # Rate-limiting
+    embeddings_response = client.embeddings.create(
           model="mistral-embed",
           input=input
       )
-    return embeddings_batch_response.data[0].embedding
+    return embeddings_response.data[0].embedding
 
 
 # %% [markdown]
 """
 It does return a 1024 list of float (the embedding of the input).
 
-make a numpy array of all chunk embeddings from the text.
+Make a `numpy` array of all chunk embeddings from the text. Save the
+array to a file to avoid recomputing it.
 
 (Should take one and half minute)
+
+> **Tip**
+>
+> An optimal version of this should use the [batch
+> feature](https://platform.openai.com/docs/guides/batch) of OpenAI APi
 
 ## Store embeddings in vector database
 """
@@ -104,7 +112,7 @@ index.add(embeddings)
 Make an embedding for a question like “À quels obstacles est confrontée
 Alice?”
 
-## Search for the most similar chunks
+## Search for the most semantically similar chunks
 """
 
 # %%
@@ -139,7 +147,7 @@ Answer:
 
 
 # %%
-def run_mistral(user_message, model="mistral-large-latest"):
+def run_mistral(user_message, model="mistral-small-latest"):
     sleep(1) # Rate-limit
     messages = [
         {
@@ -152,13 +160,52 @@ def run_mistral(user_message, model="mistral-large-latest"):
     )
     return (chat_response.choices[0].message.content)
 
-run_mistral(prompt)
+display(Markdown(run_mistral(prompt)))
 
 # %% [markdown]
 """
-# Final
+# Put it together
 
 Make a function for any question about the book.
 
-##
+## Areas for improvement
+
+-   Chunking strategies: chunk sizes, overlap, metadata
+-   LLM parameters: context size, temperature, top_p, etc.
+-   reranking
+-   hybrid retrieval
+
+# MCP server
+
+## First draft
+
+We want to make an MCP server which logs useful stuff in standard
+logging format to a file specified by environment variable
+`MCP_LOGGING_FILE`.
+
+Use [FastMCP](https://gofastmcp.com/getting-started/welcome) as MCP SDK.
+
+We should use standard `logging` python package.
+
+## Refining
+
+We want to let the LLM choose the logging level
+
+## Playing with it
+
+Make a rule to use the tool at each LLM request, test it. Pay attention
+to the workflow, especially with devstral.
+
+``` markdown
+<!-- | tags: [solution] -->
+# Logging each answer
+
+Each time your answer:
+- Choose a concise summary of your answer
+- Choose a level of importance `INFO`, `WARNING`, `ERROR`
+- log that
+- after logging, if successful, just say "Logged."
+
+DO NOT FORGET TO LOG EACH TIME
+```
 """

@@ -204,7 +204,7 @@
     "href": "Courses/01_Code-Assistant.html#train-a-neural-network",
     "title": "2  Code Assistants",
     "section": "5.2 Train a neural network",
-    "text": "5.2 Train a neural network",
+    "text": "5.2 Train a neural network\n\n\nTanguy Lefort, 2023",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -304,7 +304,7 @@
     "href": "Courses/01_Code-Assistant.html#embeddings",
     "title": "2  Code Assistants",
     "section": "8.2 Embeddings",
-    "text": "8.2 Embeddings\n\nDistance between words should not be character based\n\n\n\nwomen\n\n\nwoman\n\n\nwindow\n\n\nwidow",
+    "text": "8.2 Embeddings\n\nDistance between words should not be character based\n\n\n\nwomen\n\n\nwoman\n\n\nwindow\n\n\nwidow\n\n\n\nTanguy Lefort, 2023",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -314,7 +314,7 @@
     "href": "Courses/01_Code-Assistant.html#embeddings-1",
     "title": "2  Code Assistants",
     "section": "Embeddings",
-    "text": "Embeddings\n\nDistance between words should not be caracter based\n\n\n\nwidow\n\n\n\n\nwomen\n\n\nwoman\n\n\n\n\nwindow",
+    "text": "Embeddings\n\nDistance between words should not be character based\n\n\n\nwidow\n\n\n\n\nwomen\n\n\nwoman\n\n\n\n\nwindow\n\n\n\nTanguy Lefort, 2023",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -344,7 +344,7 @@
     "href": "Courses/01_Code-Assistant.html#transformers",
     "title": "2  Code Assistants",
     "section": "8.5 Transformers",
-    "text": "8.5 Transformers\n\n\n(vaswani2017attention?)",
+    "text": "8.5 Transformers\n\n\nVaswani et al. (2017)",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -354,7 +354,7 @@
     "href": "Courses/01_Code-Assistant.html#heart-of-transformers-attention-mechanism",
     "title": "2  Code Assistants",
     "section": "8.6 Heart of Transformers: Attention mechanism",
-    "text": "8.6 Heart of Transformers: Attention mechanism\n\n\n\\text{Attention}(Q,K,V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V\n\n\n\n\n\nThree matrices: Query, Key, Value, derived from the input sequence\nd_k: dimension of the key matrix, typically 64 or 128\nwe want to compute a weighted sum of the values V with weights given by the compatibility between the query and the keys\nsoftmax to get a probability distribution\nmulti-head attention: several attention mechanisms in parallel\n\n\n\n\n\n\n\n\n(vaswani2017attention?)",
+    "text": "8.6 Heart of Transformers: Attention mechanism\n\n\n\\text{Attention}(Q,K,V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V\n\n\n\n\n\nThree matrices: Query, Key, Value, derived from the input sequence\nd_k: dimension of the key matrix, typically 64 or 128\nwe want to compute a weighted sum of the values V with weights given by the compatibility between the query and the keys\nsoftmax to get a probability distribution\nmulti-head attention: several attention mechanisms in parallel\n\n\n\n\n\n\n\n\nVaswani et al. (2017)",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -454,7 +454,7 @@
     "href": "Courses/01_Code-Assistant.html#rag-retrieval-augmented-generation",
     "title": "2  Code Assistants",
     "section": "8.16 RAG (Retrieval-Augmented Generation)",
-    "text": "8.16 RAG (Retrieval-Augmented Generation)\n\n\n\n\nRAG combines retrieval-based and generation-based approaches.\nIt retrieves relevant documents from a knowledge base and uses them to inform the generation process.\nThis allows for more accurate and contextually relevant responses.",
+    "text": "8.16 RAG (Retrieval-Augmented Generation)\n\n\n\n\nRAG combines retrieval-based and generation-based approaches.\nIt retrieves relevant documents from a knowledge base and uses them to inform the generation process.\nThis allows for more accurate and contextually relevant responses.\n\n\n\n\n\n\n\n\nTurtlecrown, Wikipedia",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -464,7 +464,7 @@
     "href": "Courses/01_Code-Assistant.html#reactive-agents",
     "title": "2  Code Assistants",
     "section": "9.1 Reactive agents",
-    "text": "9.1 Reactive agents\n\n\n\nExamples:\n\nChatbots that respond to user queries with pre-defined answers.\nSimple automation scripts that trigger actions based on specific events, like web search.\nAgentic mode in Code Assistants\n\n\n\n\n\n\n\nWarning\n\n\n\n\\Rightarrow Control is done by the LLM itself with all risks : infinite loops, dangerous unsupervised and potentially dangerous actions etc.",
+    "text": "9.1 Reactive agents\n\n\n\nExamples:\n\nChatbots that respond to user queries with pre-defined answers.\nSimple automation scripts that trigger actions based on specific events, like web search.\nAgentic mode in Code Assistants\n\n\n\n\n\n\n\nWarning\n\n\n\n\\Rightarrow Control is done by the LLM itself with all risks : infinite loops, unsupervised and potentially dangerous actions etc.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -524,7 +524,7 @@
     "href": "Courses/01_Code-Assistant.html#on-the-other-hand",
     "title": "2  Code Assistants",
     "section": "10.2 On the other hand…",
-    "text": "10.2 On the other hand…\n\n\n\n\n\n\n\n\n\nBeware of vibe-coding",
+    "text": "10.2 On the other hand…\n\n\n\n\n\n\n\n\n\nBeware of vibe-coding\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. “Attention Is All You Need.” Advances in Neural Information Processing Systems 30.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -537,6 +537,16 @@
     "text": "In summary, this book has no content whatsoever.",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Summary</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Vaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion\nJones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017.\n“Attention Is All You Need.” Advances in Neural\nInformation Processing Systems 30.",
+    "crumbs": [
+      "References"
     ]
   },
   {
