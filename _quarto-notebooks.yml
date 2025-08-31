@@ -3,22 +3,11 @@ project:
     - Courses/Applications/*.qmd
     - Courses/Solutions/01_0_Code-Assistant-prompt-engineering-sol.qmd
     - Courses/Solutions/01_1_AI-Agent-sol.qmd
-    # - Courses/Solutions/0_Numpy_Workout-sol.qmd
-    # - Courses/Solutions/1_0_MultiProcessing_tutorial-sol.qmd
-    # - Courses/Solutions/1_1_MultiProcessing-sol.qmd
-    # - Courses/Solutions/2_Scaling-sol.qmd
-    # - Courses/Solutions/3_0_Asynchronous-sol.qmd
-    # - Courses/Solutions/3_1_Decorators_tutorial-sol.qmd
-    # - Courses/Solutions/4_0_IPC_and_Locking-sol.qmd
-    # - Courses/Solutions/4_1_IPC_and_Locking_cont-sol.qmd
-    # - Courses/Solutions/4_2_Generators_tutorial-sol.qmd
-    # - Courses/Solutions/5_0_Distributed_models-sol.qmd
-    # - Courses/Solutions/5_1_Dask_delayed-sol.qmd
-    # - Courses/Solutions/6_0_Numba_tutorial-sol.qmd
-    # - Courses/Solutions/6_2_Simd_numba_autovec_tutorial-sol.qmd
-    # - Courses/Solutions/7_0_GPU-sol.qmd
-    # - Courses/Solutions/7_1_Cache-sol.qmd
-
+    - Courses/Solutions/02_0_Numpy_Workout.qmd
+    - Courses/Solutions/02_1_Decorators_tutorial-sol.qmd
+    - Courses/Solutions/02_2_Generators_tutorial-sol.qmd
+    - Courses/Solutions/02_3_MultiProcessing_tutorial-sol.qmd
+    - Courses/Solutions/02_4_Scaling.qmd
   output-dir: docs-resources/Notebooks
   pre-render: project-scripts/prepare-notebooks.py
   post-render: project-scripts/convert.py

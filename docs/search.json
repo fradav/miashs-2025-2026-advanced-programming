@@ -400,13 +400,813 @@
     ]
   },
   {
+    "objectID": "Courses/02_Parallel-intro.html",
+    "href": "Courses/02_Parallel-intro.html",
+    "title": "3  Introduction to parallel computing",
+    "section": "",
+    "text": "4 Parallel computing: the intuition",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#computing",
+    "href": "Courses/02_Parallel-intro.html#computing",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.1 Computing ?",
+    "text": "4.1 Computing ?\n\na computation = a succession of tasks to complete\na task \\approx a single command/action or a group of commands/actions\n\n\n\n\nExample 1:\n\n\nExample 2:\n\n\n\n\n# task i:\n# sum of elements at index i\n# from two vectors\nfor i in range(10):\n    res[i] = a[i] + b[i]\n\n\n# task 1: matrix product\nC = A @ B\n# task 2: colwise sum over matrix C\nnp.sum(C,axis=0)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#why-parallel-computing",
+    "href": "Courses/02_Parallel-intro.html#why-parallel-computing",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.2 Why parallel computing?",
+    "text": "4.2 Why parallel computing?\n\nObjective: accelerate computations &lt;=&gt; reduce computation time\nIdea: run multiple tasks in parallel instead of sequentially",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#context-level-1",
+    "href": "Courses/02_Parallel-intro.html#context-level-1",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.3 Context (level 1)",
+    "text": "4.3 Context (level 1)\n\ndifferent tasks to complete\none or more workers to complete the tasks",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#sequential-computing",
+    "href": "Courses/02_Parallel-intro.html#sequential-computing",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.4 Sequential computing",
+    "text": "4.4 Sequential computing\n\n\n\n\nn tasks to complete (n&gt;1)\n1 worker\n\nTotal time (exercise)\n\n\\sum_{i=1}^n t_i \\sim O(n)\\ with t_i time to complete task i}",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#parallel-computing-the-most-simple-case",
+    "href": "Courses/02_Parallel-intro.html#parallel-computing-the-most-simple-case",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.5 Parallel computing (the most simple case)",
+    "text": "4.5 Parallel computing (the most simple case)\n\n\n\n\n\n\nn tasks to complete (n&gt;1)\np workers (p&gt;=n)\n\n\n\n\nTotal time (exercise)\n\n\\underset{i=1,\\dots,n}{\\text{max}}\\{t_i\\}\\sim O(1)\\ with t_i time to complete task i\n\n\n\nPotential bottleneck? (exercise)\n\nnot enough workers to complete all tasks",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#task-scheduling",
+    "href": "Courses/02_Parallel-intro.html#task-scheduling",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.6 Task scheduling",
+    "text": "4.6 Task scheduling\n\n\n\n\nn tasks to complete (n&gt;1)\np workers (p&lt;n)\n\nNeed: assign multiple tasks to each worker (and manage this assignment)\n\n\n\n\n\n\n\n\n\n\nTotal time (exercise)\n\n\\underset{k=1,\\dots,p}{\\text{max}}\\{T_k\\}\\sim O(n/p)\\ with T_k = \\sum_{i\\in I_k} t_i, total time to complete all tasks assigned to worker k (where I_k is the set of indexes of tasks assigned to worker k)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#illustration-parallel-computing-simple-case",
+    "href": "Courses/02_Parallel-intro.html#illustration-parallel-computing-simple-case",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.7 Illustration: parallel computing (simple case)",
+    "text": "4.7 Illustration: parallel computing (simple case)\n\n\n\na task = “wait 1 \\mus”\nObjective: run 100 tasks\nNumber of workers: 1, 2, 4, 6, 8\n\nWhy is the time gain not linear?\n\n\n\n10 repetitions in each configurations",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#context-level-2",
+    "href": "Courses/02_Parallel-intro.html#context-level-2",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.8 Context (level 2)",
+    "text": "4.8 Context (level 2)\n\ndifferent tasks to complete\nmultiple workers to complete the tasks\none or more working resources1\n\nPotential bottleneck? (exercise)\n\nnot enough resources for all workers",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#resource-management",
+    "href": "Courses/02_Parallel-intro.html#resource-management",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.9 Resource management",
+    "text": "4.9 Resource management\n\n\n\n\nn tasks to complete (n&gt;1)\np workers (p&lt;n)\nq working resources (q&lt;p)\n\nNeed:\n\nassign workers to each resource (and manage this assignment)\n\nTotal time = ? (exercise)\nPotential issues? (exercise)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#resource-management-1",
+    "href": "Courses/02_Parallel-intro.html#resource-management-1",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.10 Resource management",
+    "text": "4.10 Resource management\nTotal time = \\text{max}_{\\ell=1,\\dots,q}\\{\\tau_\\ell\\}\\sim O(n/q)\nwith \\tau_\\ell = \\sum_{i\\in J_\\ell} t_i = total time to complete all tasks done on resource \\ell (where J_\\ell is the set of indexes of tasks assigned done on resource \\ell)\nPotential issues? multiple workers want to use the same working resources\n\nthey have to wait for their turn (workers are not working all the time)\nrisk to jam2 resource access (organizing resource access takes time)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#illustration-overhead-for-resource-access",
+    "href": "Courses/02_Parallel-intro.html#illustration-overhead-for-resource-access",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.11 Illustration: overhead for resource access",
+    "text": "4.11 Illustration: overhead for resource access\n\n\n\na task = “wait 1 \\mus”\nObjective: run 100 tasks\n8 computing units\nNumber of workers: 1, 2, 4, 8, 16, 32\n\n\n\n\n10 repetitions in each configurations",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#context-level-3-realistic",
+    "href": "Courses/02_Parallel-intro.html#context-level-3-realistic",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.12 Context (level 3: realistic)",
+    "text": "4.12 Context (level 3: realistic)\n\ndifferent tasks to complete\nmultiple workers to complete the tasks\none or more working resources\n\nInput/Output (I/O)\n\nInput: each task requires some materials (data) to be completed, these materials are stored in a storage area (memory)\nOutput: each task returns a result that need to be put in the storage area (memory)\n\nExamples: vector/matrix/array operations, process the content of multiple files",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#inputoutput-management",
+    "href": "Courses/02_Parallel-intro.html#inputoutput-management",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.13 Input/Output management",
+    "text": "4.13 Input/Output management\n\nn tasks to complete (n&gt;1)\np workers (p&lt;n)\nq working resources (q&lt;p)\ntasks need input (data) and produce output (results)\n\nNeed:\n\nload input (data) from storage when needed by a worker to complete a task\nwrite output (result) to storage when a task is completed\n\nTotal time = ? (exercise)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#parallel-computing-realistic-model",
+    "href": "Courses/02_Parallel-intro.html#parallel-computing-realistic-model",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.14 Parallel computing: realistic model",
+    "text": "4.14 Parallel computing: realistic model",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#computing-time-and-potential-bottleneck",
+    "href": "Courses/02_Parallel-intro.html#computing-time-and-potential-bottleneck",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.15 Computing time and potential bottleneck",
+    "text": "4.15 Computing time and potential bottleneck\nTotal time = \\text{max}_{\\ell=1,\\dots,q}\\{\\tau_\\ell\\}\nwith \\tau_\\ell = \\sum_{i\\in J_\\ell} t_{i,\\text{in}} + t_i + t_{i,\\text{out}} = total time to complete all tasks done on resource \\ell (where J_\\ell is the set of indexes of tasks done on resource \\ell)\nPotential bottlenecks:\n\ninput (data) are not ready/available when a worker need them to complete a task (the worker have to wait)\noutput (results) cannot be written when a worker complete a task (the worker have to wait)\n\nOverhead on memory access\n\nconcurrent access to a memory space when reading input and/or when writing output\nconcurrent data transfer from or to memory (the “pipe” are jammed)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#illustration-1-overhead-for-io-access",
+    "href": "Courses/02_Parallel-intro.html#illustration-1-overhead-for-io-access",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.16 Illustration 1: overhead for I/O access",
+    "text": "4.16 Illustration 1: overhead for I/O access\n\n\n\na task\n\nsimulate a vector of 10 values\ncompute the mean\n\nObjective: run 10000 tasks\nResources: 8 computing units\nNumber of workers: 1, 2, 4, 6, 8\n\n\n\n\n10 repetitions in each configurations",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#illustration-2-overhead-for-io-access",
+    "href": "Courses/02_Parallel-intro.html#illustration-2-overhead-for-io-access",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.17 Illustration 2: overhead for I/O access",
+    "text": "4.17 Illustration 2: overhead for I/O access\n\n\n\na task = “compute the sum of a given row in a matrix”\nObjective: compute all row-wise sums for a 10000 \\times 1000 matrix (i.e. 10000 tasks)\nResources: 8 computing units\nNumber of workers: 1, 2, 4, 6, 8\n\n\n\n\n20 repetitions in each configurations",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#the-vocabulary-of-parallel-computing",
+    "href": "Courses/02_Parallel-intro.html#the-vocabulary-of-parallel-computing",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.18 The vocabulary of parallel computing",
+    "text": "4.18 The vocabulary of parallel computing\n\ntasks = a command or a group of commands\nworker = a program or a sub-program (like a thread or a sub-process) → Software\nworking resources = processing units → Hardware\ninput = data\noutput = result\nstorage = memory\n\nAttention: “worker” may sometimes refer to a working resource in the literature",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#task-synchronization",
+    "href": "Courses/02_Parallel-intro.html#task-synchronization",
+    "title": "3  Introduction to parallel computing",
+    "section": "4.19 Task synchronization",
+    "text": "4.19 Task synchronization\n\nSometimes tasks cannot be done in parallel\n\nSpecific case: output of task i_1 is input of task i_2\nNeed: wait for task i_1 before task i_2 starts\n\n\n\n\nExample 1:\n# task 1: matrix product\nC = A @ B\n# task 2: colwise sum over matrix C\nnp.sum(C,axis=0)\n\nExample 2:\n\ntask 1: train a predictive model\ntask 2: use the trained model to predict new labels",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#trend-over-50years",
+    "href": "Courses/02_Parallel-intro.html#trend-over-50years",
+    "title": "3  Introduction to parallel computing",
+    "section": "5.1 Trend over ~50years",
+    "text": "5.1 Trend over ~50years\n\n\nMoore’s Law (doubling the transistor counts every two years) is live\nSingle thread performance hit a wall in 2000s\nAlong with typical power usage and frequency\nNumber of logical cores is doubling every ~3 years since mid-2000\n\n\n\n\nOriginal data up to the year 2010 collected and plotted by M. Horowitz, F. Labonte, O. Shacham, K. Olukotun, L. Hammond, and C. Batten New plot and data collected for 2010-2021 by K. Rupp\n\n\n\n\nGithub repo for data",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#computing-units",
+    "href": "Courses/02_Parallel-intro.html#computing-units",
+    "title": "3  Introduction to parallel computing",
+    "section": "5.2 Computing units",
+    "text": "5.2 Computing units\n\n\nCPU :\n\n4/8/16+ execution cores (depending on context, laptop, desktop, server)\nHyperthreading (Intel) or SMT (AMD), x2\nVector units (multiple instructions processed on a vector of data)\n\nGPU computing : 100/1000 “simple” cores per card",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#the-reality",
+    "href": "Courses/02_Parallel-intro.html#the-reality",
+    "title": "3  Introduction to parallel computing",
+    "section": "5.3 The reality",
+    "text": "5.3 The reality\n\n\nA serial application only accesses 0.8% of the processing power of a 16-core CPU.\n\n\n\n0.08\\% = \\frac{1}{16 * 2 (cores + hyperthreading) * \\frac{256 (bitwide vector unit}{64(bit double)} = 128}",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#faster-for-less-development",
+    "href": "Courses/02_Parallel-intro.html#faster-for-less-development",
+    "title": "3  Introduction to parallel computing",
+    "section": "6.1 Faster for less development",
+    "text": "6.1 Faster for less development\n\\frac{S_{up}}{T_{par}} \\gg \\frac{S_{up}}{T_{seq}}\nRatio of speedup improvment S_{up} over time of development (T_{seq|par}) comparison.\nFrom a development time perspective, return on investment (speedup) is often several magnitudes of order better than pure “serial/sequential” improvment.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#scaling",
+    "href": "Courses/02_Parallel-intro.html#scaling",
+    "title": "3  Introduction to parallel computing",
+    "section": "6.2 Scaling",
+    "text": "6.2 Scaling\nSimple “divide and conquer” strategies in parallel programming allow to handle data with previously almost untractable sizes and scale before.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#energy-efficiency",
+    "href": "Courses/02_Parallel-intro.html#energy-efficiency",
+    "title": "3  Introduction to parallel computing",
+    "section": "6.3 Energy efficiency",
+    "text": "6.3 Energy efficiency\n\n\n\n\n\n\nNote\n\n\n\nThis is a huge one, in the present context 😬\n\n\nDifficult to estimate but the Thermal Design Power (TDP), given by hardware manufacturers, is a good rule of thumb. Just factor the number of units, and usual proportionality rules.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#energy-efficiency-a-bunch-of-cpus",
+    "href": "Courses/02_Parallel-intro.html#energy-efficiency-a-bunch-of-cpus",
+    "title": "3  Introduction to parallel computing",
+    "section": "6.4 Energy efficiency, a bunch of CPUs",
+    "text": "6.4 Energy efficiency, a bunch of CPUs\nExample of “standard” use : 20 16-core Intel Xeon E5-4660 which is 120~W of TDP\nP = (20~Processors) * (120~W/~Processors) * (24~hours) = 57.60~kWhrs",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#energy-efficiency-just-a-few-big-gpus",
+    "href": "Courses/02_Parallel-intro.html#energy-efficiency-just-a-few-big-gpus",
+    "title": "3  Introduction to parallel computing",
+    "section": "6.5 Energy efficiency, just a few (big) GPUs",
+    "text": "6.5 Energy efficiency, just a few (big) GPUs\nA Tesla V100 GPU is of 300~W of TDP. Let’s use 4 of them.\nP = (4~GPUs) * (300~W/~GPUs) * (24~hours) = 28.80~kWhrs\n\\Longrightarrow half of the power use",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#terms-and-definitions",
+    "href": "Courses/02_Parallel-intro.html#terms-and-definitions",
+    "title": "3  Introduction to parallel computing",
+    "section": "7.1 Terms and definitions",
+    "text": "7.1 Terms and definitions\n\nSpeedup S_{up}(N): ratio of the time of execution in serial and parallel mode\nNumber of computing units N\nP (resp. S) is the parallel (resp. serial) fraction of the time spent in the parallel (resp. serial) part of the program (P+S=1).",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#asymptote-of-parallel-computing-amdahls-law",
+    "href": "Courses/02_Parallel-intro.html#asymptote-of-parallel-computing-amdahls-law",
+    "title": "3  Introduction to parallel computing",
+    "section": "7.2 Asymptote of parallel computing : Amdahl’s Law",
+    "text": "7.2 Asymptote of parallel computing : Amdahl’s Law\nThere P is the fraction of the time spent in the parallel part of the program in a sequential execution.\nS_{up}(N) \\le \\frac{1}{S+\\frac{P}{N}}",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#asymptote-of-parallel-computing-amdahls-law-graphic",
+    "href": "Courses/02_Parallel-intro.html#asymptote-of-parallel-computing-amdahls-law-graphic",
+    "title": "3  Introduction to parallel computing",
+    "section": "7.3 Asymptote of parallel computing : Amdahl’s Law, Graphic",
+    "text": "7.3 Asymptote of parallel computing : Amdahl’s Law, Graphic\n\n\nIdeal speedup : 100% of the code parallelized; 90%, 75%, and 50% : limited by the fractions of code that remain serial. (Robey and Zamora 2021)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#more-with-almost-less-the-pump-it-up-approach",
+    "href": "Courses/02_Parallel-intro.html#more-with-almost-less-the-pump-it-up-approach",
+    "title": "3  Introduction to parallel computing",
+    "section": "7.4 More with (almost) less : the pump it up approach",
+    "text": "7.4 More with (almost) less : the pump it up approach\nGustafson’s law\nThere now, P is the fraction of the time spent in the parallel part of the program in a parallel execution.\n\n\n\n\nWhen the size of the problem grows up proportionnaly to the number of computing units.\nS_{up}(N) \\le N - S*(N-1)\nwhere N is the number of computing units and S the serial fraction as before.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#more-with-almost-less-graphic",
+    "href": "Courses/02_Parallel-intro.html#more-with-almost-less-graphic",
+    "title": "3  Introduction to parallel computing",
+    "section": "7.5 More with (almost) less : graphic",
+    "text": "7.5 More with (almost) less : graphic\n\n\nLinear growth with the number of processor (and data size too)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#strong-vs-weak-scaling-definitions",
+    "href": "Courses/02_Parallel-intro.html#strong-vs-weak-scaling-definitions",
+    "title": "3  Introduction to parallel computing",
+    "section": "7.6 Strong vs Weak Scaling, definitions",
+    "text": "7.6 Strong vs Weak Scaling, definitions\n\n\nStrong Scaling\n\nStrong scaling represents the time to solution with respect to the number of processors for a fixed total size.\n\n\n\\Rightarrow Amdahl’s law\n\nWeak Scaling\n\nWeak scaling represents the time to solution with respect to the number of processors for a fixed-sized problem per processor.\n\n\n\\Rightarrow Gustafson’s law",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#strong-vs-weak-scaling-schemas",
+    "href": "Courses/02_Parallel-intro.html#strong-vs-weak-scaling-schemas",
+    "title": "3  Introduction to parallel computing",
+    "section": "7.7 Strong vs Weak Scaling, schemas",
+    "text": "7.7 Strong vs Weak Scaling, schemas\n\n\n┌────────────────────────────────────┐\n│                 1000               │\n│         ┌───────────────────┐      │\n│         │                   │      │           1 processor\n│         │                   │      │\n│         │                   │      │\n│ 1000    │                   │      │           \n│         │                   │      │\n│         │                   │      │\n│         └───────────────────┘      │\n│        ┌─────────┐  ┌─────────┐    │\n│        │         │  │         │    │\n│ 500    │         │  │         │    │\n│        │         │  │         │    │\n│        └─────────┘  └─────────┘    │\n│           500                      │           4 processors\n│        ┌─────────┐  ┌─────────┐    │\n│        │         │  │         │    │\n│        │         │  │         │    │\n│        │         │  │         │    │\n│        └─────────┘  └─────────┘    │\n│      250                           │\n│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │\n│ 250 │    │  │    │  │    │  │    │ │\n│     └────┘  └────┘  └────┘  └────┘ │\n│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │\n│     │    │  │    │  │    │  │    │ │\n│     └────┘  └────┘  └────┘  └────┘ │           16 processors\n│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │\n│     │    │  │    │  │    │  │    │ │\n│     └────┘  └────┘  └────┘  └────┘ │\n│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │\n│     │    │  │    │  │    │  │    │ │\n│     └────┘  └────┘  └────┘  └────┘ │\n└────────────────────────────────────┘\n\n┌───────────────────────────────────────────────────────────┐\n│                         1000                              │\n│                      ┌─────────┐                          │\n│                      │         │                          │\n│              1000    │      ───┼──┐                       │\n│                      │         │  │                       │\n│                      └─────────┘  │                       │\n│                   1000            │                       │\n│                 ┌─────────┐  ┌────┼────┐                  │\n│                 │         │  │    │    │                  │\n│           1000  │         │  │    │    │                  │\n│                 │         │  │    │    │                  │\n│                 └─────────┘  └────┼────┘                  │\n│                 ┌─────────┐  ┌────┼────┐                  │\n│                 │         │  │    │    │                  │\n│                 │         │  │    │    │                  │\n│                 │         │  │    │    │                  │\n│                 └─────────┘  └────┼────┘                  │\n│                                   │         1000          │\n│    ┌─────────┐  ┌─────────┐  ┌────┼────┐  ┌─────────┐     │\n│    │         │  │         │  │    │    │  │         │     │\n│    │         │  │         │  │    ▼    │  │         │1000 │\n│    │         │  │         │  │         │  │         │     │\n│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │\n│    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │\n│    │         │  │         │  │         │  │         │     │\n│    │         │  │         │  │         │  │         │     │\n│    │         │  │         │  │         │  │         │     │\n│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │\n│    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │\n│    │         │  │         │  │         │  │         │     │\n│    │         │  │         │  │         │  │         │     │\n│    │         │  │         │  │         │  │         │     │\n│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │\n│    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │\n│    │         │  │         │  │         │  │         │     │\n│    │         │  │         │  │         │  │         │     │\n│    │         │  │         │  │         │  │         │     │\n│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │\n└───────────────────────────────────────────────────────────┘",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#flynns-taxonomy",
+    "href": "Courses/02_Parallel-intro.html#flynns-taxonomy",
+    "title": "3  Introduction to parallel computing",
+    "section": "8.1 Flynn’s taxonomy",
+    "text": "8.1 Flynn’s taxonomy\n\n\n\n\nSimple Instruction\nMultiple Instructions\n\n\n\n\nSimple Data\n\n\n\n\nMultiple Data",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#a-different-approach",
+    "href": "Courses/02_Parallel-intro.html#a-different-approach",
+    "title": "3  Introduction to parallel computing",
+    "section": "8.2 A different approach",
+    "text": "8.2 A different approach\n\n\n\nParallelism level\nHardware\nSoftware\nParallelism extraction\n\n\n\n\nInstruction\nSIMD (or VLIW)\nIntrinsics\nCompiler\n\n\nThread\nMulti-core RTOS\nLibrary or language extension\nPartitioning/Scheduling (dependency control)\n\n\nTask\nMulti-core (w/o RTOS)\nProcesses (OS level)\nPartitioning/Scheduling",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#multi-processing-vs-multi-threading",
+    "href": "Courses/02_Parallel-intro.html#multi-processing-vs-multi-threading",
+    "title": "3  Introduction to parallel computing",
+    "section": "8.3 Multi-processing vs Multi-threading",
+    "text": "8.3 Multi-processing vs Multi-threading\n\n\n\n\n\nMulti-Processing\n\n\n\n\n\n\n\nMulti-Threading\n\n\n\n\n\n\n\n\n\n\nMulti-processing\nMulti-threading\n\n\n\n\nMemory\nExclusive\nShared\n\n\nCommunication\nInter-process\nAt caller site\n\n\nCreation overhead\nHeavy\nMinimal\n\n\nConcurrency\nAt OS level\nLibrary/language",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/02_Parallel-intro.html#footnotes",
+    "href": "Courses/02_Parallel-intro.html#footnotes",
+    "title": "3  Introduction to parallel computing",
+    "section": "",
+    "text": "i.e. a set of tools/machines used by a worker to complete a task↩︎\noverhead on resource access↩︎",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Introduction to parallel computing</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html",
+    "href": "Courses/03_Asynchronous.html",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "",
+    "text": "5 Asynchronous, Basics",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#what-is-asynchronous-programming",
+    "href": "Courses/03_Asynchronous.html#what-is-asynchronous-programming",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "5.1 What is Asynchronous Programming?",
+    "text": "5.1 What is Asynchronous Programming?\n\nAsynchronous programming is a programming paradigm that allows the program to continue executing other tasks before the current task is finished.\nIt is a way to achieve concurrency in a program.\n\n\\Rightarrow it is an abstraction over concurrency, it does not necessarily mean that the program is executed in parallel.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#io-bound-vs.-cpu-bound",
+    "href": "Courses/03_Asynchronous.html#io-bound-vs.-cpu-bound",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "5.2 I/O Bound vs. CPU Bound",
+    "text": "5.2 I/O Bound vs. CPU Bound\nimport requests\n \n1response = requests.get('https://www.example.com')\n \nitems = response.headers.items()\n \n2headers = [f'{key}: {header}' for key, header in items]\n \n3formatted_headers = '\\n'.join(headers)\n \nwith open('headers.txt', 'w') as file:\n4    file.write(formatted_headers)\n\n1\n\nI/O-bound web request\n\n2\n\nCPU-bound response processing\n\n3\n\nCPU-bound string concatenation\n\n4\n\nI/O-bound write to disk",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#concurrency-vs.-parallelism",
+    "href": "Courses/03_Asynchronous.html#concurrency-vs.-parallelism",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "6.1 Concurrency vs. Parallelism",
+    "text": "6.1 Concurrency vs. Parallelism\n\n\nOne baker and two cakes to prepare.\n\nCan preheat the oven while preparing the first cake.\nCan start the second cake while the first one is in the oven.\n\n\\Rightarrow Switching between tasks is concurrency (or concurrent behavior).\n\nTwo bakers and two cakes to prepare.\n\nCan prepare both cakes at the same time.\n\n\\Rightarrow Doing multiple tasks in parallel is parallelism (or parallel behavior).\n\n\n\n\nWith concurrency, we have multiple tasks happening at the same time, but only one we’re actively doing at a given point in time. With parallelism, we have multiple tasks happening and are actively doing more than one simultaneously.\n\n\n\n\nFrom Fowler (2022)\n\n\n\nWith concurrency, we switch between running two applications. With parallelism, we actively run two applications simultaneously.\n\n\n\n\nFrom Fowler (2022)\n\n\nConcurrency is about multiple independent tasks that can happen.\nParallelism is concurrency AND simultaneous execution.\n\nWhile parallelism implies concurrency, concurrency does not always imply parallelism.\n\\Rightarrow Concurrency is a broader concept than parallelism.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#multitasking",
+    "href": "Courses/03_Asynchronous.html#multitasking",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "6.2 Multitasking",
+    "text": "6.2 Multitasking\n\n\n\n6.2.1 Preemptive multitasking\n\nThe operating system decides when to switch between tasks.\nThe tasks are not aware of each other.\n\n\n\n\n6.2.2 Cooperative multitasking\n\nIn this model we have to explicitly to decide when to switch between tasks.\nThe tasks are aware of each other.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#benefits-of-cooperative-multitasking",
+    "href": "Courses/03_Asynchronous.html#benefits-of-cooperative-multitasking",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "6.3 Benefits of cooperative multitasking",
+    "text": "6.3 Benefits of cooperative multitasking\n\nLess overhead than preemptive multitasking.\nGranular/optimal control over when to switch between tasks.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#multi-processing-vs-multi-threading",
+    "href": "Courses/03_Asynchronous.html#multi-processing-vs-multi-threading",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "7.1 Multi-processing vs Multi-threading",
+    "text": "7.1 Multi-processing vs Multi-threading\n\n\n\n\n\nMulti-Processing\n\n\n\n\n\n\n\nMulti-Threading",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#processes-and-threads",
+    "href": "Courses/03_Asynchronous.html#processes-and-threads",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "7.2 Processes and threads",
+    "text": "7.2 Processes and threads\n\nimport os\nimport threading\n \nprint(f'Python process running with process id: {os.getpid()}')\ntotal_threads = threading.active_count()\nthread_name = threading.current_thread().name\n \nprint(f'Python is currently running {total_threads} thread(s)')\nprint(f'The current thread is {thread_name}')\n\nPython process running with process id: 36282\nPython is currently running 8 thread(s)\nThe current thread is MainThread",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#creating-processes",
+    "href": "Courses/03_Asynchronous.html#creating-processes",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "7.3 Creating processes",
+    "text": "7.3 Creating processes\n\nimport multiprocessing\nimport os\n \n \ndef hello_from_process():\n    print(f'Hello from child process {os.getpid()}!')\nif __name__ == '__main__':\n    hello_process = multiprocessing.Process(target=hello_from_process)\n    hello_process.start()\n \n    print(f'Hello from parent process {os.getpid()}')\n \n    hello_process.join()\n\nHello from parent process 36282\n\n\n\nTraceback (most recent call last):\n\n  File \"&lt;string&gt;\", line 1, in &lt;module&gt;\n\n    from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=84, pipe_handle=86)\n\n                                                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n  File \"/Users/fradav/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/lib/python3.13/multiprocessing/spawn.py\", line 122, in spawn_main\n\n    exitcode = _main(fd, parent_sentinel)\n\n  File \"/Users/fradav/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/lib/python3.13/multiprocessing/spawn.py\", line 132, in _main\n\n    self = reduction.pickle.load(from_parent)\n\nAttributeError: Can't get attribute 'hello_from_process' on &lt;module '__main__' (&lt;class '_frozen_importlib.BuiltinImporter'&gt;)&gt;",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#creating-threads",
+    "href": "Courses/03_Asynchronous.html#creating-threads",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "7.4 Creating threads",
+    "text": "7.4 Creating threads\n\nimport threading\n \n \ndef hello_from_thread():\n    print(f'Hello from thread {threading.current_thread()}!')\n \n \nhello_thread = threading.Thread(target=hello_from_thread)\nhello_thread.start()\n \ntotal_threads = threading.active_count()\nthread_name = threading.current_thread().name\n \nprint(f'Python is currently running {total_threads} thread(s)')\nprint(f'The current thread is {thread_name}')\n \nhello_thread.join()\n\nHello from thread &lt;Thread(Thread-6 (hello_from_thread), started 6307770368)&gt;!\nPython is currently running 8 thread(s)\nThe current thread is MainThread",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#what-about-python",
+    "href": "Courses/03_Asynchronous.html#what-about-python",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "8.1 What about Python?",
+    "text": "8.1 What about Python?\n\n\nDesigned for sequential and single-core architecture from the beginning\nEverything is interpreted\nAll dynamic (no static types)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#the-gil",
+    "href": "Courses/03_Asynchronous.html#the-gil",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "8.2 The GIL",
+    "text": "8.2 The GIL\nAka Global Interpreter Lock\n. . .\n\nThe GIL allows thread usage, you can create threads and launch them: YES!\n\n. . .\n\nbut…\n\n. . .\n\nOnly ONE thread can actually execute code at python level..",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#multi-threaded-parallel-execution",
+    "href": "Courses/03_Asynchronous.html#multi-threaded-parallel-execution",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "8.3 Multi-threaded != Parallel execution",
+    "text": "8.3 Multi-threaded != Parallel execution\nMulti-threading doesn’t guarantee parallel execution…\n\n\n\n\n\n\\Longrightarrow Python seems to have started off with the wrong foot by a long way…",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#high-performance-python",
+    "href": "Courses/03_Asynchronous.html#high-performance-python",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "8.4 High performance Python 😬",
+    "text": "8.4 High performance Python 😬\n\n\n\n\n\n\nBut wait!\n\n\nActually we can run (real) parallel programs with the multiprocessing package.\n\\Rightarrow But this is an “OS level” multiprocessing, with associated huge overhead (relatively)\nPython actually releases the GIL when executing everything that is not Python code (e.g. C/C++ extensions and libraries)\n\\Rightarrow It means we can parallelize our code by using I/O bound and CPU bound libraries that release the GIL (this is the case for most of them)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#socket",
+    "href": "Courses/03_Asynchronous.html#socket",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "9.1 Socket",
+    "text": "9.1 Socket\n\n\nWriting bytes to a socket and reading bytes from a socket\n\n\n\n\nFrom Fowler (2022)\n\n\nThis a mailbox metaphor\nBy default, the socket is blocking, i.e. the program will wait until the socket is ready to be read or written.\nWe can make the socket non-blocking, i.e. the program will not wait for the socket to be ready to be read or written. \\Rightarrow Later on, the OS will tell us we received byte and we deal with it.\n\n\n\n\n\n\n\nMaking a non-blocking I/O request returns immediately\ntells the O/S to watch sockets for data \\Rightarrow This allows execute_other_code() to run right away instead of waiting for the I/O requests to finish\nLater, we can be alerted when I/O is complete and process the response.\n\n\n\n\n\nFrom Fowler (2022)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#event-loop",
+    "href": "Courses/03_Asynchronous.html#event-loop",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "9.2 Event Loop",
+    "text": "9.2 Event Loop\n\n\nfrom collections import deque\n \nmessages = deque()\n \nwhile True:\n    if messages:\n        message = messages.pop()\n        process_message(message)\n\n\n\nThe event loop is a loop that runs forever.\nIt checks if there are any messages to process.\nIf there are, it processes them.\nIf there are not, it waits for messages to arrive.\n\n\n\n\n\\Rightarrow In asyncio, the event loop is queue of tasks instead of messages, Tasks are wrapped coroutines.\n\ndef make_request():\n    cpu_bound_setup()\n    io_bound_web_request()\n    cpu_bound_postprocess()\n \ntask_one = make_request()\ntask_two = make_request()\ntask_three = make_request()",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#what-is-it",
+    "href": "Courses/03_Asynchronous.html#what-is-it",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "10.1 What is it?",
+    "text": "10.1 What is it?\n\nasync def coroutine_add_one(number: int) -&gt; int:\n    return number + 1\n \ndef add_one(number: int) -&gt; int:\n    return number + 1\n \n1function_result = add_one(1)\n2coroutine_result = coroutine_add_one(1)\n \nprint(f'Function result is {function_result}\\n\\\n    and the type is {type(function_result)}')\nprint(f'Coroutine result is {coroutine_result}\\n\\\n    and the type is {type(coroutine_result)}')\n\n\n1\n\nfunction call, is executed immediately.\n\n2\n\ncoroutine call, is not executed at all, but returns a coroutine object.\n\n\n\n\nFunction result is 2\n    and the type is &lt;class 'int'&gt;\nCoroutine result is &lt;coroutine object coroutine_add_one at 0x106d61cc0&gt;\n    and the type is &lt;class 'coroutine'&gt;\n\n\n\nFrom Fowler (2022)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#how-to-execute-a-coroutine",
+    "href": "Courses/03_Asynchronous.html#how-to-execute-a-coroutine",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "10.2 How to execute a coroutine?",
+    "text": "10.2 How to execute a coroutine?\nYou need an event loop.\nimport asyncio\n \nasync def coroutine_add_one(number: int) -&gt; int:\n    return number + 1\n \n1result = asyncio.run(coroutine_add_one(1))\n\nprint(result)\n\n1\n\nThis launches the event loop, executes the coroutine, and returns the result.\n\n\n\n\n\n\n\n\nWarning\n\n\n\nThis code will not work in a Jupyter notebook, because the event loop is already running (by Jupyter itself). So you just have to replace the line 4 by:\nresult = await coroutine_add_one(1)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#await-keyword",
+    "href": "Courses/03_Asynchronous.html#await-keyword",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "10.3 await keyword",
+    "text": "10.3 await keyword\n\nimport asyncio\n \nasync def add_one(number: int) -&gt; int:\n    return number + 1\n \n \nasync def main() -&gt; None:\n1    one_plus_one = await add_one(1)\n2    two_plus_one = await add_one(2)\n    print(one_plus_one)\n    print(two_plus_one)\n \n3await main()\n\n\n1\n\nPause, and wait for the result of add_one(1).\n\n2\n\nPause, and wait for the result of add_one(2).\n\n3\n\nPause, and wait for the result of main(). (outside of a Jupyter notebook, you have to launch the event loop somewhere, like asyncio.run(main()) instead of await main())\n\n\n\n\n2\n3\n\n\n\n\nFrom Fowler (2022)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#simulating-the-real-thing-with-asyncio.sleep",
+    "href": "Courses/03_Asynchronous.html#simulating-the-real-thing-with-asyncio.sleep",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "10.4 Simulating the real thing with asyncio.sleep",
+    "text": "10.4 Simulating the real thing with asyncio.sleep\n\nimport asyncio\n \nasync def hello_world_message() -&gt; str:\n1    await asyncio.sleep(1)\n    return 'Hello World!'\n \nasync def main() -&gt; None:\n2    message = await hello_world_message()\n    print(message)\n \nawait main()\n\n\n1\n\nPause hello_world_message for 1 second.\n\n2\n\nPause main until hello_world_message is finished.\n\n\n\n\nHello World!",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#utility-function-delayseconds",
+    "href": "Courses/03_Asynchronous.html#utility-function-delayseconds",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "10.5 Utility function delay(seconds)",
+    "text": "10.5 Utility function delay(seconds)\n\nimport asyncio\n \n \n1async def delay(delay_seconds: int) -&gt; int:\n2    print(f'sleeping for {delay_seconds} second(s)')\n    await asyncio.sleep(delay_seconds)\n    print(f'finished sleeping for {delay_seconds} second(s)')\n3    return delay_seconds\n\n\n1\n\nTakes an integer of the duration in seconds that we’d like the function to sleep.\n\n2\n\nPrints when sleep begins and ends.\n\n3\n\nReturns that integer to the caller once it has finished sleeping.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#running-two-coroutines",
+    "href": "Courses/03_Asynchronous.html#running-two-coroutines",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "10.6 Running two coroutines",
+    "text": "10.6 Running two coroutines\n\nimport asyncio\n \nasync def add_one(number: int) -&gt; int:\n    return number + 1\n \nasync def hello_world_message() -&gt; str:\n    await delay(1)\n    return 'Hello World!'\n \nasync def main() -&gt; None:\n1    message = await hello_world_message()\n2    one_plus_one = await add_one(1)\n    print(one_plus_one)\n    print(message)\n \nawait main()\n\n\n1\n\nPause main until hello_world_message is finished.\n\n2\n\nPause main until add_one is finished.\n\n\n\n\nsleeping for 1 second(s)\nfinished sleeping for 1 second(s)\n2\nHello World!\n\n\n\n\nFrom Fowler (2022)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#what-to-do-next",
+    "href": "Courses/03_Asynchronous.html#what-to-do-next",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "10.7 What to do next?",
+    "text": "10.7 What to do next?\nMoving away from sequential execution and run add_one and hello_world_message concurrently.\nFor that we need…",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#creating-tasks",
+    "href": "Courses/03_Asynchronous.html#creating-tasks",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "11.1 Creating tasks",
+    "text": "11.1 Creating tasks\n\nimport asyncio\n\nasync def main():\n    sleep_for_three = asyncio.create_task(delay(3))\n    print(type(sleep_for_three))\n    result = await sleep_for_three\n    print(result)\n \nawait main()\n\n&lt;class '_asyncio.Task'&gt;\nsleeping for 3 second(s)\nfinished sleeping for 3 second(s)\n3\n\n\n\nthe coroutine is scheduled to run in the event loop as soon as possible.\nbefore, it was just run at the await statement (pausing the caller).",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#running-tasks-concurrently",
+    "href": "Courses/03_Asynchronous.html#running-tasks-concurrently",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "11.2 Running tasks concurrently",
+    "text": "11.2 Running tasks concurrently\n\nimport asyncio\n \nasync def main():\n    sleep_for_three = \\\n        asyncio.create_task(delay(3))\n    sleep_again = \\\n        asyncio.create_task(delay(3))\n    sleep_once_more = \\\n        asyncio.create_task(delay(3))\n \n    await sleep_for_three\n    await sleep_again\n    await sleep_once_more\n\nawait main()\n\nsleeping for 3 second(s)\nsleeping for 3 second(s)\nsleeping for 3 second(s)\nfinished sleeping for 3 second(s)\nfinished sleeping for 3 second(s)\nfinished sleeping for 3 second(s)\n\n\n\n\nFrom Fowler (2022)\n\n\nimport asyncio\n \nasync def hello_every_second():\n    for i in range(2):\n        await asyncio.sleep(1)\n        print(\"I'm running other code while I'm waiting!\")\n \nasync def main():\n    first_delay = asyncio.create_task(delay(3))\n    second_delay = asyncio.create_task(delay(3))\n    await hello_every_second()\n    await first_delay\n    await second_delay\n\nawait main()\n\nsleeping for 3 second(s)\nsleeping for 3 second(s)\nI'm running other code while I'm waiting!\nI'm running other code while I'm waiting!\nfinished sleeping for 3 second(s)\nfinished sleeping for 3 second(s)\n\n\n\n\nFrom Fowler (2022)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#canceling-tasks",
+    "href": "Courses/03_Asynchronous.html#canceling-tasks",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "11.3 Canceling tasks",
+    "text": "11.3 Canceling tasks\n\nimport asyncio\nfrom asyncio import CancelledError\n\nasync def main():\n    long_task = asyncio.create_task(delay(10))\n \n    seconds_elapsed = 0\n \n    while not long_task.done():\n        print('Task not finished, checking again in a second.')\n        await asyncio.sleep(1)\n        seconds_elapsed = seconds_elapsed + 1\n        if seconds_elapsed == 5:\n            long_task.cancel()\n \n    try:\n        await long_task\n    except CancelledError:\n        print('Our task was cancelled')\n \nawait main()\n\nTask not finished, checking again in a second.\nsleeping for 10 second(s)\nTask not finished, checking again in a second.\nTask not finished, checking again in a second.\nTask not finished, checking again in a second.\nTask not finished, checking again in a second.\nTask not finished, checking again in a second.\nOur task was cancelled",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#setting-a-timeout",
+    "href": "Courses/03_Asynchronous.html#setting-a-timeout",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "11.4 Setting a timeout",
+    "text": "11.4 Setting a timeout\n\nimport asyncio\n\nasync def main():\n    delay_task = asyncio.create_task(delay(2))\n    try:\n        result = await asyncio.wait_for(delay_task, timeout=1)\n        print(result)\n    except asyncio.exceptions.TimeoutError:\n        print('Got a timeout!')\n        print(f'Was the task cancelled? {delay_task.cancelled()}')\n \nawait main()\n\nsleeping for 2 second(s)\nGot a timeout!\nWas the task cancelled? True",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#introducing-futures",
+    "href": "Courses/03_Asynchronous.html#introducing-futures",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "12.1 Introducing futures",
+    "text": "12.1 Introducing futures\n\nfrom asyncio import Future\n \nmy_future = Future()\n \nprint(f'Is my_future done? {my_future.done()}')\n \nmy_future.set_result(42)\n \nprint(f'Is my_future done? {my_future.done()}')\nprint(f'What is the result of my_future? {my_future.result()}')\n\nIs my_future done? False\nIs my_future done? True\nWhat is the result of my_future? 42",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#awaiting-futures",
+    "href": "Courses/03_Asynchronous.html#awaiting-futures",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "12.2 Awaiting futures",
+    "text": "12.2 Awaiting futures\n\nfrom asyncio import Future\nimport asyncio\n \n \ndef make_request() -&gt; Future:\n    future = Future()\n1    asyncio.create_task(set_future_value(future))\n    return future\n \n \nasync def set_future_value(future) -&gt; None:\n2    await asyncio.sleep(1)\n    future.set_result(42)\n \n \nasync def main():\n    future = make_request()\n    print(f'Is the future done? {future.done()}')\n3    value = await future\n    print(f'Is the future done? {future.done()}')\n    print(value)\n \nawait main()\n\n\n1\n\nCreate a task to asynchronously set the value of the future.\n\n2\n\nWait 1 second before setting the value of the future.\n\n3\n\nPause main until the future’s value is set.\n\n\n\n\nIs the future done? False\nIs the future done? True\n42",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#comparing-tasks-coroutines-futures-and-awaitables",
+    "href": "Courses/03_Asynchronous.html#comparing-tasks-coroutines-futures-and-awaitables",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "12.3 Comparing tasks, coroutines, futures, and awaitables",
+    "text": "12.3 Comparing tasks, coroutines, futures, and awaitables\n\n\n\n\n\n\n\nAwaitables\n\nObjects that can be awaited in an async function, including coroutines, tasks, and futures.\n\nCoroutines\n\nSpecial functions that can be paused and resumed later, defined using async def, and can be awaited to allow other coroutines to run.\n\nFutures\n\nRepresent the result of an asynchronous operation, manage its state, and can be awaited to get the result.\n\nTasks\n\nSchedule and run coroutines concurrently, and can be used to cancel or check their status.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#with-a-decorator",
+    "href": "Courses/03_Asynchronous.html#with-a-decorator",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "13.1 With a decorator",
+    "text": "13.1 With a decorator\n\n\n\nimport functools\nimport time\nfrom typing import Callable, Any\n \ndef async_timed():\n    def wrapper(func: Callable) -&gt; Callable:\n        @functools.wraps(func)\n        async def wrapped(*args, **kwargs) -&gt; Any:\n            print(f'starting {func} with args {args} {kwargs}')\n            start = time.time()\n            try:\n                return await func(*args, **kwargs)\n            finally:\n                end = time.time()\n                total = end - start\n                print(f'finished {func} in {total:.4f} second(s)')\n \n        return wrapped\n \n    return wrapper\n\n\nOfficial Python documentation for decorators\n\nadd functionality to an existing function\nwithout modifying the function itself\nit intercepts the function call and runs “decorated” code before and after it",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#using-it",
+    "href": "Courses/03_Asynchronous.html#using-it",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "13.2 Using it",
+    "text": "13.2 Using it\n\nimport asyncio\n \n@async_timed()\nasync def delay(delay_seconds: int) -&gt; int:\n    print(f'sleeping for {delay_seconds} second(s)')\n    await asyncio.sleep(delay_seconds)\n    print(f'finished sleeping for {delay_seconds} second(s)')\n    return delay_seconds\n \n \n@async_timed()\nasync def main():\n    task_one = asyncio.create_task(delay(2))\n    task_two = asyncio.create_task(delay(3))\n \n    await task_one\n    await task_two\n\nawait main()\n\nstarting &lt;function main at 0x106db4680&gt; with args () {}\nstarting &lt;function delay at 0x106db44a0&gt; with args (2,) {}\nsleeping for 2 second(s)\nstarting &lt;function delay at 0x106db44a0&gt; with args (3,) {}\nsleeping for 3 second(s)\nfinished sleeping for 2 second(s)\nfinished &lt;function delay at 0x106db44a0&gt; in 2.0015 second(s)\nfinished sleeping for 3 second(s)\nfinished &lt;function delay at 0x106db44a0&gt; in 3.0015 second(s)\nfinished &lt;function main at 0x106db4680&gt; in 3.0022 second(s)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#asyncio.gather",
+    "href": "Courses/03_Asynchronous.html#asyncio.gather",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "13.3 asyncio.gather",
+    "text": "13.3 asyncio.gather\nasyncio.gather() runs multiple asynchronous operations, wraps a coroutine as a task, and returns a list of results in the same order of awaitables.\n\nimport asyncio\n\n\nasync def call_api(message, result, delay=3):\n    print(message)\n    await asyncio.sleep(delay)\n    return result\n\n\nasync def main():\n    return await asyncio.gather(\n        call_api('Calling API 1 ...', 1),\n        call_api('Calling API 2 ...', 2)\n    )\n\nawait main()\n\nCalling API 1 ...\nCalling API 2 ...\n\n\n[1, 2]\n\n\n\n\n\n\n\n\nCaution\n\n\n\nasyncio.gather takes a tuple of awaitables, not a list of awaitables, but returns a list of results in the same order of awaitables.\nIf you want to pass a list, use the * operator to unpack it as a tuple.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#running-cpu-bound-code",
+    "href": "Courses/03_Asynchronous.html#running-cpu-bound-code",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "14.1 Running CPU-bound code",
+    "text": "14.1 Running CPU-bound code\n\nimport asyncio\n\n@async_timed()\nasync def cpu_bound_work() -&gt; int:\n    counter = 0\n    for i in range(100000000):\n        counter = counter + 1\n    return counter\n \n \n@async_timed()\nasync def main():\n    task_one = asyncio.create_task(cpu_bound_work())\n    task_two = asyncio.create_task(cpu_bound_work())\n    await task_one\n    await task_two\n \nawait main()\n\nstarting &lt;function main at 0x106db5120&gt; with args () {}\nstarting &lt;function cpu_bound_work at 0x106db4f40&gt; with args () {}\nfinished &lt;function cpu_bound_work at 0x106db4f40&gt; in 1.2576 second(s)\nstarting &lt;function cpu_bound_work at 0x106db4f40&gt; with args () {}\nfinished &lt;function cpu_bound_work at 0x106db4f40&gt; in 1.2429 second(s)\nfinished &lt;function main at 0x106db5120&gt; in 2.5009 second(s)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#running-blocking-apis",
+    "href": "Courses/03_Asynchronous.html#running-blocking-apis",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "14.2 Running blocking APIs",
+    "text": "14.2 Running blocking APIs\n\nimport asyncio\nimport requests\n \n@async_timed()\nasync def get_example_status() -&gt; int:\n    return requests.get('http://www.example.com').status_code\n \n \n@async_timed()\nasync def main():\n    task_1 = asyncio.create_task(get_example_status())\n    task_2 = asyncio.create_task(get_example_status())\n    task_3 = asyncio.create_task(get_example_status())\n    await task_1\n    await task_2\n    await task_3\n \nawait main()\n\nstarting &lt;function main at 0x107e04400&gt; with args () {}\nstarting &lt;function get_example_status at 0x106db53a0&gt; with args () {}\nfinished &lt;function get_example_status at 0x106db53a0&gt; in 0.0708 second(s)\nstarting &lt;function get_example_status at 0x106db53a0&gt; with args () {}\nfinished &lt;function get_example_status at 0x106db53a0&gt; in 0.0463 second(s)\nstarting &lt;function get_example_status at 0x106db53a0&gt; with args () {}\nfinished &lt;function get_example_status at 0x106db53a0&gt; in 0.0470 second(s)\nfinished &lt;function main at 0x107e04400&gt; in 0.1644 second(s)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#example-of-blocking-code",
+    "href": "Courses/03_Asynchronous.html#example-of-blocking-code",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "15.1 Example of blocking code",
+    "text": "15.1 Example of blocking code\n\nimport requests\n \n \ndef get_status_code(url: str) -&gt; int:\n    response = requests.get(url)\n    return response.status_code\n \n \nurl = 'https://www.example.com'\nprint(get_status_code(url))\nprint(get_status_code(url))\n\n200\n200",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#thread-pool",
+    "href": "Courses/03_Asynchronous.html#thread-pool",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "15.2 Thread Pool",
+    "text": "15.2 Thread Pool\n\nimport time\nimport requests\nfrom concurrent.futures import ThreadPoolExecutor\n \n \ndef get_status_code(url: str) -&gt; int:\n    response = requests.get(url)\n    return response.status_code\n \n \nstart = time.time()\n \nwith ThreadPoolExecutor() as pool:\n    urls = ['https://www.example.com' for _ in range(10)]\n    results = pool.map(get_status_code, urls)\n    for result in results:\n        # print(result)\n        pass\n\n \nend = time.time()\n \nprint(f'finished requests in {end - start:.4f} second(s)')\n\nfinished requests in 0.8418 second(s)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#compare-with-sequential-code",
+    "href": "Courses/03_Asynchronous.html#compare-with-sequential-code",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "15.3 Compare with sequential code",
+    "text": "15.3 Compare with sequential code\n\nstart = time.time()\n \nurls = ['https://www.example.com' for _ in range(10)]\n \nfor url in urls:\n    result = get_status_code(url)\n    # print(result)\n \nend = time.time()\n \nprint(f'finished requests in {end - start:.4f} second(s)')\n\nfinished requests in 1.0627 second(s)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#thread-pool-with-asyncio",
+    "href": "Courses/03_Asynchronous.html#thread-pool-with-asyncio",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "15.4 Thread pool with asyncio",
+    "text": "15.4 Thread pool with asyncio\n\nimport functools\nimport requests\nimport asyncio\nfrom concurrent.futures import ThreadPoolExecutor\n \ndef get_status_code(url: str) -&gt; int:\n    response = requests.get(url)\n    return response.status_code\n \n \n@async_timed()\nasync def main():\n    loop = asyncio.get_running_loop()\n    with ThreadPoolExecutor() as pool:\n        urls = ['https://www.example.com' for _ in range(10)]\n        tasks = [loop.run_in_executor(pool, functools.partial(get_status_code, url)) for url in urls]\n        results = await asyncio.gather(*tasks)\n        print(results)\n \nawait main()\n\nstarting &lt;function main at 0x106db51c0&gt; with args () {}\n[200, 200, 200, 200, 200, 200, 200, 200, 200, 200]\nfinished &lt;function main at 0x106db51c0&gt; in 0.8712 second(s)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/03_Asynchronous.html#multithreading-with-numpy",
+    "href": "Courses/03_Asynchronous.html#multithreading-with-numpy",
+    "title": "4  Asynchronous Programming with Python",
+    "section": "15.5 Multithreading with numpy",
+    "text": "15.5 Multithreading with numpy\nLet’s define a big matrix on which we will compute the mean of each row.\n\nimport numpy as np\n\ndata_points = 400000000\nrows = 50\ncolumns = int(data_points / rows)\n \nmatrix = np.arange(data_points).reshape(rows, columns)\n\nNow process the matrix sequentially.\n\ns = time.time()\n \nres_seq = np.mean(matrix, axis=1)\n \ne = time.time()\nprint(e - s)\n\n0.30133605003356934\n\n\nAnd then the same with multithreading (we check that the results are exactly the same).\n\nimport functools\nfrom concurrent.futures.thread import ThreadPoolExecutor\nimport asyncio\n \ndef mean_for_row(arr, row):\n    return np.mean(arr[row])\n \n@async_timed()\nasync def main():\n    loop = asyncio.get_running_loop()\n    with ThreadPoolExecutor() as pool:\n        tasks = []\n        for i in range(rows):\n            mean = functools.partial(mean_for_row, matrix, i)\n            tasks.append(loop.run_in_executor(pool, mean))\n \n        return await asyncio.gather(*tasks)\n\nres_threads = np.array(await main())\nnp.testing.assert_array_equal(res_seq, res_threads)\n\nstarting &lt;function main at 0x106db5260&gt; with args () {}\nfinished &lt;function main at 0x106db5260&gt; in 0.0157 second(s)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Asynchronous Programming with Python</span>"
+    ]
+  },
+  {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "3  Summary",
+    "title": "5  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever.",
     "crumbs": [
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Summary</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Summary</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Fowler, M. 2022. Python Concurrency with Asyncio. Manning. https://www.manning.com/books/python-concurrency-with-asyncio.\n\n\nRobey, R., and Y. Zamora. 2021. Parallel and High Performance\nComputing. Manning. https://www.manning.com/books/parallel-and-high-performance-computing.",
+    "crumbs": [
+      "References"
     ]
   },
   {
@@ -414,7 +1214,7 @@
     "href": "applications.html",
     "title": "Appendix A — Applications",
     "section": "",
-    "text": "Original (In Percent Format)\nOnline Html (Corrected)\nNotebook (Corrected)\n\n\n\n\nPrompt engineering exercises\nSolution\nNotebook\n\n\nAI Agent\nSolution\nNotebook\n\n\n\nNo matching items",
+    "text": "Original (In Percent Format)\nOnline Html (Corrected)\nNotebook (Corrected)\n\n\n\n\nPrompt engineering exercises\nSolution\nNotebook\n\n\nAI Agent\nSolution\nNotebook\n\n\nNumpy Workout\n\n\n\n\nDecorators Tutorial\nSolution\nNotebook\n\n\nA tutorial on Python generators\nSolution\nNotebook\n\n\nMultiprocessing in Python 3\nSolution\nNotebook\n\n\nScaling App with multiprocessing\n\n\n\n\n\nNo matching items",
     "crumbs": [
       "Appendices",
       "<span class='chapter-number'>A</span>  <span class='chapter-title'>Applications</span>"
@@ -425,7 +1225,7 @@
     "href": "slides.html",
     "title": "Appendix B — Slides in reveal.js",
     "section": "",
-    "text": "Code Assistants\n\nNo matching items",
+    "text": "Code Assistants\nIntroduction to parallel computing\nAsynchronous Programming with Python\n\nNo matching items",
     "crumbs": [
       "Appendices",
       "<span class='chapter-number'>B</span>  <span class='chapter-title'>Slides in reveal.js</span>"

@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="François-David Collin">
+
+<title>3&nbsp; Introduction to parallel computing – Advanced programming and parallel computing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Courses/03_Asynchronous.html" rel="next">
+<link href="../Courses/01_Code-Assistant.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-83afcd5a6834238d8415e8a5d4a94b41.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-015b60084195af8261401bb77b833414.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Courses/02_Parallel-intro.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to parallel computing</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Advanced programming and parallel computing</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Software Prerequisites</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/01_Code-Assistant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Code Assistants</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/02_Parallel-intro.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to parallel computing</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/03_Asynchronous.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Asynchronous Programming with Python</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Applications</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Slides in reveal.js</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#parallel-computing-the-intuition" id="toc-parallel-computing-the-intuition" class="nav-link active" data-scroll-target="#parallel-computing-the-intuition"><span class="header-section-number">4</span> Parallel computing: the intuition</a>
+  <ul>
+  <li><a href="#computing" id="toc-computing" class="nav-link" data-scroll-target="#computing"><span class="header-section-number">4.1</span> Computing ?</a></li>
+  <li><a href="#why-parallel-computing" id="toc-why-parallel-computing" class="nav-link" data-scroll-target="#why-parallel-computing"><span class="header-section-number">4.2</span> Why parallel computing?</a></li>
+  <li><a href="#context-level-1" id="toc-context-level-1" class="nav-link" data-scroll-target="#context-level-1"><span class="header-section-number">4.3</span> Context (level 1)</a></li>
+  <li><a href="#sequential-computing" id="toc-sequential-computing" class="nav-link" data-scroll-target="#sequential-computing"><span class="header-section-number">4.4</span> Sequential computing</a></li>
+  <li><a href="#parallel-computing-the-most-simple-case" id="toc-parallel-computing-the-most-simple-case" class="nav-link" data-scroll-target="#parallel-computing-the-most-simple-case"><span class="header-section-number">4.5</span> Parallel computing (the most simple case)</a></li>
+  <li><a href="#task-scheduling" id="toc-task-scheduling" class="nav-link" data-scroll-target="#task-scheduling"><span class="header-section-number">4.6</span> Task scheduling</a></li>
+  <li><a href="#illustration-parallel-computing-simple-case" id="toc-illustration-parallel-computing-simple-case" class="nav-link" data-scroll-target="#illustration-parallel-computing-simple-case"><span class="header-section-number">4.7</span> Illustration: parallel computing (simple case)</a></li>
+  <li><a href="#context-level-2" id="toc-context-level-2" class="nav-link" data-scroll-target="#context-level-2"><span class="header-section-number">4.8</span> Context (level 2)</a></li>
+  <li><a href="#resource-management" id="toc-resource-management" class="nav-link" data-scroll-target="#resource-management"><span class="header-section-number">4.9</span> Resource management</a></li>
+  <li><a href="#resource-management-1" id="toc-resource-management-1" class="nav-link" data-scroll-target="#resource-management-1"><span class="header-section-number">4.10</span> Resource management</a></li>
+  <li><a href="#illustration-overhead-for-resource-access" id="toc-illustration-overhead-for-resource-access" class="nav-link" data-scroll-target="#illustration-overhead-for-resource-access"><span class="header-section-number">4.11</span> Illustration: overhead for resource access</a></li>
+  <li><a href="#context-level-3-realistic" id="toc-context-level-3-realistic" class="nav-link" data-scroll-target="#context-level-3-realistic"><span class="header-section-number">4.12</span> Context (level 3: realistic)</a></li>
+  <li><a href="#inputoutput-management" id="toc-inputoutput-management" class="nav-link" data-scroll-target="#inputoutput-management"><span class="header-section-number">4.13</span> Input/Output management</a></li>
+  <li><a href="#parallel-computing-realistic-model" id="toc-parallel-computing-realistic-model" class="nav-link" data-scroll-target="#parallel-computing-realistic-model"><span class="header-section-number">4.14</span> Parallel computing: realistic model</a></li>
+  <li><a href="#computing-time-and-potential-bottleneck" id="toc-computing-time-and-potential-bottleneck" class="nav-link" data-scroll-target="#computing-time-and-potential-bottleneck"><span class="header-section-number">4.15</span> Computing time and potential bottleneck</a></li>
+  <li><a href="#illustration-1-overhead-for-io-access" id="toc-illustration-1-overhead-for-io-access" class="nav-link" data-scroll-target="#illustration-1-overhead-for-io-access"><span class="header-section-number">4.16</span> Illustration 1: overhead for I/O access</a></li>
+  <li><a href="#illustration-2-overhead-for-io-access" id="toc-illustration-2-overhead-for-io-access" class="nav-link" data-scroll-target="#illustration-2-overhead-for-io-access"><span class="header-section-number">4.17</span> Illustration 2: overhead for I/O access</a></li>
+  <li><a href="#the-vocabulary-of-parallel-computing" id="toc-the-vocabulary-of-parallel-computing" class="nav-link" data-scroll-target="#the-vocabulary-of-parallel-computing"><span class="header-section-number">4.18</span> The vocabulary of parallel computing</a></li>
+  <li><a href="#task-synchronization" id="toc-task-synchronization" class="nav-link" data-scroll-target="#task-synchronization"><span class="header-section-number">4.19</span> Task synchronization</a></li>
+  </ul></li>
+  <li><a href="#why-parallel-computing-1" id="toc-why-parallel-computing-1" class="nav-link" data-scroll-target="#why-parallel-computing-1"><span class="header-section-number">5</span> Why parallel computing</a>
+  <ul>
+  <li><a href="#trend-over-50years" id="toc-trend-over-50years" class="nav-link" data-scroll-target="#trend-over-50years"><span class="header-section-number">5.1</span> Trend over ~50years</a></li>
+  <li><a href="#computing-units" id="toc-computing-units" class="nav-link" data-scroll-target="#computing-units"><span class="header-section-number">5.2</span> Computing units</a></li>
+  <li><a href="#the-reality" id="toc-the-reality" class="nav-link" data-scroll-target="#the-reality"><span class="header-section-number">5.3</span> The reality</a></li>
+  </ul></li>
+  <li><a href="#benefits-of-parallel-computing" id="toc-benefits-of-parallel-computing" class="nav-link" data-scroll-target="#benefits-of-parallel-computing"><span class="header-section-number">6</span> Benefits of parallel computing</a>
+  <ul>
+  <li><a href="#faster-for-less-development" id="toc-faster-for-less-development" class="nav-link" data-scroll-target="#faster-for-less-development"><span class="header-section-number">6.1</span> Faster for less development</a></li>
+  <li><a href="#scaling" id="toc-scaling" class="nav-link" data-scroll-target="#scaling"><span class="header-section-number">6.2</span> Scaling</a></li>
+  <li><a href="#energy-efficiency" id="toc-energy-efficiency" class="nav-link" data-scroll-target="#energy-efficiency"><span class="header-section-number">6.3</span> Energy efficiency</a></li>
+  <li><a href="#energy-efficiency-a-bunch-of-cpus" id="toc-energy-efficiency-a-bunch-of-cpus" class="nav-link" data-scroll-target="#energy-efficiency-a-bunch-of-cpus"><span class="header-section-number">6.4</span> Energy efficiency, a bunch of CPUs</a></li>
+  <li><a href="#energy-efficiency-just-a-few-big-gpus" id="toc-energy-efficiency-just-a-few-big-gpus" class="nav-link" data-scroll-target="#energy-efficiency-just-a-few-big-gpus"><span class="header-section-number">6.5</span> Energy efficiency, just a few (big) GPUs</a></li>
+  </ul></li>
+  <li><a href="#laws" id="toc-laws" class="nav-link" data-scroll-target="#laws"><span class="header-section-number">7</span> Laws</a>
+  <ul>
+  <li><a href="#terms-and-definitions" id="toc-terms-and-definitions" class="nav-link" data-scroll-target="#terms-and-definitions"><span class="header-section-number">7.1</span> Terms and definitions</a></li>
+  <li><a href="#asymptote-of-parallel-computing-amdahls-law" id="toc-asymptote-of-parallel-computing-amdahls-law" class="nav-link" data-scroll-target="#asymptote-of-parallel-computing-amdahls-law"><span class="header-section-number">7.2</span> Asymptote of parallel computing : Amdahl’s Law</a></li>
+  <li><a href="#asymptote-of-parallel-computing-amdahls-law-graphic" id="toc-asymptote-of-parallel-computing-amdahls-law-graphic" class="nav-link" data-scroll-target="#asymptote-of-parallel-computing-amdahls-law-graphic"><span class="header-section-number">7.3</span> Asymptote of parallel computing : Amdahl’s Law, Graphic</a></li>
+  <li><a href="#more-with-almost-less-the-pump-it-up-approach" id="toc-more-with-almost-less-the-pump-it-up-approach" class="nav-link" data-scroll-target="#more-with-almost-less-the-pump-it-up-approach"><span class="header-section-number">7.4</span> More with (almost) less : the <em>pump it up</em> approach</a></li>
+  <li><a href="#more-with-almost-less-graphic" id="toc-more-with-almost-less-graphic" class="nav-link" data-scroll-target="#more-with-almost-less-graphic"><span class="header-section-number">7.5</span> More with (almost) less : graphic</a></li>
+  <li><a href="#strong-vs-weak-scaling-definitions" id="toc-strong-vs-weak-scaling-definitions" class="nav-link" data-scroll-target="#strong-vs-weak-scaling-definitions"><span class="header-section-number">7.6</span> Strong vs Weak Scaling, definitions</a></li>
+  <li><a href="#strong-vs-weak-scaling-schemas" id="toc-strong-vs-weak-scaling-schemas" class="nav-link" data-scroll-target="#strong-vs-weak-scaling-schemas"><span class="header-section-number">7.7</span> Strong vs Weak Scaling, schemas</a></li>
+  </ul></li>
+  <li><a href="#types-of-parallelism" id="toc-types-of-parallelism" class="nav-link" data-scroll-target="#types-of-parallelism"><span class="header-section-number">8</span> Types of parallelism</a>
+  <ul>
+  <li><a href="#flynns-taxonomy" id="toc-flynns-taxonomy" class="nav-link" data-scroll-target="#flynns-taxonomy"><span class="header-section-number">8.1</span> Flynn’s taxonomy</a></li>
+  <li><a href="#a-different-approach" id="toc-a-different-approach" class="nav-link" data-scroll-target="#a-different-approach"><span class="header-section-number">8.2</span> A different approach</a></li>
+  <li><a href="#multi-processing-vs-multi-threading" id="toc-multi-processing-vs-multi-threading" class="nav-link" data-scroll-target="#multi-processing-vs-multi-threading"><span class="header-section-number">8.3</span> Multi-processing vs Multi-threading</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">9</span> Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to parallel computing</span></h1>
+<p class="subtitle lead">A very general (and generic) introduction</p>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliations</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">François-David Collin <a href="mailto:francois-david.collin@umontpellier.fr" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            CNRS
+          </p>
+        <p class="affiliation">
+            IMAG
+          </p>
+        <p class="affiliation">
+            Paul-Valéry Montpellier 3 University
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="parallel-computing-the-intuition" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Parallel computing: the intuition</h1>
+<section id="computing" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="computing"><span class="header-section-number">4.1</span> Computing ?</h2>
+<ul>
+<li>a <strong>computation</strong> = a succession of <strong>tasks</strong> to complete</li>
+<li>a <strong>task</strong> <span class="math inline">\approx</span> a single command/action or a group of commands/actions</li>
+</ul>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Example 1:</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Example 2:</p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># task i:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># sum of elements at index i</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># from two vectors</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    res[i] <span class="op">=</span> a[i] <span class="op">+</span> b[i]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># task 1: matrix product</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> A <span class="op">@</span> B</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># task 2: colwise sum over matrix C</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">sum</span>(C,axis<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="why-parallel-computing" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="why-parallel-computing"><span class="header-section-number">4.2</span> Why parallel computing?</h2>
+<ul>
+<li><p><strong>Objective:</strong> accelerate computations &lt;=&gt; reduce computation time</p></li>
+<li><p><strong>Idea:</strong> run multiple tasks in parallel instead of sequentially</p></li>
+</ul>
+</section>
+<section id="context-level-1" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="context-level-1"><span class="header-section-number">4.3</span> Context (level 1)</h2>
+<ul>
+<li><p>different <strong>tasks</strong> to complete</p></li>
+<li><p>one or more <strong>workers</strong> to complete the tasks</p></li>
+</ul>
+</section>
+<section id="sequential-computing" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="sequential-computing"><span class="header-section-number">4.4</span> Sequential computing</h2>
+<div class="quarto-layout-panel" data-layout="[70,30]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
+<ul>
+<li><span class="math inline">n</span> tasks to complete (<span class="math inline">n&gt;1</span>)</li>
+<li>1 worker</li>
+</ul>
+<p><strong>Total time</strong> (exercise)</p>
+<div class="fragment">
+<p><span class="math inline">\sum_{i=1}^n t_i \sim O(n)</span>\ with <span class="math inline">t_i</span> time to complete task <span class="math inline">i</span>}</p>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: center;">
+<p><img src="d2-figures/sequential-computing.svg" class="noinvert img-fluid" width="300"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="parallel-computing-the-most-simple-case" class="level2 nostretch" data-number="4.5">
+<h2 class="nostretch anchored" data-number="4.5" data-anchor-id="parallel-computing-the-most-simple-case"><span class="header-section-number">4.5</span> Parallel computing (the most simple case)</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="d2-figures/parallel-computing-simple.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img" width="700"></p>
+</figure>
+</div>
+<ul>
+<li><span class="math inline">n</span> tasks to complete (<span class="math inline">n&gt;1</span>)</li>
+<li><span class="math inline">p</span> workers (<span class="math inline">p&gt;=n</span>)</li>
+</ul>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><strong>Total time</strong> (exercise)</p>
+<div class="fragment">
+<p><span class="math inline">\underset{i=1,\dots,n}{\text{max}}\{t_i\}\sim O(1)</span>\ with <span class="math inline">t_i</span> time to complete task <span class="math inline">i</span></p>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><strong>Potential bottleneck?</strong> (exercise)</p>
+<div class="fragment">
+<p>not enough workers to complete all tasks</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="task-scheduling" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="task-scheduling"><span class="header-section-number">4.6</span> Task scheduling</h2>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<ul>
+<li><p><span class="math inline">n</span> tasks to complete (<span class="math inline">n&gt;1</span>)</p></li>
+<li><p><span class="math inline">p</span> workers (<span class="math inline">p&lt;n</span>)</p></li>
+</ul>
+<p><strong>Need:</strong> assign multiple tasks to each worker (and manage this assignment)</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="d2-figures/parallel-computing-complex.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img" width="500"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Total time</strong> (exercise)</p>
+<div class="fragment">
+<p><span class="math inline">\underset{k=1,\dots,p}{\text{max}}\{T_k\}\sim O(n/p)</span>\ with <span class="math inline">T_k = \sum_{i\in I_k} t_i</span>, total time to complete all tasks assigned to worker <span class="math inline">k</span> (where <span class="math inline">I_k</span> is the set of indexes of tasks assigned to worker <span class="math inline">k</span>)</p>
+</div>
+</section>
+<section id="illustration-parallel-computing-simple-case" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="illustration-parallel-computing-simple-case"><span class="header-section-number">4.7</span> Illustration: parallel computing (simple case)</h2>
+<div class="columns" data-align="center">
+<div class="column" style="width:50%;">
+<ul>
+<li><p>a task = “wait 1 <span class="math inline">\mu</span>s”</p></li>
+<li><p>Objective: run 100 tasks</p></li>
+<li><p>Number of workers: 1, 2, 4, 6, 8</p></li>
+</ul>
+<p><strong>Why is the time gain not linear?</strong></p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center" style="text-align:center;">
+<figure class="figure">
+<figcaption>10 repetitions in each configurations</figcaption>
+<p><img src="figs/parallel1.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="context-level-2" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="context-level-2"><span class="header-section-number">4.8</span> Context (level 2)</h2>
+<ul>
+<li><p>different <strong>tasks</strong> to complete</p></li>
+<li><p>multiple <strong>workers</strong> to complete the tasks</p></li>
+<li><p>one or more <strong>working resources</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p></li>
+</ul>
+<p><strong>Potential bottleneck?</strong> (exercise)</p>
+<div class="fragment">
+<p>not enough resources for all workers</p>
+</div>
+</section>
+<section id="resource-management" class="level2" data-number="4.9">
+<h2 data-number="4.9" class="anchored" data-anchor-id="resource-management"><span class="header-section-number">4.9</span> Resource management</h2>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<ul>
+<li><span class="math inline">n</span> tasks to complete (<span class="math inline">n&gt;1</span>)</li>
+<li><span class="math inline">p</span> workers (<span class="math inline">p&lt;n</span>)</li>
+<li><span class="math inline">q</span> working resources (<span class="math inline">q&lt;p</span>)</li>
+</ul>
+<p><strong>Need:</strong></p>
+<ul>
+<li>assign workers to each resource (and manage this assignment)</li>
+</ul>
+<p><strong>Total time</strong> <span class="math inline">=</span> ? (exercise)</p>
+<p><strong>Potential issues?</strong> (exercise)</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="d2-figures/parallel-computing-ressources.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img" width="400"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="resource-management-1" class="level2" data-number="4.10">
+<h2 data-number="4.10" class="anchored" data-anchor-id="resource-management-1"><span class="header-section-number">4.10</span> Resource management</h2>
+<p><strong>Total time</strong> <span class="math inline">= \text{max}_{\ell=1,\dots,q}\{\tau_\ell\}\sim O(n/q)</span></p>
+<p>with <span class="math inline">\tau_\ell = \sum_{i\in J_\ell} t_i</span> <span class="math inline">=</span> total time to complete all tasks done on resource <span class="math inline">\ell</span> (where <span class="math inline">J_\ell</span> is the set of indexes of tasks assigned done on resource <span class="math inline">\ell</span>)</p>
+<p><strong>Potential issues?</strong> multiple workers want to use the same working resources</p>
+<ul>
+<li>they have to wait for their turn (workers are not working all the time)</li>
+<li>risk to jam<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> resource access (organizing resource access takes time)</li>
+</ul>
+</section>
+<section id="illustration-overhead-for-resource-access" class="level2" data-number="4.11">
+<h2 data-number="4.11" class="anchored" data-anchor-id="illustration-overhead-for-resource-access"><span class="header-section-number">4.11</span> Illustration: overhead for resource access</h2>
+<div class="columns" data-align="center">
+<div class="column" style="width:50%;">
+<ul>
+<li><p>a task = “wait 1 <span class="math inline">\mu</span>s”</p></li>
+<li><p>Objective: run 100 tasks</p></li>
+<li><p>8 computing units</p></li>
+<li><p>Number of workers: 1, 2, 4, 8, 16, 32</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center" style="text-align:center;">
+<figure class="figure">
+<figcaption>10 repetitions in each configurations</figcaption>
+<p><img src="figs/parallel2.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="context-level-3-realistic" class="level2" data-number="4.12">
+<h2 data-number="4.12" class="anchored" data-anchor-id="context-level-3-realistic"><span class="header-section-number">4.12</span> Context (level 3: realistic)</h2>
+<ul>
+<li><p>different <strong>tasks</strong> to complete</p></li>
+<li><p>multiple <strong>workers</strong> to complete the tasks</p></li>
+<li><p>one or more <strong>working resources</strong></p></li>
+</ul>
+<p><strong>Input/Output (I/O)</strong></p>
+<ul>
+<li><p><strong>Input:</strong> each task requires some <strong>materials</strong> (data) to be completed, these materials are stored in a storage area (memory)</p></li>
+<li><p><strong>Output:</strong> each task returns a <strong>result</strong> that need to be put in the storage area (memory)</p></li>
+</ul>
+<p>Examples: vector/matrix/array operations, process the content of multiple files</p>
+</section>
+<section id="inputoutput-management" class="level2" data-number="4.13">
+<h2 data-number="4.13" class="anchored" data-anchor-id="inputoutput-management"><span class="header-section-number">4.13</span> Input/Output management</h2>
+<ul>
+<li><span class="math inline">n</span> tasks to complete (<span class="math inline">n&gt;1</span>)</li>
+<li><span class="math inline">p</span> workers (<span class="math inline">p&lt;n</span>)</li>
+<li><span class="math inline">q</span> working resources (<span class="math inline">q&lt;p</span>)</li>
+<li>tasks need input (data) and produce output (results)</li>
+</ul>
+<p><strong>Need:</strong></p>
+<ul>
+<li>load input (data) from storage when needed by a worker to complete a task</li>
+<li>write output (result) to storage when a task is completed</li>
+</ul>
+<p><strong>Total time</strong> <span class="math inline">=</span> ? (exercise)</p>
+</section>
+<section id="parallel-computing-realistic-model" class="level2" data-number="4.14">
+<h2 data-number="4.14" class="anchored" data-anchor-id="parallel-computing-realistic-model"><span class="header-section-number">4.14</span> Parallel computing: realistic model</h2>
+<p><img src="d2-figures/parallel-computing-real.svg" class="noinvert img-fluid"></p>
+</section>
+<section id="computing-time-and-potential-bottleneck" class="level2" data-number="4.15">
+<h2 data-number="4.15" class="anchored" data-anchor-id="computing-time-and-potential-bottleneck"><span class="header-section-number">4.15</span> Computing time and potential bottleneck</h2>
+<p><strong>Total time</strong> <span class="math inline">= \text{max}_{\ell=1,\dots,q}\{\tau_\ell\}</span></p>
+<p>with <span class="math inline">\tau_\ell = \sum_{i\in J_\ell} t_{i,\text{in}} + t_i + t_{i,\text{out}}</span> <span class="math inline">=</span> total time to complete all tasks done on resource <span class="math inline">\ell</span> (where <span class="math inline">J_\ell</span> is the set of indexes of tasks done on resource <span class="math inline">\ell</span>)</p>
+<p><strong>Potential bottlenecks:</strong></p>
+<ul>
+<li>input (data) are not ready/available when a worker need them to complete a task (the worker have to wait)</li>
+<li>output (results) cannot be written when a worker complete a task (the worker have to wait)</li>
+</ul>
+<p><strong>Overhead on memory access</strong></p>
+<ul>
+<li>concurrent access to a memory space when reading input and/or when writing output</li>
+<li>concurrent data transfer from or to memory (the “pipe” are jammed)</li>
+</ul>
+</section>
+<section id="illustration-1-overhead-for-io-access" class="level2" data-number="4.16">
+<h2 data-number="4.16" class="anchored" data-anchor-id="illustration-1-overhead-for-io-access"><span class="header-section-number">4.16</span> Illustration 1: overhead for I/O access</h2>
+<div class="columns" data-align="center">
+<div class="column" style="width:50%;">
+<ul>
+<li>a task
+<ol type="1">
+<li>simulate a vector of 10 values</li>
+<li>compute the mean</li>
+</ol></li>
+<li>Objective: run 10000 tasks</li>
+<li>Resources: 8 computing units</li>
+<li>Number of workers: 1, 2, 4, 6, 8</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center" style="text-align:center;">
+<figure class="figure">
+<figcaption>10 repetitions in each configurations</figcaption>
+<p><img src="figs/parallel3.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="illustration-2-overhead-for-io-access" class="level2" data-number="4.17">
+<h2 data-number="4.17" class="anchored" data-anchor-id="illustration-2-overhead-for-io-access"><span class="header-section-number">4.17</span> Illustration 2: overhead for I/O access</h2>
+<div class="columns" data-align="center">
+<div class="column" style="width:50%;">
+<ul>
+<li><p>a task = “compute the sum of a given row in a matrix”</p></li>
+<li><p>Objective: compute all row-wise sums for a <span class="math inline">10000 \times 1000</span> matrix (i.e.&nbsp;<span class="math inline">10000</span> tasks)</p></li>
+<li><p>Resources: 8 computing units</p></li>
+<li><p>Number of workers: 1, 2, 4, 6, 8</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center" style="text-align:center;">
+<figure class="figure">
+<figcaption>20 repetitions in each configurations</figcaption>
+<p><img src="figs/parallel4.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-vocabulary-of-parallel-computing" class="level2" data-number="4.18">
+<h2 data-number="4.18" class="anchored" data-anchor-id="the-vocabulary-of-parallel-computing"><span class="header-section-number">4.18</span> The vocabulary of parallel computing</h2>
+<ul>
+<li>tasks = a command or a group of commands</li>
+<li>worker = a program or a sub-program (<em>like a thread or a sub-process</em>) → <em>Software</em></li>
+<li>working resources = processing units → <em>Hardware</em></li>
+<li>input = data</li>
+<li>output = result</li>
+<li>storage = memory</li>
+</ul>
+<p><strong>Attention:</strong> “worker” may sometimes refer to a working resource in the literature</p>
+</section>
+<section id="task-synchronization" class="level2" data-number="4.19">
+<h2 data-number="4.19" class="anchored" data-anchor-id="task-synchronization"><span class="header-section-number">4.19</span> Task synchronization</h2>
+<div>
+<p>Sometimes tasks cannot be done in parallel</p>
+<ul>
+<li>Specific case: output of task <span class="math inline">i_1</span> is input of task <span class="math inline">i_2</span></li>
+<li><strong>Need:</strong> wait for task <span class="math inline">i_1</span> before task <span class="math inline">i_2</span> starts</li>
+</ul>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Example 1:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># task 1: matrix product</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> A <span class="op">@</span> B</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># task 2: colwise sum over matrix C</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">sum</span>(C,axis<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div><div class="column" style="width:50%;">
+<p>Example 2:</p>
+<ul>
+<li>task 1: train a predictive model</li>
+<li>task 2: use the trained model to predict new labels</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="why-parallel-computing-1" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Why parallel computing</h1>
+<section id="trend-over-50years" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="trend-over-50years"><span class="header-section-number">5.1</span> Trend over ~50years</h2>
+<div class="incremental">
+<ul class="incremental">
+<li>Moore’s Law (doubling the transistor counts every two years) is live</li>
+<li>Single thread performance hit a wall in 2000s</li>
+<li>Along with typical power usage and frequency</li>
+<li>Number of logical cores is doubling every ~3 years since mid-2000</li>
+</ul>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Original data up to the year 2010 collected and plotted by M. Horowitz, F. Labonte, O. Shacham, K. Olukotun, L. Hammond, and C. Batten New plot and data collected for 2010-2021 by K. Rupp</figcaption>
+<p><img src="50yearstrend/50-years-processor-trend.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<div class="attribution">
+<p><a href="https://github.com/karlrupp/microprocessor-trend-data/tree/master/50yrs">Github repo for data</a></p>
+</div>
+</section>
+<section id="computing-units" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="computing-units"><span class="header-section-number">5.2</span> Computing units</h2>
+<div class="incremental">
+<ul class="incremental">
+<li>CPU :
+<ul class="incremental">
+<li>4/8/16+ execution cores (depending on context, laptop, desktop, server)</li>
+<li>Hyperthreading (Intel) or SMT (AMD), x2</li>
+<li>Vector units (multiple instructions processed on a vector of data)</li>
+</ul></li>
+<li>GPU computing : 100/1000 “simple” cores per card</li>
+</ul>
+</div>
+</section>
+<section id="the-reality" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="the-reality"><span class="header-section-number">5.3</span> The reality</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>A serial application only accesses 0.8% of the processing power of a 16-core CPU.</figcaption>
+<p><img src="figs/serial_waste.png" class="notransparent img-fluid figure-img"></p>
+</figure>
+</div>
+<p><span class="math display">0.08\% = \frac{1}{16 * 2 (cores + hyperthreading) * \frac{256 (bitwide vector unit}{64(bit double)} = 128}</span></p>
+</section>
+</section>
+<section id="benefits-of-parallel-computing" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Benefits of parallel computing</h1>
+<section id="faster-for-less-development" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="faster-for-less-development"><span class="header-section-number">6.1</span> Faster for less development</h2>
+<p><span class="math display">\frac{S_{up}}{T_{par}} \gg \frac{S_{up}}{T_{seq}}</span></p>
+<p>Ratio of speedup improvment <span class="math inline">S_{up}</span> over time of development (<span class="math inline">T_{seq|par})</span> comparison.</p>
+<p>From a development time perspective, return on investment (speedup) is often <em>several magnitudes of order</em> better than pure “serial/sequential” improvment.</p>
+</section>
+<section id="scaling" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="scaling"><span class="header-section-number">6.2</span> Scaling</h2>
+<p>Simple “divide and conquer” strategies in parallel programming allow to handle data with previously almost untractable sizes and scale before.</p>
+</section>
+<section id="energy-efficiency" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="energy-efficiency"><span class="header-section-number">6.3</span> Energy efficiency</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is a huge one, in the present context 😬</p>
+</div>
+</div>
+<p>Difficult to estimate but the <em>Thermal Design Power (TDP)</em>, given by hardware manufacturers, is a good rule of thumb. Just factor the number of units, and usual proportionality rules.</p>
+</section>
+<section id="energy-efficiency-a-bunch-of-cpus" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="energy-efficiency-a-bunch-of-cpus"><span class="header-section-number">6.4</span> Energy efficiency, a bunch of CPUs</h2>
+<p>Example of “standard” use : 20 <a href="https://ark.intel.com/content/www/us/en/ark/products/93796/intel-xeon-processor-e54660-v4-40m-cache-2-20-ghz.html">16-core Intel Xeon E5-4660</a> which is <span class="math inline">120~W</span> of TDP</p>
+<p><span class="math display">P = (20~Processors) * (120~W/~Processors) * (24~hours) = 57.60~kWhrs</span></p>
+</section>
+<section id="energy-efficiency-just-a-few-big-gpus" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="energy-efficiency-just-a-few-big-gpus"><span class="header-section-number">6.5</span> Energy efficiency, just a few (big) GPUs</h2>
+<p>A Tesla V100 GPU is of <span class="math inline">300~W</span> of TDP. Let’s use 4 of them.</p>
+<p><span class="math display">P = (4~GPUs) * (300~W/~GPUs) * (24~hours) = 28.80~kWhrs</span></p>
+<p><span class="math inline">\Longrightarrow</span> half of the power use</p>
+</section>
+</section>
+<section id="laws" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Laws</h1>
+<section id="terms-and-definitions" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="terms-and-definitions"><span class="header-section-number">7.1</span> Terms and definitions</h2>
+<ul>
+<li><strong>Speedup</strong> <span class="math inline">S_{up}(N)</span>: ratio of the time of execution in serial and parallel mode</li>
+<li>Number of computing units <span class="math inline">N</span></li>
+<li><span class="math inline">P</span> (resp. <span class="math inline">S</span>) is the parallel (resp. serial) fraction of the time spent in the parallel (resp. serial) part of the program (<span class="math inline">P+S=1</span>).</li>
+</ul>
+</section>
+<section id="asymptote-of-parallel-computing-amdahls-law" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="asymptote-of-parallel-computing-amdahls-law"><span class="header-section-number">7.2</span> Asymptote of parallel computing : <a href="https://en.wikipedia.org/wiki/Amdahl%27s_law" class="notransparent">Amdahl’s Law</a></h2>
+<p>There <span class="math inline">P</span> is the fraction of the time spent in the parallel part of the program in <em>a sequential execution</em>.</p>
+<p><span class="math display">S_{up}(N) \le \frac{1}{S+\frac{P}{N}}</span></p>
+</section>
+<section id="asymptote-of-parallel-computing-amdahls-law-graphic" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="asymptote-of-parallel-computing-amdahls-law-graphic"><span class="header-section-number">7.3</span> Asymptote of parallel computing : Amdahl’s Law, Graphic</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Ideal speedup : 100% of the code parallelized; 90%, 75%, and 50% : limited by the fractions of code that remain serial. <span class="citation" data-cites="robey2021parallel">(<a href="../references.html#ref-robey2021parallel" role="doc-biblioref">Robey and Zamora 2021</a>)</span></figcaption>
+<p><img src="./figs/amdhals.png" class="notransparent img-fluid figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="more-with-almost-less-the-pump-it-up-approach" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="more-with-almost-less-the-pump-it-up-approach"><span class="header-section-number">7.4</span> More with (almost) less : the <em>pump it up</em> approach</h2>
+<p><a href="https://en.wikipedia.org/wiki/Gustafson%27s_law" class="notransparent">Gustafson’s law</a></p>
+<p>There now, <span class="math inline">P</span> is the fraction of the time spent in the parallel part of the program in <em>a parallel execution</em>.</p>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p><img src="figs/gimmemore-meme.png" class="notransparent noinvert img-fluid"></p>
+</div><div class="column" style="width:40%;">
+<p>When the size of the problem grows up proportionnaly to the number of computing units.</p>
+<p><span class="math display">S_{up}(N) \le N - S*(N-1)</span></p>
+<p>where <span class="math inline">N</span> is the number of computing units and <em>S</em> the serial fraction as before.</p>
+</div>
+</div>
+</section>
+<section id="more-with-almost-less-graphic" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="more-with-almost-less-graphic"><span class="header-section-number">7.5</span> More with (almost) less : graphic</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Linear growth with the number of processor (and data size too)</figcaption>
+<p><img src="./figs/gustafsons.png" class="notransparent img-fluid figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="strong-vs-weak-scaling-definitions" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="strong-vs-weak-scaling-definitions"><span class="header-section-number">7.6</span> Strong vs Weak Scaling, definitions</h2>
+<div class="incremental">
+<dl class="incremental">
+<dt>Strong Scaling</dt>
+<dd>
+<p>Strong scaling represents the time to solution with respect to the number of processors for a fixed total size.</p>
+</dd>
+</dl>
+<p><span class="math inline">\Rightarrow</span> Amdahl’s law</p>
+<dl class="incremental">
+<dt>Weak Scaling</dt>
+<dd>
+<p>Weak scaling represents the time to solution with respect to the number of processors for a fixed-sized problem per processor.</p>
+</dd>
+</dl>
+<p><span class="math inline">\Rightarrow</span> Gustafson’s law</p>
+</div>
+</section>
+<section id="strong-vs-weak-scaling-schemas" class="level2 smaller" data-number="7.7">
+<h2 class="smaller anchored" data-number="7.7" data-anchor-id="strong-vs-weak-scaling-schemas"><span class="header-section-number">7.7</span> Strong vs Weak Scaling, schemas</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<pre style="font-size: 0.6em;"><code>┌────────────────────────────────────┐
+│                 1000               │
+│         ┌───────────────────┐      │
+│         │                   │      │           1 processor
+│         │                   │      │
+│         │                   │      │
+│ 1000    │                   │      │           
+│         │                   │      │
+│         │                   │      │
+│         └───────────────────┘      │
+│        ┌─────────┐  ┌─────────┐    │
+│        │         │  │         │    │
+│ 500    │         │  │         │    │
+│        │         │  │         │    │
+│        └─────────┘  └─────────┘    │
+│           500                      │           4 processors
+│        ┌─────────┐  ┌─────────┐    │
+│        │         │  │         │    │
+│        │         │  │         │    │
+│        │         │  │         │    │
+│        └─────────┘  └─────────┘    │
+│      250                           │
+│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │
+│ 250 │    │  │    │  │    │  │    │ │
+│     └────┘  └────┘  └────┘  └────┘ │
+│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │
+│     │    │  │    │  │    │  │    │ │
+│     └────┘  └────┘  └────┘  └────┘ │           16 processors
+│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │
+│     │    │  │    │  │    │  │    │ │
+│     └────┘  └────┘  └────┘  └────┘ │
+│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │
+│     │    │  │    │  │    │  │    │ │
+│     └────┘  └────┘  └────┘  └────┘ │
+└────────────────────────────────────┘</code></pre>
+</div><div class="column" style="width:50%;">
+<pre style="font-size: 0.6em;"><code>┌───────────────────────────────────────────────────────────┐
+│                         1000                              │
+│                      ┌─────────┐                          │
+│                      │         │                          │
+│              1000    │      ───┼──┐                       │
+│                      │         │  │                       │
+│                      └─────────┘  │                       │
+│                   1000            │                       │
+│                 ┌─────────┐  ┌────┼────┐                  │
+│                 │         │  │    │    │                  │
+│           1000  │         │  │    │    │                  │
+│                 │         │  │    │    │                  │
+│                 └─────────┘  └────┼────┘                  │
+│                 ┌─────────┐  ┌────┼────┐                  │
+│                 │         │  │    │    │                  │
+│                 │         │  │    │    │                  │
+│                 │         │  │    │    │                  │
+│                 └─────────┘  └────┼────┘                  │
+│                                   │         1000          │
+│    ┌─────────┐  ┌─────────┐  ┌────┼────┐  ┌─────────┐     │
+│    │         │  │         │  │    │    │  │         │     │
+│    │         │  │         │  │    ▼    │  │         │1000 │
+│    │         │  │         │  │         │  │         │     │
+│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
+│    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│    │         │  │         │  │         │  │         │     │
+│    │         │  │         │  │         │  │         │     │
+│    │         │  │         │  │         │  │         │     │
+│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
+│    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│    │         │  │         │  │         │  │         │     │
+│    │         │  │         │  │         │  │         │     │
+│    │         │  │         │  │         │  │         │     │
+│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
+│    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│    │         │  │         │  │         │  │         │     │
+│    │         │  │         │  │         │  │         │     │
+│    │         │  │         │  │         │  │         │     │
+│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
+└───────────────────────────────────────────────────────────┘</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="types-of-parallelism" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Types of parallelism</h1>
+<section id="flynns-taxonomy" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="flynns-taxonomy"><span class="header-section-number">8.1</span> Flynn’s taxonomy</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Simple Instruction</th>
+<th>Multiple Instructions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Simple Data</td>
+<td><img src="figs/SISD.svg" class="img-fluid" style="max-height: 300px;"></td>
+<td><img src="figs/MISD.svg" class="img-fluid" style="max-height: 300px;"></td>
+</tr>
+<tr class="even">
+<td>Multiple Data</td>
+<td><img src="figs/SIMD.svg" class="img-fluid" style="max-height: 300px;"></td>
+<td><img src="figs/MIMD.svg" class="img-fluid" style="max-height: 300px;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="a-different-approach" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="a-different-approach"><span class="header-section-number">8.2</span> A different approach</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parallelism level</th>
+<th>Hardware</th>
+<th>Software</th>
+<th>Parallelism extraction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Instruction</td>
+<td>SIMD (or VLIW)</td>
+<td>Intrinsics</td>
+<td>Compiler</td>
+</tr>
+<tr class="even">
+<td>Thread</td>
+<td>Multi-core RTOS</td>
+<td>Library or language extension</td>
+<td>Partitioning/Scheduling (dependency control)</td>
+</tr>
+<tr class="odd">
+<td>Task</td>
+<td>Multi-core (w/o RTOS)</td>
+<td>Processes (OS level)</td>
+<td>Partitioning/Scheduling</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="multi-processing-vs-multi-threading" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="multi-processing-vs-multi-threading"><span class="header-section-number">8.3</span> Multi-processing vs Multi-threading</h2>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Multi-Processing</figcaption>
+<p><img src="tikz-figures/multiprocessing_model.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Multi-Threading</figcaption>
+<p><img src="tikz-figures/multithreading_model.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Multi-processing</th>
+<th>Multi-threading</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Memory</td>
+<td>Exclusive</td>
+<td>Shared</td>
+</tr>
+<tr class="even">
+<td>Communication</td>
+<td>Inter-process</td>
+<td>At caller site</td>
+</tr>
+<tr class="odd">
+<td>Creation overhead</td>
+<td>Heavy</td>
+<td>Minimal</td>
+</tr>
+<tr class="even">
+<td>Concurrency</td>
+<td>At OS level</td>
+<td>Library/language</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="conclusion" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Conclusion</h1>
+<ul>
+<li>Parallelism is everywhere, but not always easy to exploit</li>
+<li>Two types of <em>scaling</em> with parallelism : strong and weak</li>
+<li>Several types of parallelism : Flynn’s taxonomy, multhreading vs multiprocessing etc.</li>
+</ul>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-pelcat2010prototypage" class="csl-entry" role="listitem">
+Pelcat, Maxime. 2010. <span>“Prototypage Rapide Et g<span>é</span>n<span>é</span>ration de Code Pour DSP Multi-Coeurs Appliqu<span>é</span>s <span class="nocase">à</span> La Couche Physique Des Stations de Base 3GPP LTE.”</span> PhD thesis, INSA de Rennes.
+</div>
+<div id="ref-robey2021parallel" class="csl-entry" role="listitem">
+Robey, R., and Y. Zamora. 2021. <em>Parallel and High Performance Computing</em>. Manning. <a href="https://www.manning.com/books/parallel-and-high-performance-computing">https://www.manning.com/books/parallel-and-high-performance-computing</a>.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>i.e.&nbsp;a set of tools/machines used by a worker to complete a task<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>overhead on resource access<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Courses/01_Code-Assistant.html" class="pagination-link" aria-label="Code Assistants">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Code Assistants</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Courses/03_Asynchronous.html" class="pagination-link" aria-label="Asynchronous Programming with Python">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Asynchronous Programming with Python</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-SA 4.0</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

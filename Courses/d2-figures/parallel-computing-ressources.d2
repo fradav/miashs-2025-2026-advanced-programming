@@ -1,0 +1,105 @@
+grid-rows: 4
+grid-columns: 4
+
+style: {
+    fill: transparent
+    stroke: transparent
+}
+
+*: {
+    style: {
+        font-size: 30
+    }
+}
+
+
+(** -> **)[*] : {
+    style: {
+        stroke-width: 5
+    }
+}
+
+classes : {
+    empty: {
+        shape: rectangle
+        style: {
+            fill: transparent
+            stroke: transparent
+        }
+    }
+}
+
+ellipsis*:{
+    class: empty
+    style: {
+        font-size: 50
+    }
+}
+
+ellipsish*: {
+    label: "⋯"
+}
+
+ellipsisv*: {
+    label: "⋮"
+}
+
+empty1
+
+empty* : "" {
+    class: empty
+    height: 1
+    width: 1
+}
+
+resource1: "resource 1"
+resource2: "resource 2"
+
+ellipsish1
+empty2
+
+task*: {
+class: empty
+}
+
+task1: "task 1\n(worker 1)"
+task2: "task 2\n(worker 2)"
+
+
+ellipsish2
+empty3
+
+task1_2: "task 3\n(worker 3)"
+task2_2: "task 4\n(worker 4)"
+
+ellipsish3
+empty4
+
+task1_3: "task p+1\n(worker 1)"
+task2_3: "task p+2\n(worker 2)"
+
+ellipsish4
+empty5
+
+task1_4: "task p+3\n(worker 3)"
+task2_4: "task p+4\n(worker 4)"
+
+ellipsish5
+empty6
+
+ellipsisv1
+ellipsisv2
+empty7
+
+time: "Time"{
+    class: empty
+}
+
+empty1 -> time : {
+    style: {
+        animated: true
+    }
+}
+
+task1 -> task1_2 -> task1_3 -> task1_4 -> ellipsisv1
+task2 -> task2_2 -> task2_3 -> task2_4 -> ellipsisv2

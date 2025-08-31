@@ -1,0 +1,102 @@
+grid-rows: 4
+grid-columns: 6
+
+style: {
+    fill: transparent
+    stroke: transparent
+}
+
+*: {
+    style: {
+        font-size: 30
+    }
+}
+
+
+(** -> **)[*] : {
+    style: {
+        stroke-width: 5
+    }
+}
+
+classes : {
+    empty: {
+        shape: rectangle
+        style: {
+            fill: transparent
+            stroke: transparent
+        }
+    }
+}
+
+ellipsis*:{
+    class: empty
+    style: {
+        font-size: 50
+    }
+}
+
+ellipsish*: {
+    label: "⋯"
+}
+
+ellipsisv*: {
+    label: "⋮"
+}
+
+empty1
+
+empty* : "" {
+    class: empty
+    height: 1
+    width: 1
+}
+
+worker1: "worker 1"
+worker2: "worker 2"
+worker3: "worker 3"
+worker4: "worker 4"
+
+ellipsish1
+empty2
+
+task1: "task 1" 
+task2: "task 2"
+task3: "task 3"
+task4: "task 4"
+task*: {
+class: empty
+}
+
+
+ellipsish2
+empty3
+
+task1p: "task p+1"
+task2p: "task p+2"
+task3p: "task p+3"
+task4p: "task p+4"
+
+ellipsish3
+empty4
+
+ellipsisv1
+ellipsisv2
+ellipsisv3
+ellipsisv4
+empty5
+
+time: "Time"{
+    class: empty
+}
+
+empty1 -> time : {
+    style: {
+        animated: true
+    }
+}
+
+task1 -> task1p -> ellipsisv1
+task2 -> task2p -> ellipsisv2
+task3 -> task3p -> ellipsisv3
+task4 -> task4p -> ellipsisv4

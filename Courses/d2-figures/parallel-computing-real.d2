@@ -1,0 +1,113 @@
+grid-rows: 4
+grid-columns: 8
+
+style: {
+    fill: transparent
+    stroke: transparent
+}
+
+*: {
+    style: {
+        font-size: 30
+    }
+}
+
+
+(** -> **)[*] : {
+    style: {
+        stroke-width: 5
+    }
+}
+
+classes : {
+    empty: {
+        shape: rectangle
+        style: {
+            fill: transparent
+            stroke: transparent
+        }
+    }
+}
+
+ellipsis*:{
+    class: empty
+    style: {
+        font-size: 50
+    }
+}
+
+ellipsish*: {
+    label: "⋯"
+}
+
+ellipsisv*: {
+    label: "⋮"
+}
+
+
+empty* : "" {
+    class: empty
+    height: 1
+    width: 1
+}
+
+resource1: "resource 1"
+
+task1_1: "load\ndata 1"
+task1_2: "task 1\n(worker 1)"
+task1_3: "write\nresult 1"
+task1_4: "load\ndata 3"
+task1_5: "task 3\n(worker 3)"
+task1_6: "write\nresult 3"
+
+ellipsish1
+
+task1_1 -> task1_2 -> task1_3 -> task1_4 -> task1_5 -> task1_6 -> ellipsish1
+
+resource2: "resource 2"
+
+task2_1: "load\ndata 2"
+task2_2: "task 2\n(worker 2)"
+task2_3: "write\nresult 2"
+task2_4: "load\ndata 4"
+task2_5: "task 4\n(worker 4)"
+task2_6: "write\nresult 4"
+
+
+ellipsish2
+
+task2_1 -> task2_2 -> task2_3 -> task2_4 -> task2_5 -> task2_6 -> ellipsish2
+
+ellipsisv1
+
+empty1
+empty2
+empty3
+empty4
+empty5
+empty6
+empty7
+
+
+task*: {
+class: empty
+}
+
+empty8
+empty9
+empty10
+empty11
+empty12
+empty13
+empty14
+
+time: "Time"{
+    class: empty
+}
+
+empty8 -> time : {
+    style: {
+        animated: true
+    }
+}
+

@@ -1,6 +1,8 @@
 project:
   render: 
     - Courses/01_Code-Assistant.qmd
+    - Courses/02_Parallel-intro.qmd
+    - Courses/03_Asynchronous.qmd
   pre-render: project-scripts/prepare-slides.py
   output-dir: docs-resources/Slides
   resources:

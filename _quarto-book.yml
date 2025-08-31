@@ -23,6 +23,8 @@ book:
     - index.qmd
     - intro.qmd
     - Courses/01_Code-Assistant.qmd
+    - Courses/02_Parallel-intro.qmd
+    - Courses/03_Asynchronous.qmd
     - summary.qmd
     - references.qmd
   appendices: 

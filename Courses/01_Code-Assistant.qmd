@@ -214,6 +214,7 @@ $\Rightarrow$ Lightweight, open-source, and extensible via marketplace.
 
 ## AI domains
 
+::::{.content-visible when-format="revealjs"}
 :::r-stack
 
 ::: { .fragment .fade-in .absolute top=200 style="background: #2780e3; width: 800px; height: 700px; border-radius: 400px;"}
@@ -233,6 +234,13 @@ Large Language Models (LLM)
 :::
 
 :::
+::::
+
+::::{.content-visible unless-format="revealjs"}
+
+![](../images/ai-ml-dl-llm.png){.noinvert}
+
+::::
 
 ## Train a neural network
 
@@ -356,15 +364,18 @@ $f(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2$
 
 :::{#descent-surface }
 ```{ojs}
+//| code-fold: true
 Plotly = require("plotly.js@2.35.2/dist/plotly.min.js");
 ```
 
 ```{ojs}
+//| code-fold: true
 minX = -5;
 maxX = 5;
 ```
 
 ```{ojs}
+//| code-fold: true
 f = ([x1, x2]) => (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;
 
 {
@@ -411,7 +422,7 @@ f = ([x1, x2]) => (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;
 :::{#descent-surface-interaction}
 
 ```{ojs}
-
+//| code-fold: true
 function grad_descent(x1,x2,step,max_iter) {
   let grad = f_grad(x1, x2);
   let iterations = [[x1, x2]];
@@ -437,6 +448,7 @@ function grad_descent(x1,x2,step,max_iter) {
 ```
 
 ```{ojs}
+//| code-fold: true
 viewof descent_params = Inputs.form({
   x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),
   x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),
@@ -447,6 +459,7 @@ viewof descent_params = Inputs.form({
 
 :::{style="width: 300px;"}
 ```{ojs}
+//| code-fold: true
 {
   var iterations = grad_descent(descent_params.x1,descent_params.x2,descent_params.step,20)
   return Plot.plot({
@@ -530,9 +543,12 @@ SGD, Adam, RMSProp
 - Second problem: many words (for a single language)
 - Third problem: how to capture semantics?
 
+::::{.content-visible when-format="revealjs"}
 ## Embeddings {auto-animate=true auto-animate-easing="ease-in-out"}
 
 - Distance between words should not be character based
+
+
 
 ::: {.r-hstack}
 ::: {data-id="box1" auto-animate-delay="0" style="background: #2780e3; width: 200px; height: 150px; margin: 10px; text-align: center; display: flex; align-items: center; justify-content: center;"}
@@ -580,15 +596,70 @@ window
 Tanguy Lefort, 2023
 :::
 
+::::
+
+::::{.content-visible unless-format="revealjs"}
+## Embeddings
+
+- Distance between words should not be character based
+
+:::{layout-ncol="3"}
+
+![](../images/women-window.png){.noinvert}
+
+$\Rightarrow$
+
+![](../images/women-window-embeddings.png){.noinvert}
+
+:::
+
+:::attribution
+Tanguy Lefort, 2023
+:::
+
+::::
+
+
 ## Multi-scale learning from text
 
 - DL layers = capture different levels of dependencies  in the data
 - *attention mechansim*  applies “multi-scale learning” to data sequences
   $\Rightarrow$ e.g. not only words in sentences, but sentences in paragraphs, paragraphs in documents and so on.
 
-*Previously*, recurrent networks limited in sequential dependencies,
+$\Rightarrow$ transformers capture dependencies in the “whole”
 
-$\Rightarrow$ transformers capture dependencies in the “whole” in parallel (much faster)
+<!-- ```{mermaid}
+%%| fig-align: center
+graph TB
+    %% Text hierarchy
+    D[Document] --> P1[Paragraph 1]
+    D --> P2[Paragraph 2]
+    P1 --> S11[Sentence 1.1]
+    P1 --> S12[Sentence 1.2]
+    P2 --> S21[Sentence 2.1]
+    P2 --> S22[Sentence 2.2]
+
+    %% Attention at different scales
+    %% Word-level (within sentences)
+    S11 -.->|word attn| S11
+    S12 -.->|word attn| S12
+    S21 -.->|word attn| S21
+    S22 -.->|word attn| S22
+
+    %% Sentence-level (within paragraphs)
+    P1 -.-|sentence attn| P1
+    P2 -.-|sentence attn| P2
+
+    %% Paragraph-level (within document)
+    D ==>|paragraph attn| D
+
+    %% Legend
+    subgraph Legend
+        C1[Word-level attention] -->|dashed line| C1
+        C2[Sentence-level attention] -->|dotted line| C2
+        C3[Paragraph-level attention] -->|bold line| C3
+    end
+``` -->
 
 ## Multi-facets learning from text
 
@@ -601,7 +672,50 @@ In the sentence "the cat sat on the rug, and after a few hours, it moved to the 
 - cat/he
 - sat/moved to
 
-All those groups of words/tokens are multiple facets of the same text and its meaning.
+$\Rightarrow$ All those groups of words/tokens are multiple facets of the same text and its meaning.
+
+<!-- ```{mermaid}
+%%| fig-align: center
+graph TB
+    %% Words in order
+    W1(the) --> W2(cat)
+    W2 --> W3(sat)
+    W3 --> W4(on)
+    W4 --> W5(rug)
+    W5 --> W6(,)
+    W6 --> W7(and)
+    W7 --> W8(after)
+    W8 --> W9(a)
+    W9 --> W10(few)
+    W10 --> W11(hours)
+    W11 --> W12(,)
+    W12 --> W13(it)
+    W13 --> W14(moved)
+    W14 --> W15(to)
+    W15 --> W16(the)
+    W16 --> W17(mat)
+    W17 --> W18(.)
+
+    %% Facet connections
+    %% Objects: cat ↔ rug, rug ↔ mat, cat ↔ mat
+    W2 --- W5
+    W5 --- W17
+    W2 --- W17
+
+    %% Coreference: cat ↔ it
+    W2 -.-> W13
+
+    %% Actions: sat ↔ moved, moved ↔ to
+    W3 ==> W14
+    W14 ==> W15
+
+    %% Legend
+    subgraph Legend
+        O1[Objects] --- O2
+        C1[Coreference] -.-> C2
+        A1[Actions] ==> A2
+    end
+``` -->
 
 ## Transformers
 
@@ -868,7 +982,7 @@ $\Rightarrow$ Control is done by normal, program logic
 
 ::::
 
-![](../images/pipeline-agent.svg){ style="margin-top: -300px;"}
+![](../images/pipeline-agent.svg)
 
 :::
 
