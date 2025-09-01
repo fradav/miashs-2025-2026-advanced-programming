@@ -628,39 +628,6 @@ Tanguy Lefort, 2023
 
 $\Rightarrow$ transformers capture dependencies in the “whole”
 
-<!-- ```{mermaid}
-%%| fig-align: center
-graph TB
-    %% Text hierarchy
-    D[Document] --> P1[Paragraph 1]
-    D --> P2[Paragraph 2]
-    P1 --> S11[Sentence 1.1]
-    P1 --> S12[Sentence 1.2]
-    P2 --> S21[Sentence 2.1]
-    P2 --> S22[Sentence 2.2]
-
-    %% Attention at different scales
-    %% Word-level (within sentences)
-    S11 -.->|word attn| S11
-    S12 -.->|word attn| S12
-    S21 -.->|word attn| S21
-    S22 -.->|word attn| S22
-
-    %% Sentence-level (within paragraphs)
-    P1 -.-|sentence attn| P1
-    P2 -.-|sentence attn| P2
-
-    %% Paragraph-level (within document)
-    D ==>|paragraph attn| D
-
-    %% Legend
-    subgraph Legend
-        C1[Word-level attention] -->|dashed line| C1
-        C2[Sentence-level attention] -->|dotted line| C2
-        C3[Paragraph-level attention] -->|bold line| C3
-    end
-``` -->
-
 ## Multi-facets learning from text
 
 *Multi-head attention mechanism* extends the attention mechanism to multifaceted dependencies of the same text components.
@@ -673,49 +640,6 @@ In the sentence "the cat sat on the rug, and after a few hours, it moved to the 
 - sat/moved to
 
 $\Rightarrow$ All those groups of words/tokens are multiple facets of the same text and its meaning.
-
-<!-- ```{mermaid}
-%%| fig-align: center
-graph TB
-    %% Words in order
-    W1(the) --> W2(cat)
-    W2 --> W3(sat)
-    W3 --> W4(on)
-    W4 --> W5(rug)
-    W5 --> W6(,)
-    W6 --> W7(and)
-    W7 --> W8(after)
-    W8 --> W9(a)
-    W9 --> W10(few)
-    W10 --> W11(hours)
-    W11 --> W12(,)
-    W12 --> W13(it)
-    W13 --> W14(moved)
-    W14 --> W15(to)
-    W15 --> W16(the)
-    W16 --> W17(mat)
-    W17 --> W18(.)
-
-    %% Facet connections
-    %% Objects: cat ↔ rug, rug ↔ mat, cat ↔ mat
-    W2 --- W5
-    W5 --- W17
-    W2 --- W17
-
-    %% Coreference: cat ↔ it
-    W2 -.-> W13
-
-    %% Actions: sat ↔ moved, moved ↔ to
-    W3 ==> W14
-    W14 ==> W15
-
-    %% Legend
-    subgraph Legend
-        O1[Objects] --- O2
-        C1[Coreference] -.-> C2
-        A1[Actions] ==> A2
-    end
-``` -->
 
 ## Transformers
 

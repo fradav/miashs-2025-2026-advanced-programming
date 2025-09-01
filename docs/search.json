@@ -364,7 +364,177 @@
     "href": "Courses/01_Code-Assistant.html#multi-scale-learning-from-text",
     "title": "2  Code Assistants",
     "section": "8.3 Multi-scale learning from text",
-    "text": "8.3 Multi-scale learning from text\n\nDL layers = capture different levels of dependencies in the data\nattention mechansim applies “multi-scale learning” to data sequences \\Rightarrow e.g. not only words in sentences, but sentences in paragraphs, paragraphs in documents and so on.\n\n\\Rightarrow transformers capture dependencies in the “whole”\n\nP1[Paragraph 1] D –&gt; P2[Paragraph 2] P1 –&gt; S11[Sentence 1.1] P1 –&gt; S12[Sentence 1.2] P2 –&gt; S21[Sentence 2.1] P2 –&gt; S22[Sentence 2.2]\n%% Attention at different scales\n%% Word-level (within sentences)\nS11 -.-&gt;|word attn| S11\nS12 -.-&gt;|word attn| S12\nS21 -.-&gt;|word attn| S21\nS22 -.-&gt;|word attn| S22\n\n%% Sentence-level (within paragraphs)\nP1 -.-|sentence attn| P1\nP2 -.-|sentence attn| P2\n\n%% Paragraph-level (within document)\nD ==&gt;|paragraph attn| D\n\n%% Legend\nsubgraph Legend\n    C1[Word-level attention] --&gt;|dashed line| C1\n    C2[Sentence-level attention] --&gt;|dotted line| C2\n    C3[Paragraph-level attention] --&gt;|bold line| C3\nend\n\n## Multi-facets learning from text\n\n*Multi-head attention mechanism* extends the attention mechanism to multifaceted dependencies of the same text components.\n\nIn the sentence \"the cat sat on the rug, and after a few hours, it moved to the mat.\" :\n\n- cat/rug/mat \n- rug/mat\n- cat/he\n- sat/moved to\n\n$\\Rightarrow$ All those groups of words/tokens are multiple facets of the same text and its meaning.\n\n&lt;!-- ```{mermaid}\n%%| fig-align: center\ngraph TB\n    %% Words in order\n    W1(the) --&gt; W2(cat)\n    W2 --&gt; W3(sat)\n    W3 --&gt; W4(on)\n    W4 --&gt; W5(rug)\n    W5 --&gt; W6(,)\n    W6 --&gt; W7(and)\n    W7 --&gt; W8(after)\n    W8 --&gt; W9(a)\n    W9 --&gt; W10(few)\n    W10 --&gt; W11(hours)\n    W11 --&gt; W12(,)\n    W12 --&gt; W13(it)\n    W13 --&gt; W14(moved)\n    W14 --&gt; W15(to)\n    W15 --&gt; W16(the)\n    W16 --&gt; W17(mat)\n    W17 --&gt; W18(.)\n\n    %% Facet connections\n    %% Objects: cat ↔ rug, rug ↔ mat, cat ↔ mat\n    W2 --- W5\n    W5 --- W17\n    W2 --- W17\n\n    %% Coreference: cat ↔ it\n    W2 -.-&gt; W13\n\n    %% Actions: sat ↔ moved, moved ↔ to\n    W3 ==&gt; W14\n    W14 ==&gt; W15\n\n    %% Legend\n    subgraph Legend\n        O1[Objects] --- O2\n        C1[Coreference] -.-&gt; C2\n        A1[Actions] ==&gt; A2\n    end\n``` --&gt;\n\n## Transformers\n\n![](tikz-figures/attention-network.svg)\n\n:::attribution\n@vaswani2017attention\n:::\n\n## Heart of Transformers: Attention mechanism\n\n&lt;!-- TODO\nComplete with F. Fleuret’s docs https://fleuret.org/dlc/\n --&gt;\n\n$$\n\\text{Attention}(Q,K,V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V\n$$\n\n:::{layout=\"[[60,40]]\"}\n\n:::{.incremental}\n- Three matrices: *Q*uery, *K*ey, *V*alue, derived from the input sequence\n- $d_k$: dimension of the key matrix, typically 64 or 128\n- we want to compute a weighted sum of the values $V$ with weights given by the compatibility between the query and the keys\n- *softmax* to get a probability distribution\n- *multi-head* attention: several attention mechanisms in parallel\n:::\n\n![](tikz-figures/multihead-attention.svg){ height=\"700px\" style=\"float: right;\"}\n\n:::\n\n\n:::attribution\n@vaswani2017attention\n:::\n\n## Head view of attention\n\n::::{layout=\"[[40,60]]\"}\n::: {#fig-attention}\n\n&lt;!-- ```{python}\nfrom bertviz import head_view, model_view\n\nsentence_a = \"The cat sat on the mat\"\nsentence_b = \"The cat lay on the rug\"\ninputs = tokenizer.encode_plus(sentence_a, sentence_b, return_tensors='pt')\ninput_ids = inputs['input_ids']\ntoken_type_ids = inputs['token_type_ids']\nattention = model(input_ids, token_type_ids=token_type_ids)[-1]\nsentence_b_start = token_type_ids[0].tolist().index(1)\ninput_id_list = input_ids[0].tolist() # Batch index 0\ntokens = tokenizer.convert_ids_to_tokens(input_id_list) \nhead_view(attention, tokens, sentence_b_start)\n``` --&gt;\n\n&lt;iframe style=\"background-color:white;\" height=430 width=400 src=\"../materials/bert_head_view.html\"&gt;&lt;/iframe&gt;\n\nThe model view visualizes attention across all heads in a single Transformer layer. \n\n:::\n\n- Each line shows the attention from one token (left) to another (right).\n- Line weight reflects the attention value (ranges from 0 to 1),\n- line color identifies the attention head\n\n::::\n\n\n&lt;!-- The head view visualizes attention in one or more heads from a single Transformer layer. Each line shows the attention from one token (left) to another (right). Line weight reflects the attention value (ranges from 0 to 1), while line color identifies the attention head. When multiple heads are selected (indicated by the colored tiles at the top), the corresponding visualizations are overlaid onto one another. --&gt;\n&lt;!-- summarize further, bullet mode --&gt;\n\n\n## BERT: Bidirectional Encoder Representations from Transformers\n\n- embeddings: represent words as vectors in high dimensions\n\n&lt;!-- ![](../images/bert.png){ style=\"margin-left: 25%;\"} --&gt;\n![](tikz-figures/encoder-network.svg)\n\n\n\n## GPT : Generative Pre-trained Transformer\n\n- autoregressive model\n- generates text by predicting the next token\n- pre-trained on large corpora of text\n\n&lt;!-- ![](../images/gpt.png){ style=\"margin-left: 25%;\"} --&gt;\n![](tikz-figures/decoder-network.svg)\n\n## BERT vs GPT\n\n:::{ layout-ncol=\"2\" }\n\n![BERT](../images/bert.svg){ width=\"500px\" }\n\n![GPT](../images/gpt.svg){ width=\"500px\" }\n\n:::\n\n## Summary of LLM types { .smaller }\n\n:::list-table\n  * - Type\n    - Architecture\n    - Training Objective\n    - Attention\n    - Use Cases\n  * - **BERT (Encoder-Only)**\n    - Encoder stack only\n    - Masked Language Modeling (MLM)\n    - Bidirectional (sees left and right context)\n    - Classification, QA, NER, sentiment analysis\n  * - **GPT (Decoder-Only)**\n    - Decoder stack only\n    - Autoregressive Language Modeling (next token prediction)\n    - Unidirectional (left-to-right, autoregressive)\n    - Text generation, chatbots, open-ended tasks\n  * - **Seq2Seq (Encoder-Decoder)**\n    - Encoder + Decoder stacks\n    - Sequence-to-sequence (e.g., translation, summarization)\n    - Encoder: Bidirectional; Decoder: Unidirectional (autoregressive)\n    - Translation, summarization, speech recognition, data-to-text\n:::\n\n## Summary of LLM types (2) { .smaller }\n\n:::list-table\n  * - Type\n    - Strengths\n    - Weaknesses\n    - Example Models\n    - Training Data\n    - Inference Speed\n  * - **BERT (Encoder-Only)**\n    - Deep understanding of input; strong for discriminative tasks\n    - Not designed for generation\n    - BERT, RoBERTa, DistilBERT\n    - Large corpus (masked tokens)\n    - Fast (parallelizable)\n  * - **GPT (Decoder-Only)**\n    - Coherent, fluent generation; open-ended creativity\n    - No bidirectional context; limited to left-to-right generation\n    - GPT-3, GPT-4, Llama\n    - Large corpus (autoregressive)\n    - Slower (autoregressive)\n  * - **Seq2Seq (Encoder-Decoder)**\n    - Explicit input-output mapping; handles sequence transformation\n    - More complex; requires aligned input-output pairs\n    - T5, BART, Transformer (original), Whisper\n    - Parallel corpora (input-output pairs)\n    - Moderate (depends on sequence length)\n:::\n\n## Generative LLMs, Base vs Instruct\n\n- Base models are just predicting the next word (pre-training phase, no task-specific fine-tuning)\n- Instruct models are fine-tuned on specific tasks and follow user instructions more effectively.\n\n::: {.callout-important}\nNever use the base model for specific tasks without fine-tuning.\n:::\n\n## Generative LLMs, Reasoning vs non-Reasoning\n\n- (Non-reasoning) models focus on generating coherent text without explicit reasoning capabilities\n- Reasoning models are designed to perform complex reasoning tasks and can handle multi-step problems, at the cost of increased computational requirements (and budget)\n\n::: {.callout-tip}\nReasoning addition to LLM have been a breakthrough in the field since end of 2024. \n:::\n\n## The importance of the context window\n\n- The context window is crucial for understanding and generating text.\n- It determines how much information the model can consider at once.\n- Larger context windows allow for better understanding of complex queries and generation of more coherent responses\n- Typical max context window are in a 16k tokens, latest open-weights local llms are 128/256/512k tokens, frontier llms are 1M+ tokens\n- long context window are computationally expensive and require more memory/gpu ressources.\n\n## What happens when the context window is exceeded?\n\n- When the context window is exceeded, the model may lose track of important information, leading to less coherent responses.\n- Strategies to handle this include:\n  - Summarizing previous context\n  - Using external memory stores\n  - Chunking input data\n\n::: {.callout-caution}\nVery large context (when permitted by the model) isn’t always a good thing: there is chances that the model may become overwhelmed with information, leading to decreased performance AND quality.\n:::\n\n## RAG (Retrieval-Augmented Generation)\n\n:::{ layout-ncol=\"2\" }\n\n:::{}\n\n- RAG combines retrieval-based and generation-based approaches.\n- It retrieves relevant documents from a knowledge base and uses them to inform the generation process.\n- This allows for more accurate and contextually relevant responses.\n:::\n\n![](../images/RAG_diagram.svg)\n\n:::\n\n:::attribution\nTurtlecrown, [Wikipedia](https://en.wikipedia.org/wiki/File:RAG_diagram.svg)\n:::\n\n# AI Agents \n\nAI agents are just a programming paradigm involving either:\n\n- **Reactive** agents: respond to specific inputs with pre-defined actions.\n- **Pipelined** agents: process inputs through a series of stages or components.\n\nReactive/Pipeline agents are defined by the control flow :\n\n- internal if reactive (that’s the llm which \"reacts\" and decides)\n- external if pipeline (that’s the programmer which decides to call llm and what to do with it)\n\n\n\n## Reactive agents\n\n:::{ layout-ncol=\"2\"}\n\n::::{}\nExamples:\n\n- Chatbots that respond to user queries with pre-defined answers.\n- Simple automation scripts that trigger actions based on specific events, like web search.\n- Agentic mode in Code Assistants\n\n::: {.callout-warning .fragment}\n$\\Rightarrow$ Control is done by the LLM itself with all risks : infinite loops, unsupervised and potentially dangerous actions etc.\n:::\n\n::::\n\n![](../images/reactive-agent.svg)\n\n:::\n\n## Pipeline Agents\n\n:::{ layout-ncol=\"2\"}\n\n::::{}\nExamples:\n\n- RAG queries\n- Summarizing documents\n- Communicating with other agents\n\n::: {.callout-note}\n$\\Rightarrow$ Control is done by normal, program logic\n:::\n\n::::\n\n![](../images/pipeline-agent.svg)\n\n:::\n\n## Reactive agent 2025 : MCP\n\n![](../images/mcp-explained.gif)\n\n:::attribution\nUjjwal Khadka\n[Source](https://medium.com/@khadkaujjwal47/model-context-protocol-mcp-68fa753f297a)\n:::\n\n## AI for pipelines/graphs\n\n- Low level (API, almost request-level)\n  - OpenAI API (ubiquitous)\n  - Huggingface\n- High level (Framework)\n  - Langchain (most popular)\n  - Semantic Kernel (Microsoft)\n  - Haystack\n  - and many many others…\n\n## AI for pipelines/graphs (2)\n\nSimple request with OpenAI API :\n\n```python\nfrom openai import OpenAI\nclient = OpenAI()\n\nchat_response = client.chat.completions.create(\n    model= \"gpt-4o\",\n    messages = [\n        {\n            \"role\": \"user\",\n            \"content\": \"What is the best French cheese?\",\n        },\n    ]\n)\nprint(chat_response.choices[0].message.content)\nSimple request with LangChain :\nfrom langchain.chat_models import init_chat_model\nfrom langchain_core.messages import HumanMessage, SystemMessage\n\nmodel = init_chat_model(\"gpt-4o-mini\", model_provider=\"openai\")\n\nmessages = [\n    SystemMessage(\"Translate the following from English into Italian\"),\n    HumanMessage(\"hi!\"),\n]\n\nmodel.invoke(messages)",
+    "text": "8.3 Multi-scale learning from text\n\nDL layers = capture different levels of dependencies in the data\nattention mechansim applies “multi-scale learning” to data sequences \\Rightarrow e.g. not only words in sentences, but sentences in paragraphs, paragraphs in documents and so on.\n\n\\Rightarrow transformers capture dependencies in the “whole”",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#multi-facets-learning-from-text",
+    "href": "Courses/01_Code-Assistant.html#multi-facets-learning-from-text",
+    "title": "2  Code Assistants",
+    "section": "8.4 Multi-facets learning from text",
+    "text": "8.4 Multi-facets learning from text\nMulti-head attention mechanism extends the attention mechanism to multifaceted dependencies of the same text components.\nIn the sentence “the cat sat on the rug, and after a few hours, it moved to the mat.” :\n\ncat/rug/mat\nrug/mat\ncat/he\nsat/moved to\n\n\\Rightarrow All those groups of words/tokens are multiple facets of the same text and its meaning.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#transformers",
+    "href": "Courses/01_Code-Assistant.html#transformers",
+    "title": "2  Code Assistants",
+    "section": "8.5 Transformers",
+    "text": "8.5 Transformers\n\n\nVaswani et al. (2017)",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#heart-of-transformers-attention-mechanism",
+    "href": "Courses/01_Code-Assistant.html#heart-of-transformers-attention-mechanism",
+    "title": "2  Code Assistants",
+    "section": "8.6 Heart of Transformers: Attention mechanism",
+    "text": "8.6 Heart of Transformers: Attention mechanism\n\n\n\\text{Attention}(Q,K,V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V\n\n\n\n\n\nThree matrices: Query, Key, Value, derived from the input sequence\nd_k: dimension of the key matrix, typically 64 or 128\nwe want to compute a weighted sum of the values V with weights given by the compatibility between the query and the keys\nsoftmax to get a probability distribution\nmulti-head attention: several attention mechanisms in parallel\n\n\n\n\n\n\n\n\nVaswani et al. (2017)",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#head-view-of-attention",
+    "href": "Courses/01_Code-Assistant.html#head-view-of-attention",
+    "title": "2  Code Assistants",
+    "section": "8.7 Head view of attention",
+    "text": "8.7 Head view of attention\n\n\n\n\n\n\nFigure 8.1: The model view visualizes attention across all heads in a single Transformer layer.\n\n\n\n\n\n\n\n\n\n\n\nEach line shows the attention from one token (left) to another (right).\nLine weight reflects the attention value (ranges from 0 to 1),\nline color identifies the attention head",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#bert-bidirectional-encoder-representations-from-transformers",
+    "href": "Courses/01_Code-Assistant.html#bert-bidirectional-encoder-representations-from-transformers",
+    "title": "2  Code Assistants",
+    "section": "8.8 BERT: Bidirectional Encoder Representations from Transformers",
+    "text": "8.8 BERT: Bidirectional Encoder Representations from Transformers\n\nembeddings: represent words as vectors in high dimensions",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#gpt-generative-pre-trained-transformer",
+    "href": "Courses/01_Code-Assistant.html#gpt-generative-pre-trained-transformer",
+    "title": "2  Code Assistants",
+    "section": "8.9 GPT : Generative Pre-trained Transformer",
+    "text": "8.9 GPT : Generative Pre-trained Transformer\n\nautoregressive model\ngenerates text by predicting the next token\npre-trained on large corpora of text",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#bert-vs-gpt",
+    "href": "Courses/01_Code-Assistant.html#bert-vs-gpt",
+    "title": "2  Code Assistants",
+    "section": "8.10 BERT vs GPT",
+    "text": "8.10 BERT vs GPT\n\n\n\n\n\nBERT\n\n\n\n\n\n\n\nGPT",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#summary-of-llm-types",
+    "href": "Courses/01_Code-Assistant.html#summary-of-llm-types",
+    "title": "2  Code Assistants",
+    "section": "8.11 Summary of LLM types",
+    "text": "8.11 Summary of LLM types\n\n\n\nType\nArchitecture\nTraining Objective\nAttention\nUse Cases\n\n\n\n\nBERT (Encoder-Only)\nEncoder stack only\nMasked Language Modeling (MLM)\nBidirectional (sees left and right context)\nClassification, QA, NER, sentiment analysis\n\n\nGPT (Decoder-Only)\nDecoder stack only\nAutoregressive Language Modeling (next token prediction)\nUnidirectional (left-to-right, autoregressive)\nText generation, chatbots, open-ended tasks\n\n\nSeq2Seq (Encoder-Decoder)\nEncoder + Decoder stacks\nSequence-to-sequence (e.g., translation, summarization)\nEncoder: Bidirectional; Decoder: Unidirectional (autoregressive)\nTranslation, summarization, speech recognition, data-to-text\n\n\n\n\n\n\nType\nStrengths\nWeaknesses\nExample Models\nTraining Data\nInference Speed\n\n\n\n\nBERT (Encoder-Only)\nDeep understanding of input; strong for discriminative tasks\nNot designed for generation\nBERT, RoBERTa, DistilBERT\nLarge corpus (masked tokens)\nFast (parallelizable)\n\n\nGPT (Decoder-Only)\nCoherent, fluent generation; open-ended creativity\nNo bidirectional context; limited to left-to-right generation\nGPT-3, GPT-4, Llama\nLarge corpus (autoregressive)\nSlower (autoregressive)\n\n\nSeq2Seq (Encoder-Decoder)\nExplicit input-output mapping; handles sequence transformation\nMore complex; requires aligned input-output pairs\nT5, BART, Transformer (original), Whisper\nParallel corpora (input-output pairs)\nModerate (depends on sequence length)",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#generative-llms-base-vs-instruct",
+    "href": "Courses/01_Code-Assistant.html#generative-llms-base-vs-instruct",
+    "title": "2  Code Assistants",
+    "section": "8.12 Generative LLMs, Base vs Instruct",
+    "text": "8.12 Generative LLMs, Base vs Instruct\n\nBase models are just predicting the next word (pre-training phase, no task-specific fine-tuning)\nInstruct models are fine-tuned on specific tasks and follow user instructions more effectively.\n\n\n\n\n\n\n\nImportant\n\n\n\nNever use the base model for specific tasks without fine-tuning.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#generative-llms-reasoning-vs-non-reasoning",
+    "href": "Courses/01_Code-Assistant.html#generative-llms-reasoning-vs-non-reasoning",
+    "title": "2  Code Assistants",
+    "section": "8.13 Generative LLMs, Reasoning vs non-Reasoning",
+    "text": "8.13 Generative LLMs, Reasoning vs non-Reasoning\n\n(Non-reasoning) models focus on generating coherent text without explicit reasoning capabilities\nReasoning models are designed to perform complex reasoning tasks and can handle multi-step problems, at the cost of increased computational requirements (and budget)\n\n\n\n\n\n\n\nTip\n\n\n\nReasoning addition to LLM have been a breakthrough in the field since end of 2024.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#the-importance-of-the-context-window",
+    "href": "Courses/01_Code-Assistant.html#the-importance-of-the-context-window",
+    "title": "2  Code Assistants",
+    "section": "8.14 The importance of the context window",
+    "text": "8.14 The importance of the context window\n\nThe context window is crucial for understanding and generating text.\nIt determines how much information the model can consider at once.\nLarger context windows allow for better understanding of complex queries and generation of more coherent responses\nTypical max context window are in a 16k tokens, latest open-weights local llms are 128/256/512k tokens, frontier llms are 1M+ tokens\nlong context window are computationally expensive and require more memory/gpu ressources.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#what-happens-when-the-context-window-is-exceeded",
+    "href": "Courses/01_Code-Assistant.html#what-happens-when-the-context-window-is-exceeded",
+    "title": "2  Code Assistants",
+    "section": "8.15 What happens when the context window is exceeded?",
+    "text": "8.15 What happens when the context window is exceeded?\n\nWhen the context window is exceeded, the model may lose track of important information, leading to less coherent responses.\nStrategies to handle this include:\n\nSummarizing previous context\nUsing external memory stores\nChunking input data\n\n\n\n\n\n\n\n\nCaution\n\n\n\nVery large context (when permitted by the model) isn’t always a good thing: there is chances that the model may become overwhelmed with information, leading to decreased performance AND quality.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#rag-retrieval-augmented-generation",
+    "href": "Courses/01_Code-Assistant.html#rag-retrieval-augmented-generation",
+    "title": "2  Code Assistants",
+    "section": "8.16 RAG (Retrieval-Augmented Generation)",
+    "text": "8.16 RAG (Retrieval-Augmented Generation)\n\n\n\n\nRAG combines retrieval-based and generation-based approaches.\nIt retrieves relevant documents from a knowledge base and uses them to inform the generation process.\nThis allows for more accurate and contextually relevant responses.\n\n\n\n\n\n\n\n\nTurtlecrown, Wikipedia",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#reactive-agents",
+    "href": "Courses/01_Code-Assistant.html#reactive-agents",
+    "title": "2  Code Assistants",
+    "section": "9.1 Reactive agents",
+    "text": "9.1 Reactive agents\n\n\n\nExamples:\n\nChatbots that respond to user queries with pre-defined answers.\nSimple automation scripts that trigger actions based on specific events, like web search.\nAgentic mode in Code Assistants\n\n\n\n\n\n\n\nWarning\n\n\n\n\\Rightarrow Control is done by the LLM itself with all risks : infinite loops, unsupervised and potentially dangerous actions etc.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#pipeline-agents",
+    "href": "Courses/01_Code-Assistant.html#pipeline-agents",
+    "title": "2  Code Assistants",
+    "section": "9.2 Pipeline Agents",
+    "text": "9.2 Pipeline Agents\n\n\n\nExamples:\n\nRAG queries\nSummarizing documents\nCommunicating with other agents\n\n\n\n\n\n\n\nNote\n\n\n\n\\Rightarrow Control is done by normal, program logic",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#reactive-agent-2025-mcp",
+    "href": "Courses/01_Code-Assistant.html#reactive-agent-2025-mcp",
+    "title": "2  Code Assistants",
+    "section": "9.3 Reactive agent 2025 : MCP",
+    "text": "9.3 Reactive agent 2025 : MCP\n\n\nUjjwal Khadka Source",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/01_Code-Assistant.html#ai-for-pipelinesgraphs",
+    "href": "Courses/01_Code-Assistant.html#ai-for-pipelinesgraphs",
+    "title": "2  Code Assistants",
+    "section": "9.4 AI for pipelines/graphs",
+    "text": "9.4 AI for pipelines/graphs\n\nLow level (API, almost request-level)\n\nOpenAI API (ubiquitous)\nHuggingface\n\nHigh level (Framework)\n\nLangchain (most popular)\nSemantic Kernel (Microsoft)\nHaystack\nand many many others…\n\n\nSimple request with OpenAI API :\nfrom openai import OpenAI\nclient = OpenAI()\n\nchat_response = client.chat.completions.create(\n    model= \"gpt-4o\",\n    messages = [\n        {\n            \"role\": \"user\",\n            \"content\": \"What is the best French cheese?\",\n        },\n    ]\n)\nprint(chat_response.choices[0].message.content)\nSimple request with LangChain :\nfrom langchain.chat_models import init_chat_model\nfrom langchain_core.messages import HumanMessage, SystemMessage\n\nmodel = init_chat_model(\"gpt-4o-mini\", model_provider=\"openai\")\n\nmessages = [\n    SystemMessage(\"Translate the following from English into Italian\"),\n    HumanMessage(\"hi!\"),\n]\n\nmodel.invoke(messages)",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -373,8 +543,8 @@
     "objectID": "Courses/01_Code-Assistant.html#mcp-server-example",
     "href": "Courses/01_Code-Assistant.html#mcp-server-example",
     "title": "2  Code Assistants",
-    "section": "8.4 MCP Server example",
-    "text": "8.4 MCP Server example\nfrom datetime import datetime\nfrom mcp.server.fastmcp import FastMCP\n\n# Create an MCP server\nmcp = FastMCP(\"GetTime\")\n\n@mcp.tool()\ndef get_date() -&gt; str:\n    \"\"\"Returns the current date in YYYY-MM-DD format.\"\"\"\n    return datetime.today().strftime('%Y-%m-%d')",
+    "section": "9.5 MCP Server example",
+    "text": "9.5 MCP Server example\nfrom datetime import datetime\nfrom mcp.server.fastmcp import FastMCP\n\n# Create an MCP server\nmcp = FastMCP(\"GetTime\")\n\n@mcp.tool()\ndef get_date() -&gt; str:\n    \"\"\"Returns the current date in YYYY-MM-DD format.\"\"\"\n    return datetime.today().strftime('%Y-%m-%d')",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -383,8 +553,8 @@
     "objectID": "Courses/01_Code-Assistant.html#the-real-question",
     "href": "Courses/01_Code-Assistant.html#the-real-question",
     "title": "2  Code Assistants",
-    "section": "9.1 The real question",
-    "text": "9.1 The real question\n\n\n\n\nAre the benefits of using generative AI worth the cost of extra supervision and the additional engineering effort?\n\n\n\nThe general answer is:",
+    "section": "10.1 The real question",
+    "text": "10.1 The real question\n\n\n\n\nAre the benefits of using generative AI worth the cost of extra supervision and the additional engineering effort?\n\n\n\nThe general answer is:",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -393,8 +563,8 @@
     "objectID": "Courses/01_Code-Assistant.html#on-the-other-hand",
     "href": "Courses/01_Code-Assistant.html#on-the-other-hand",
     "title": "2  Code Assistants",
-    "section": "9.2 On the other hand…",
-    "text": "9.2 On the other hand…\n\n\n\n\n\n\n\n\n\nBeware of vibe-coding",
+    "section": "10.2 On the other hand…",
+    "text": "10.2 On the other hand…\n\n\n\n\n\n\n\n\n\nBeware of vibe-coding\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. “Attention Is All You Need.” Advances in Neural Information Processing Systems 30.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -1204,7 +1374,7 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Fowler, M. 2022. Python Concurrency with Asyncio. Manning. https://www.manning.com/books/python-concurrency-with-asyncio.\n\n\nRobey, R., and Y. Zamora. 2021. Parallel and High Performance\nComputing. Manning. https://www.manning.com/books/parallel-and-high-performance-computing.",
+    "text": "Fowler, M. 2022. Python Concurrency with Asyncio. Manning. https://www.manning.com/books/python-concurrency-with-asyncio.\n\n\nRobey, R., and Y. Zamora. 2021. Parallel and High Performance\nComputing. Manning. https://www.manning.com/books/parallel-and-high-performance-computing.\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion\nJones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017.\n“Attention Is All You Need.” Advances in Neural\nInformation Processing Systems 30.",
     "crumbs": [
       "References"
     ]

@@ -631,9 +631,9 @@ $\Rightarrow$ Gustafson's law
 
 :::{layout-ncol="2"}
 
-![Multi-Processing](tikz-figures/multiprocessing_model.svg)
+![Multi-Processing](tikz-figures/multiprocessing_model.svg){ width="600px"}
 
-![Multi-Threading](tikz-figures/multithreading_model.svg)
+![Multi-Threading](tikz-figures/multithreading_model.svg){ width="600px"}
 
 :::
 

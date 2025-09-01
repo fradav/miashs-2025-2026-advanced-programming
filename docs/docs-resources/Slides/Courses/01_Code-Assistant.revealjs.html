@@ -97,7 +97,27 @@
     code span.va { color: #00e0e0; } /* Variable */
     code span.vs { color: #abe338; } /* VerbatimString */
     code span.wa { color: #dcc6e0; } /* Warning */
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="01_Code-Assistant_files/libs/revealjs/dist/theme/quarto-1cba0f46c05595d3a1391eb2efe6a96a.css">
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
@@ -248,6 +268,7 @@ François-David Collin
 <li><a href="#/a-quick-survey-of-deep-learning" id="/toc-a-quick-survey-of-deep-learning">A quick survey of Deep Learning</a></li>
 <li><a href="#/the-main-ingredients" id="/toc-the-main-ingredients">The main ingredients</a></li>
 <li><a href="#/train-a-large-language-model-llm" id="/toc-train-a-large-language-model-llm">Train a Large Language Model (LLM)</a></li>
+<li><a href="#/ai-agents" id="/toc-ai-agents">AI Agents</a></li>
 <li><a href="#/conclusion-and-take-home-messages" id="/toc-conclusion-and-take-home-messages">Conclusion and Take-home Messages</a></li>
 </ul>
 </nav>
@@ -1017,132 +1038,66 @@ x_9 &amp; = &amp; x_{8}/x_3.
 <li><em>attention mechansim</em> applies “multi-scale learning” to data sequences <span class="math inline">\Rightarrow</span> e.g.&nbsp;not only words in sentences, but sentences in paragraphs, paragraphs in documents and so on.</li>
 </ul>
 <p><span class="math inline">\Rightarrow</span> transformers capture dependencies in the “whole”</p>
-<!-- ```{mermaid}
-%%| fig-align: center
-graph TB
-    %% Text hierarchy
-    D[Document] -->
-<p>P1[Paragraph 1] D –&gt; P2[Paragraph 2] P1 –&gt; S11[Sentence 1.1] P1 –&gt; S12[Sentence 1.2] P2 –&gt; S21[Sentence 2.1] P2 –&gt; S22[Sentence 2.2]</p>
-<pre><code>%% Attention at different scales
-%% Word-level (within sentences)
-S11 -.-&gt;|word attn| S11
-S12 -.-&gt;|word attn| S12
-S21 -.-&gt;|word attn| S21
-S22 -.-&gt;|word attn| S22
+</section>
+<section id="multi-facets-learning-from-text" class="slide level2 center">
+<h2>Multi-facets learning from text</h2>
+<p><em>Multi-head attention mechanism</em> extends the attention mechanism to multifaceted dependencies of the same text components.</p>
+<p>In the sentence “the cat sat on the rug, and after a few hours, it moved to the mat.” :</p>
+<ul>
+<li>cat/rug/mat</li>
+<li>rug/mat</li>
+<li>cat/he</li>
+<li>sat/moved to</li>
+</ul>
+<p><span class="math inline">\Rightarrow</span> All those groups of words/tokens are multiple facets of the same text and its meaning.</p>
+</section>
+<section id="transformers" class="slide level2 center">
+<h2>Transformers</h2>
 
-%% Sentence-level (within paragraphs)
-P1 -.-|sentence attn| P1
-P2 -.-|sentence attn| P2
-
-%% Paragraph-level (within document)
-D ==&gt;|paragraph attn| D
-
-%% Legend
-subgraph Legend
-    C1[Word-level attention] --&gt;|dashed line| C1
-    C2[Sentence-level attention] --&gt;|dotted line| C2
-    C3[Paragraph-level attention] --&gt;|bold line| C3
-end</code></pre>
-<pre class="-->"><code>
-## Multi-facets learning from text
-
-*Multi-head attention mechanism* extends the attention mechanism to multifaceted dependencies of the same text components.
-
-In the sentence "the cat sat on the rug, and after a few hours, it moved to the mat." :
-
-- cat/rug/mat 
-- rug/mat
-- cat/he
-- sat/moved to
-
-$\Rightarrow$ All those groups of words/tokens are multiple facets of the same text and its meaning.
-
-&lt;!-- ```{mermaid}
-%%| fig-align: center
-graph TB
-    %% Words in order
-    W1(the) --&gt; W2(cat)
-    W2 --&gt; W3(sat)
-    W3 --&gt; W4(on)
-    W4 --&gt; W5(rug)
-    W5 --&gt; W6(,)
-    W6 --&gt; W7(and)
-    W7 --&gt; W8(after)
-    W8 --&gt; W9(a)
-    W9 --&gt; W10(few)
-    W10 --&gt; W11(hours)
-    W11 --&gt; W12(,)
-    W12 --&gt; W13(it)
-    W13 --&gt; W14(moved)
-    W14 --&gt; W15(to)
-    W15 --&gt; W16(the)
-    W16 --&gt; W17(mat)
-    W17 --&gt; W18(.)
-
-    %% Facet connections
-    %% Objects: cat ↔ rug, rug ↔ mat, cat ↔ mat
-    W2 --- W5
-    W5 --- W17
-    W2 --- W17
-
-    %% Coreference: cat ↔ it
-    W2 -.-&gt; W13
-
-    %% Actions: sat ↔ moved, moved ↔ to
-    W3 ==&gt; W14
-    W14 ==&gt; W15
-
-    %% Legend
-    subgraph Legend
-        O1[Objects] --- O2
-        C1[Coreference] -.-&gt; C2
-        A1[Actions] ==&gt; A2
-    end
-``` --&gt;
-
-## Transformers
-
-![](tikz-figures/attention-network.svg)
-
-:::attribution
-@vaswani2017attention
-:::
-
-## Heart of Transformers: Attention mechanism
-
-&lt;!-- TODO
+<img data-src="tikz-figures/attention-network.svg" class="r-stretch"><div class="attribution">
+<p><span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#/on-the-other-hand" role="doc-biblioref" onclick="">2017</a>)</span></p>
+</div>
+</section>
+<section id="heart-of-transformers-attention-mechanism" class="slide level2 center">
+<h2>Heart of Transformers: Attention mechanism</h2>
+<!-- TODO
 Complete with F. Fleuret’s docs https://fleuret.org/dlc/
- --&gt;
-
-$$
+ -->
+<p><span class="math display">
 \text{Attention}(Q,K,V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
-$$
-
-:::{layout="[[60,40]]"}
-
-:::{.incremental}
-- Three matrices: *Q*uery, *K*ey, *V*alue, derived from the input sequence
-- $d_k$: dimension of the key matrix, typically 64 or 128
-- we want to compute a weighted sum of the values $V$ with weights given by the compatibility between the query and the keys
-- *softmax* to get a probability distribution
-- *multi-head* attention: several attention mechanisms in parallel
-:::
-
-![](tikz-figures/multihead-attention.svg){ height="700px" style="float: right;"}
-
-:::
-
-
-:::attribution
-@vaswani2017attention
-:::
-
-## Head view of attention
-
-::::{layout="[[40,60]]"}
-::: {#fig-attention}
-
-&lt;!-- ```{python}
+</span></p>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<ul>
+<li class="fragment">Three matrices: <em>Q</em>uery, <em>K</em>ey, <em>V</em>alue, derived from the input sequence</li>
+<li class="fragment"><span class="math inline">d_k</span>: dimension of the key matrix, typically 64 or 128</li>
+<li class="fragment">we want to compute a weighted sum of the values <span class="math inline">V</span> with weights given by the compatibility between the query and the keys</li>
+<li class="fragment"><em>softmax</em> to get a probability distribution</li>
+<li class="fragment"><em>multi-head</em> attention: several attention mechanisms in parallel</li>
+</ul>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img data-src="tikz-figures/multihead-attention.svg" style="float: right;"></p>
+</div>
+</div>
+</div>
+<div class="attribution">
+<p><span class="citation" data-cites="vaswani2017attention">Vaswani et al. (<a href="#/on-the-other-hand" role="doc-biblioref" onclick="">2017</a>)</span></p>
+</div>
+</section>
+<section id="head-view-of-attention" class="slide level2 center">
+<h2>Head view of attention</h2>
+<div class="quarto-layout-panel" data-layout="[[40,60]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="fig-attention" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-attention-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The model view visualizes attention across all heads in a single Transformer layer.
+</figcaption>
+<div aria-describedby="fig-attention-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<!-- ```{python}
 from bertviz import head_view, model_view
 
 sentence_a = "The cat sat on the mat"
@@ -1155,283 +1110,397 @@ sentence_b_start = token_type_ids[0].tolist().index(1)
 input_id_list = input_ids[0].tolist() # Batch index 0
 tokens = tokenizer.convert_ids_to_tokens(input_id_list) 
 head_view(attention, tokens, sentence_b_start)
-``` --&gt;
-
-&lt;iframe style="background-color:white;" height=430 width=400 src="../materials/bert_head_view.html"&gt;&lt;/iframe&gt;
-
-The model view visualizes attention across all heads in a single Transformer layer. 
-
-:::
-
-- Each line shows the attention from one token (left) to another (right).
-- Line weight reflects the attention value (ranges from 0 to 1),
-- line color identifies the attention head
-
-::::
-
-
-&lt;!-- The head view visualizes attention in one or more heads from a single Transformer layer. Each line shows the attention from one token (left) to another (right). Line weight reflects the attention value (ranges from 0 to 1), while line color identifies the attention head. When multiple heads are selected (indicated by the colored tiles at the top), the corresponding visualizations are overlaid onto one another. --&gt;
-&lt;!-- summarize further, bullet mode --&gt;
-
-
-## BERT: Bidirectional Encoder Representations from Transformers
-
-- embeddings: represent words as vectors in high dimensions
-
-&lt;!-- ![](../images/bert.png){ style="margin-left: 25%;"} --&gt;
-![](tikz-figures/encoder-network.svg)
-
-
-
-## GPT : Generative Pre-trained Transformer
-
-- autoregressive model
-- generates text by predicting the next token
-- pre-trained on large corpora of text
-
-&lt;!-- ![](../images/gpt.png){ style="margin-left: 25%;"} --&gt;
-![](tikz-figures/decoder-network.svg)
-
-## BERT vs GPT
-
-:::{ layout-ncol="2" }
-
-![BERT](../images/bert.svg){ width="500px" }
-
-![GPT](../images/gpt.svg){ width="500px" }
-
-:::
-
-## Summary of LLM types { .smaller }
-
-:::list-table
-  * - Type
-    - Architecture
-    - Training Objective
-    - Attention
-    - Use Cases
-  * - **BERT (Encoder-Only)**
-    - Encoder stack only
-    - Masked Language Modeling (MLM)
-    - Bidirectional (sees left and right context)
-    - Classification, QA, NER, sentiment analysis
-  * - **GPT (Decoder-Only)**
-    - Decoder stack only
-    - Autoregressive Language Modeling (next token prediction)
-    - Unidirectional (left-to-right, autoregressive)
-    - Text generation, chatbots, open-ended tasks
-  * - **Seq2Seq (Encoder-Decoder)**
-    - Encoder + Decoder stacks
-    - Sequence-to-sequence (e.g., translation, summarization)
-    - Encoder: Bidirectional; Decoder: Unidirectional (autoregressive)
-    - Translation, summarization, speech recognition, data-to-text
-:::
-
-## Summary of LLM types (2) { .smaller }
-
-:::list-table
-  * - Type
-    - Strengths
-    - Weaknesses
-    - Example Models
-    - Training Data
-    - Inference Speed
-  * - **BERT (Encoder-Only)**
-    - Deep understanding of input; strong for discriminative tasks
-    - Not designed for generation
-    - BERT, RoBERTa, DistilBERT
-    - Large corpus (masked tokens)
-    - Fast (parallelizable)
-  * - **GPT (Decoder-Only)**
-    - Coherent, fluent generation; open-ended creativity
-    - No bidirectional context; limited to left-to-right generation
-    - GPT-3, GPT-4, Llama
-    - Large corpus (autoregressive)
-    - Slower (autoregressive)
-  * - **Seq2Seq (Encoder-Decoder)**
-    - Explicit input-output mapping; handles sequence transformation
-    - More complex; requires aligned input-output pairs
-    - T5, BART, Transformer (original), Whisper
-    - Parallel corpora (input-output pairs)
-    - Moderate (depends on sequence length)
-:::
-
-## Generative LLMs, Base vs Instruct
-
-- Base models are just predicting the next word (pre-training phase, no task-specific fine-tuning)
-- Instruct models are fine-tuned on specific tasks and follow user instructions more effectively.
-
-::: {.callout-important}
-Never use the base model for specific tasks without fine-tuning.
-:::
-
-## Generative LLMs, Reasoning vs non-Reasoning
-
-- (Non-reasoning) models focus on generating coherent text without explicit reasoning capabilities
-- Reasoning models are designed to perform complex reasoning tasks and can handle multi-step problems, at the cost of increased computational requirements (and budget)
-
-::: {.callout-tip}
-Reasoning addition to LLM have been a breakthrough in the field since end of 2024. 
-:::
-
-## The importance of the context window
-
-- The context window is crucial for understanding and generating text.
-- It determines how much information the model can consider at once.
-- Larger context windows allow for better understanding of complex queries and generation of more coherent responses
-- Typical max context window are in a 16k tokens, latest open-weights local llms are 128/256/512k tokens, frontier llms are 1M+ tokens
-- long context window are computationally expensive and require more memory/gpu ressources.
-
-## What happens when the context window is exceeded?
-
-- When the context window is exceeded, the model may lose track of important information, leading to less coherent responses.
-- Strategies to handle this include:
-  - Summarizing previous context
-  - Using external memory stores
-  - Chunking input data
-
-::: {.callout-caution}
-Very large context (when permitted by the model) isn’t always a good thing: there is chances that the model may become overwhelmed with information, leading to decreased performance AND quality.
-:::
-
-## RAG (Retrieval-Augmented Generation)
-
-:::{ layout-ncol="2" }
-
-:::{}
-
-- RAG combines retrieval-based and generation-based approaches.
-- It retrieves relevant documents from a knowledge base and uses them to inform the generation process.
-- This allows for more accurate and contextually relevant responses.
-:::
-
-![](../images/RAG_diagram.svg)
-
-:::
-
-:::attribution
-Turtlecrown, [Wikipedia](https://en.wikipedia.org/wiki/File:RAG_diagram.svg)
-:::
-
-# AI Agents 
-
-AI agents are just a programming paradigm involving either:
-
-- **Reactive** agents: respond to specific inputs with pre-defined actions.
-- **Pipelined** agents: process inputs through a series of stages or components.
-
-Reactive/Pipeline agents are defined by the control flow :
-
-- internal if reactive (that’s the llm which "reacts" and decides)
-- external if pipeline (that’s the programmer which decides to call llm and what to do with it)
-
-
-
-## Reactive agents
-
-:::{ layout-ncol="2"}
-
-::::{}
-Examples:
-
-- Chatbots that respond to user queries with pre-defined answers.
-- Simple automation scripts that trigger actions based on specific events, like web search.
-- Agentic mode in Code Assistants
-
-::: {.callout-warning .fragment}
-$\Rightarrow$ Control is done by the LLM itself with all risks : infinite loops, unsupervised and potentially dangerous actions etc.
-:::
-
-::::
-
-![](../images/reactive-agent.svg)
-
-:::
-
-## Pipeline Agents
-
-:::{ layout-ncol="2"}
-
-::::{}
-Examples:
-
-- RAG queries
-- Summarizing documents
-- Communicating with other agents
-
-::: {.callout-note}
-$\Rightarrow$ Control is done by normal, program logic
-:::
-
-::::
-
-![](../images/pipeline-agent.svg)
-
-:::
-
-## Reactive agent 2025 : MCP
-
-![](../images/mcp-explained.gif)
-
-:::attribution
-Ujjwal Khadka
-[Source](https://medium.com/@khadkaujjwal47/model-context-protocol-mcp-68fa753f297a)
-:::
-
-## AI for pipelines/graphs
-
-- Low level (API, almost request-level)
-  - OpenAI API (ubiquitous)
-  - Huggingface
-- High level (Framework)
-  - Langchain (most popular)
-  - Semantic Kernel (Microsoft)
-  - Haystack
-  - and many many others…
-
-## AI for pipelines/graphs (2)
-
-Simple request with OpenAI API :
-
-```python
-from openai import OpenAI
-client = OpenAI()
-
-chat_response = client.chat.completions.create(
-    model= "gpt-4o",
-    messages = [
-        {
-            "role": "user",
-            "content": "What is the best French cheese?",
-        },
-    ]
-)
-print(chat_response.choices[0].message.content)</code></pre>
+``` -->
+<iframe style="background-color:white;" height="430" width="400" src="../materials/bert_head_view.html">
+</iframe>
+</div>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<ul>
+<li>Each line shows the attention from one token (left) to another (right).</li>
+<li>Line weight reflects the attention value (ranges from 0 to 1),</li>
+<li>line color identifies the attention head</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- The head view visualizes attention in one or more heads from a single Transformer layer. Each line shows the attention from one token (left) to another (right). Line weight reflects the attention value (ranges from 0 to 1), while line color identifies the attention head. When multiple heads are selected (indicated by the colored tiles at the top), the corresponding visualizations are overlaid onto one another. -->
+<!-- summarize further, bullet mode -->
+</section>
+<section id="bert-bidirectional-encoder-representations-from-transformers" class="slide level2 center">
+<h2>BERT: Bidirectional Encoder Representations from Transformers</h2>
+<ul>
+<li>embeddings: represent words as vectors in high dimensions</li>
+</ul>
+<!-- ![](../images/bert.png){ style="margin-left: 25%;"} -->
+
+<img data-src="tikz-figures/encoder-network.svg" class="r-stretch"></section>
+<section id="gpt-generative-pre-trained-transformer" class="slide level2 center">
+<h2>GPT : Generative Pre-trained Transformer</h2>
+<ul>
+<li>autoregressive model</li>
+<li>generates text by predicting the next token</li>
+<li>pre-trained on large corpora of text</li>
+</ul>
+<!-- ![](../images/gpt.png){ style="margin-left: 25%;"} -->
+
+<img data-src="tikz-figures/decoder-network.svg" class="r-stretch"></section>
+<section id="bert-vs-gpt" class="slide level2 center">
+<h2>BERT vs GPT</h2>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<figcaption>BERT</figcaption>
+<p><img data-src="../images/bert.svg" width="500"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<figcaption>GPT</figcaption>
+<p><img data-src="../images/gpt.svg" width="500"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="summary-of-llm-types" class="slide level2 smaller center">
+<h2>Summary of LLM types</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 24%">
+<col style="width: 19%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Architecture</th>
+<th>Training Objective</th>
+<th>Attention</th>
+<th>Use Cases</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>BERT (Encoder-Only)</strong></td>
+<td>Encoder stack only</td>
+<td>Masked Language Modeling (MLM)</td>
+<td>Bidirectional (sees left and right context)</td>
+<td>Classification, QA, NER, sentiment analysis</td>
+</tr>
+<tr class="even">
+<td><strong>GPT (Decoder-Only)</strong></td>
+<td>Decoder stack only</td>
+<td>Autoregressive Language Modeling (next token prediction)</td>
+<td>Unidirectional (left-to-right, autoregressive)</td>
+<td>Text generation, chatbots, open-ended tasks</td>
+</tr>
+<tr class="odd">
+<td><strong>Seq2Seq (Encoder-Decoder)</strong></td>
+<td>Encoder + Decoder stacks</td>
+<td>Sequence-to-sequence (e.g., translation, summarization)</td>
+<td>Encoder: Bidirectional; Decoder: Unidirectional (autoregressive)</td>
+<td>Translation, summarization, speech recognition, data-to-text</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="summary-of-llm-types-2" class="slide level2 smaller center">
+<h2>Summary of LLM types (2)</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 21%">
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Strengths</th>
+<th>Weaknesses</th>
+<th>Example Models</th>
+<th>Training Data</th>
+<th>Inference Speed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>BERT (Encoder-Only)</strong></td>
+<td>Deep understanding of input; strong for discriminative tasks</td>
+<td>Not designed for generation</td>
+<td>BERT, RoBERTa, DistilBERT</td>
+<td>Large corpus (masked tokens)</td>
+<td>Fast (parallelizable)</td>
+</tr>
+<tr class="even">
+<td><strong>GPT (Decoder-Only)</strong></td>
+<td>Coherent, fluent generation; open-ended creativity</td>
+<td>No bidirectional context; limited to left-to-right generation</td>
+<td>GPT-3, GPT-4, Llama</td>
+<td>Large corpus (autoregressive)</td>
+<td>Slower (autoregressive)</td>
+</tr>
+<tr class="odd">
+<td><strong>Seq2Seq (Encoder-Decoder)</strong></td>
+<td>Explicit input-output mapping; handles sequence transformation</td>
+<td>More complex; requires aligned input-output pairs</td>
+<td>T5, BART, Transformer (original), Whisper</td>
+<td>Parallel corpora (input-output pairs)</td>
+<td>Moderate (depends on sequence length)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="generative-llms-base-vs-instruct" class="slide level2 center">
+<h2>Generative LLMs, Base vs Instruct</h2>
+<ul>
+<li>Base models are just predicting the next word (pre-training phase, no task-specific fine-tuning)</li>
+<li>Instruct models are fine-tuned on specific tasks and follow user instructions more effectively.</li>
+</ul>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>Never use the base model for specific tasks without fine-tuning.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="generative-llms-reasoning-vs-non-reasoning" class="slide level2 center">
+<h2>Generative LLMs, Reasoning vs non-Reasoning</h2>
+<ul>
+<li>(Non-reasoning) models focus on generating coherent text without explicit reasoning capabilities</li>
+<li>Reasoning models are designed to perform complex reasoning tasks and can handle multi-step problems, at the cost of increased computational requirements (and budget)</li>
+</ul>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p>Reasoning addition to LLM have been a breakthrough in the field since end of 2024.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-importance-of-the-context-window" class="slide level2 center">
+<h2>The importance of the context window</h2>
+<ul>
+<li>The context window is crucial for understanding and generating text.</li>
+<li>It determines how much information the model can consider at once.</li>
+<li>Larger context windows allow for better understanding of complex queries and generation of more coherent responses</li>
+<li>Typical max context window are in a 16k tokens, latest open-weights local llms are 128/256/512k tokens, frontier llms are 1M+ tokens</li>
+<li>long context window are computationally expensive and require more memory/gpu ressources.</li>
+</ul>
+</section>
+<section id="what-happens-when-the-context-window-is-exceeded" class="slide level2 center">
+<h2>What happens when the context window is exceeded?</h2>
+<ul>
+<li>When the context window is exceeded, the model may lose track of important information, leading to less coherent responses.</li>
+<li>Strategies to handle this include:
+<ul>
+<li>Summarizing previous context</li>
+<li>Using external memory stores</li>
+<li>Chunking input data</li>
+</ul></li>
+</ul>
+<div class="callout callout-caution callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Caution</strong></p>
+</div>
+<div class="callout-content">
+<p>Very large context (when permitted by the model) isn’t always a good thing: there is chances that the model may become overwhelmed with information, leading to decreased performance AND quality.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="rag-retrieval-augmented-generation" class="slide level2 center">
+<h2>RAG (Retrieval-Augmented Generation)</h2>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<ul>
+<li>RAG combines retrieval-based and generation-based approaches.</li>
+<li>It retrieves relevant documents from a knowledge base and uses them to inform the generation process.</li>
+<li>This allows for more accurate and contextually relevant responses.</li>
+</ul>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="../images/RAG_diagram.svg"></p>
+</div>
+</div>
+</div>
+<div class="attribution">
+<p>Turtlecrown, <a href="https://en.wikipedia.org/wiki/File:RAG_diagram.svg">Wikipedia</a></p>
+</div>
+</section></section>
+<section>
+<section id="ai-agents" class="title-slide slide level1 center">
+<h1>AI Agents</h1>
+<p>AI agents are just a programming paradigm involving either:</p>
+<ul>
+<li><strong>Reactive</strong> agents: respond to specific inputs with pre-defined actions.</li>
+<li><strong>Pipelined</strong> agents: process inputs through a series of stages or components.</li>
+</ul>
+<p>Reactive/Pipeline agents are defined by the control flow :</p>
+<ul>
+<li>internal if reactive (that’s the llm which “reacts” and decides)</li>
+<li>external if pipeline (that’s the programmer which decides to call llm and what to do with it)</li>
+</ul>
+</section>
+<section id="reactive-agents" class="slide level2 center">
+<h2>Reactive agents</h2>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Examples:</p>
+<ul>
+<li>Chatbots that respond to user queries with pre-defined answers.</li>
+<li>Simple automation scripts that trigger actions based on specific events, like web search.</li>
+<li>Agentic mode in Code Assistants</li>
+</ul>
+<div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p><span class="math inline">\Rightarrow</span> Control is done by the LLM itself with all risks : infinite loops, unsupervised and potentially dangerous actions etc.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="../images/reactive-agent.svg"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="pipeline-agents" class="slide level2 center">
+<h2>Pipeline Agents</h2>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Examples:</p>
+<ul>
+<li>RAG queries</li>
+<li>Summarizing documents</li>
+<li>Communicating with other agents</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p><span class="math inline">\Rightarrow</span> Control is done by normal, program logic</p>
+</div>
+</div>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="../images/pipeline-agent.svg"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="reactive-agent-2025-mcp" class="slide level2 center">
+<h2>Reactive agent 2025 : MCP</h2>
+
+<img data-src="../images/mcp-explained.gif" class="r-stretch"><div class="attribution">
+<p>Ujjwal Khadka <a href="https://medium.com/@khadkaujjwal47/model-context-protocol-mcp-68fa753f297a">Source</a></p>
+</div>
+</section>
+<section id="ai-for-pipelinesgraphs" class="slide level2 center">
+<h2>AI for pipelines/graphs</h2>
+<ul>
+<li>Low level (API, almost request-level)
+<ul>
+<li>OpenAI API (ubiquitous)</li>
+<li>Huggingface</li>
+</ul></li>
+<li>High level (Framework)
+<ul>
+<li>Langchain (most popular)</li>
+<li>Semantic Kernel (Microsoft)</li>
+<li>Haystack</li>
+<li>and many many others…</li>
+</ul></li>
+</ul>
+</section>
+<section id="ai-for-pipelinesgraphs-2" class="slide level2 center">
+<h2>AI for pipelines/graphs (2)</h2>
+<p>Simple request with OpenAI API :</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI()</span>
+<span id="cb2-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="" aria-hidden="true" tabindex="-1"></a>chat_response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb2-5"><a href="" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span> <span class="st">"gpt-4o"</span>,</span>
+<span id="cb2-6"><a href="" aria-hidden="true" tabindex="-1"></a>    messages <span class="op">=</span> [</span>
+<span id="cb2-7"><a href="" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb2-8"><a href="" aria-hidden="true" tabindex="-1"></a>            <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb2-9"><a href="" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: <span class="st">"What is the best French cheese?"</span>,</span>
+<span id="cb2-10"><a href="" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb2-11"><a href="" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb2-12"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-13"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chat_response.choices[<span class="dv">0</span>].message.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Simple request with LangChain :</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain.chat_models <span class="im">import</span> init_chat_model</span>
-<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain_core.messages <span class="im">import</span> HumanMessage, SystemMessage</span>
-<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> init_chat_model(<span class="st">"gpt-4o-mini"</span>, model_provider<span class="op">=</span><span class="st">"openai"</span>)</span>
-<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="" aria-hidden="true" tabindex="-1"></a>messages <span class="op">=</span> [</span>
-<span id="cb4-7"><a href="" aria-hidden="true" tabindex="-1"></a>    SystemMessage(<span class="st">"Translate the following from English into Italian"</span>),</span>
-<span id="cb4-8"><a href="" aria-hidden="true" tabindex="-1"></a>    HumanMessage(<span class="st">"hi!"</span>),</span>
-<span id="cb4-9"><a href="" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb4-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="" aria-hidden="true" tabindex="-1"></a>model.invoke(messages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain.chat_models <span class="im">import</span> init_chat_model</span>
+<span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain_core.messages <span class="im">import</span> HumanMessage, SystemMessage</span>
+<span id="cb3-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> init_chat_model(<span class="st">"gpt-4o-mini"</span>, model_provider<span class="op">=</span><span class="st">"openai"</span>)</span>
+<span id="cb3-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="" aria-hidden="true" tabindex="-1"></a>messages <span class="op">=</span> [</span>
+<span id="cb3-7"><a href="" aria-hidden="true" tabindex="-1"></a>    SystemMessage(<span class="st">"Translate the following from English into Italian"</span>),</span>
+<span id="cb3-8"><a href="" aria-hidden="true" tabindex="-1"></a>    HumanMessage(<span class="st">"hi!"</span>),</span>
+<span id="cb3-9"><a href="" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="" aria-hidden="true" tabindex="-1"></a>model.invoke(messages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="mcp-server-example" class="slide level2 center">
 <h2>MCP Server example</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb5-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mcp.server.fastmcp <span class="im">import</span> FastMCP</span>
-<span id="cb5-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an MCP server</span></span>
-<span id="cb5-5"><a href="" aria-hidden="true" tabindex="-1"></a>mcp <span class="op">=</span> FastMCP(<span class="st">"GetTime"</span>)</span>
-<span id="cb5-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>()</span>
-<span id="cb5-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_date() <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb5-9"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Returns the current date in YYYY-MM-DD format."""</span></span>
-<span id="cb5-10"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> datetime.today().strftime(<span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mcp.server.fastmcp <span class="im">import</span> FastMCP</span>
+<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an MCP server</span></span>
+<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a>mcp <span class="op">=</span> FastMCP(<span class="st">"GetTime"</span>)</span>
+<span id="cb4-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>()</span>
+<span id="cb4-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_date() <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb4-9"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Returns the current date in YYYY-MM-DD format."""</span></span>
+<span id="cb4-10"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> datetime.today().strftime(<span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section></section>
 <section>
 <section id="conclusion-and-take-home-messages" class="title-slide slide level1 center">
@@ -1468,7 +1537,7 @@ print(chat_response.choices[0].message.content)</code></pre>
 </div>
 </div>
 </section>
-<section id="on-the-other-hand" class="slide level2 center">
+<section id="on-the-other-hand" class="slide level2 smaller scrollable">
 <h2>On the other hand…</h2>
 <div class="quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -1515,6 +1584,11 @@ print(chat_response.choices[0].message.content)</code></pre>
 </div>
 <div class="sb-title">
 <p> </p>
+</div>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-vaswani2017attention" class="csl-entry" role="listitem">
+Vaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. <span>“Attention Is All You Need.”</span> <em>Advances in Neural Information Processing Systems</em> 30.
 </div>
 </div>
 </section></section>
