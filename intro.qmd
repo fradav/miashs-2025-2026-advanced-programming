@@ -1,4 +1,4 @@
-# Prerequisites
+# Software Prerequisites
 
 ## Software required
 
@@ -162,3 +162,84 @@ Congratulations, you are now set for use of `continue` AI Code Assistant. You ca
 :::{.callout-note title="Anonymous Guest Name"}
 If you choose to sign in, you’ll have to authorize VSCode to access your github/microsoft account. If you choose anonymous, you’ll have to choose a username. Please choose a username that is easily identifiable as yours.
 :::
+
+# Python Environment Management
+
+As 2025, the recommended way to manage python environments is to use `uv`, by far. It is a directory-env based, that is, it installs environment and packages in the current directory.
+
+
+## Installing uv
+
+See [uv installation](https://docs.astral.sh/uv/getting-started/installation/) for your platform.
+
+## Creating a new environment
+
+To create a new environment, use the following command:
+
+```bash
+uv init
+```
+
+This will create a new environment within the current directory.
+
+## Adding packages
+
+To add packages to your environment, use the following command:
+
+```bash
+uv add package_name
+```
+
+Replace `package_name` with the name of the package you want to install. This will install the package in your current environment.
+
+## running a script online with just a dependency
+
+```bash
+uv run --with dependency script.py
+```
+
+This will execute the `script.py` file using just the specified dependency as the environment.
+
+## running  script with a directory
+
+```bash
+uv run --directory dir_env script.py
+```
+
+This will execute the `script.py` file using the specified directory as the working directory.
+
+# Running multiprocessing/asyncio code in jupyter/interactive session
+
+## MacOS
+
+Add this to you vscode `settings.json`
+
+```json
+    "jupyter.runStartupCommands": [
+        "%colors nocolor",
+        "from multiprocessing import spawn",
+        "from multiprocessing.spawn import get_preparation_data as __get_preparation_data",
+        "def __patched_get_preparation_data(name):",
+        "    import sys",
+        "    main_mod = sys.modules['__main__']",
+        "    main_path = getattr(main_mod, '__file__', None)",
+        "    setattr(main_mod, '__file__', None)",
+        "    data = __get_preparation_data(name)",
+        "    setattr(main_mod, '__file__', main_path)",
+        "    return data",
+        "spawn.get_preparation_data = __patched_get_preparation_data",
+        "del spawn",
+        "import sys",
+        "from multiprocessing.reduction import ForkingPickler",
+        "from types import FunctionType",
+        "import cloudpickle",
+        "",
+        "def reducer_override(obj):",
+        "    if type(obj) is FunctionType:",
+        "        return (cloudpickle.loads, (cloudpickle.dumps(obj),))",
+        "    else:",
+        "        return NotImplemented",
+        "",
+        "ForkingPickler.reducer_override = staticmethod(reducer_override)"
+    ],
+```

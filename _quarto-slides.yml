@@ -41,6 +41,7 @@ format:
       auto-stretch: true
       controls: false
       code-annotations: select
+      chalkboard: true
 revealjs-plugins:
   - attribution
   - animate

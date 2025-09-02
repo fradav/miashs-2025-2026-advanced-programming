@@ -5,6 +5,34 @@ nocite: |
     @fowler2022python
 ---
 
+```{python}
+#| echo: false
+from multiprocessing import spawn
+from multiprocessing.spawn import get_preparation_data as __get_preparation_data
+def __patched_get_preparation_data(name):
+    import sys
+    main_mod = sys.modules['__main__']
+    main_path = getattr(main_mod, '__file__', None)
+    setattr(main_mod, '__file__', None)
+    data = __get_preparation_data(name)
+    setattr(main_mod, '__file__', main_path)
+    return data
+spawn.get_preparation_data = __patched_get_preparation_data
+del spawn
+import sys
+from multiprocessing.reduction import ForkingPickler
+from types import FunctionType
+import cloudpickle
+
+def reducer_override(obj):
+    if type(obj) is FunctionType:
+        return (cloudpickle.loads, (cloudpickle.dumps(obj),))
+    else:
+        return NotImplemented
+
+ForkingPickler.reducer_override = staticmethod(reducer_override)
+```
+
 # Asynchronous, Basics
 
 ## What is Asynchronous Programming?

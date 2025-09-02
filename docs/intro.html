@@ -413,6 +413,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#running-a-script-online-with-just-a-dependency" id="toc-running-a-script-online-with-just-a-dependency" class="nav-link" data-scroll-target="#running-a-script-online-with-just-a-dependency"><span class="header-section-number">2.4</span> running a script online with just a dependency</a></li>
   <li><a href="#running-script-with-a-directory" id="toc-running-script-with-a-directory" class="nav-link" data-scroll-target="#running-script-with-a-directory"><span class="header-section-number">2.5</span> running script with a directory</a></li>
   </ul></li>
+  <li><a href="#running-multiprocessingasyncio-code-in-jupyterinteractive-session" id="toc-running-multiprocessingasyncio-code-in-jupyterinteractive-session" class="nav-link" data-scroll-target="#running-multiprocessingasyncio-code-in-jupyterinteractive-session"><span class="header-section-number">3</span> Running multiprocessing/asyncio code in jupyter/interactive session</a>
+  <ul>
+  <li><a href="#macos" id="toc-macos" class="nav-link" data-scroll-target="#macos"><span class="header-section-number">3.1</span> MacOS</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -686,6 +690,40 @@ Anonymous Guest Name
 <h2 data-number="2.5" class="anchored" data-anchor-id="running-script-with-a-directory"><span class="header-section-number">2.5</span> running script with a directory</h2>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run <span class="at">--directory</span> dir_env script.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This will execute the <code>script.py</code> file using the specified directory as the working directory.</p>
+</section>
+</section>
+<section id="running-multiprocessingasyncio-code-in-jupyterinteractive-session" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Running multiprocessing/asyncio code in jupyter/interactive session</h1>
+<section id="macos" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="macos"><span class="header-section-number">3.1</span> MacOS</h2>
+<p>Add this to you vscode <code>settings.json</code></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>    <span class="er">"jupyter.runStartupCommands":</span> <span class="ot">[</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%colors nocolor"</span><span class="ot">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"from multiprocessing import spawn"</span><span class="ot">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"from multiprocessing.spawn import get_preparation_data as __get_preparation_data"</span><span class="ot">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"def __patched_get_preparation_data(name):"</span><span class="ot">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"    import sys"</span><span class="ot">,</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"    main_mod = sys.modules['__main__']"</span><span class="ot">,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"    main_path = getattr(main_mod, '__file__', None)"</span><span class="ot">,</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"    setattr(main_mod, '__file__', None)"</span><span class="ot">,</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"    data = __get_preparation_data(name)"</span><span class="ot">,</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"    setattr(main_mod, '__file__', main_path)"</span><span class="ot">,</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"    return data"</span><span class="ot">,</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"spawn.get_preparation_data = __patched_get_preparation_data"</span><span class="ot">,</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"del spawn"</span><span class="ot">,</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"import sys"</span><span class="ot">,</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"from multiprocessing.reduction import ForkingPickler"</span><span class="ot">,</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"from types import FunctionType"</span><span class="ot">,</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"import cloudpickle"</span><span class="ot">,</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">""</span><span class="ot">,</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"def reducer_override(obj):"</span><span class="ot">,</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"    if type(obj) is FunctionType:"</span><span class="ot">,</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">"        return (cloudpickle.loads, (cloudpickle.dumps(obj),))"</span><span class="ot">,</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">"    else:"</span><span class="ot">,</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">"        return NotImplemented"</span><span class="ot">,</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">""</span><span class="ot">,</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"ForkingPickler.reducer_override = staticmethod(reducer_override)"</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="er">,</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>
