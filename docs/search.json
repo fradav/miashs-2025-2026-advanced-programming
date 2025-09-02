@@ -1360,13 +1360,473 @@
     ]
   },
   {
+    "objectID": "Courses/04_IPC-and-Locking.html",
+    "href": "Courses/04_IPC-and-Locking.html",
+    "title": "5  IPC and locking",
+    "section": "",
+    "text": "6 Inter-Process Communication",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#remainder-on-process-level-parallelization",
+    "href": "Courses/04_IPC-and-Locking.html#remainder-on-process-level-parallelization",
+    "title": "5  IPC and locking",
+    "section": "6.1 Remainder on Process-level parallelization",
+    "text": "6.1 Remainder on Process-level parallelization\n\n\n\n\n\nMulti-Processing\n\n\n\n\n\n\n\nMulti-Threading",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#inter-process-is-easy",
+    "href": "Courses/04_IPC-and-Locking.html#inter-process-is-easy",
+    "title": "5  IPC and locking",
+    "section": "6.2 Inter-process is easy…",
+    "text": "6.2 Inter-process is easy…\n\n\nBut if my algorithm is not “embarrassingly parallel”, what if we want to share data between processes ?\nlet’s go for Shared Memory",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#shared-memory-model",
+    "href": "Courses/04_IPC-and-Locking.html#shared-memory-model",
+    "title": "5  IPC and locking",
+    "section": "6.3 Shared Memory Model",
+    "text": "6.3 Shared Memory Model\n┌─────────────────────────────┐    ┌─────────────────────────────┐\n│                             │    │                             │\n│ ┌──────────┐   ┌──────────┐ │    │ ┌──────────┐   ┌──────────┐ │\n│ │          │   │          │ │    │ │          │   │          │ │\n│ │  CORE 1  │   │  CORE 2  │ │    │ │  CORE 3  │   │  CORE 4  │ │\n│ │          │   │          │ │    │ │          │   │          │ │\n│ └─┬──┬─────┘   └────┬─────┘ │    │ └┬─────────┘   └──────┬───┘ │\n│   │  │              │       │    │  │                    │     │\n│   │  │              │       │    │  │                    │     │\n│   │  │  CPU 1       │       │    │  │      CPU 2         │     │\n│   │  │              │       │    │  │                    │     │\n└───┼──┼──────────────┼───────┘    └──┼────────────────────┼─────┘\n    │  │              │               │                    │\n    │  │              └────────────┐  │                    │\n    │  │                           │  │                    │\n    │  └─────────────────────────┐ │  │                    │\n    │                            │ │  │  ┌─────────────────┘\n    └──────────────────────────┐ │ │  │  │\n                               │ │ │  │  │\n┌──────────────────────────────┼─┼─┼──┼──┼──────────────────────┐\n│                              │ │ │  │  │                      │\n│ ┌─────┐  ┌─────┐  ┌─────┐  ┌─▼─▼─▼──▼──▼─┐                    │\n│ │     │  │     │  │     │  │Shared Memory│                    │\n│ └─────┘  └─────┘  └─────┘  └─────────────┘                    │\n│                                      Main Memory              │\n└───────────────────────────────────────────────────────────────┘",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#aside-memory-models",
+    "href": "Courses/04_IPC-and-Locking.html#aside-memory-models",
+    "title": "5  IPC and locking",
+    "section": "6.4 Aside : memory models",
+    "text": "6.4 Aside : memory models\n\n\n\n\n\nUMA\n\n\n\n\n\n \n\n\n\n\nNUMA\n\n\n\n\n\n\n\nThere are differents models",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#shared-fifos-queues",
+    "href": "Courses/04_IPC-and-Locking.html#shared-fifos-queues",
+    "title": "5  IPC and locking",
+    "section": "6.5 Shared FIFOs : Queues",
+    "text": "6.5 Shared FIFOs : Queues\nAn ubiquitous tool in multiprocessing (and distributed computing) is shared memory FIFO list, aka Queues.\nA FIFO is a :\n\nLinked list\nwith FIFO (First In First Out) semantics, with enqueue(x) et dequeue() function (or push(x)/pop())\n\n\n\n\n\n\nIn the context of multi-processing (or multi-threading) :\nShared Memory + FIFO list = Queue\nQueues are the basis of the consumer/producer model, which is widely used in concurrent and distributed applications.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#when-to-use-queues",
+    "href": "Courses/04_IPC-and-Locking.html#when-to-use-queues",
+    "title": "5  IPC and locking",
+    "section": "6.6 When to use queues?",
+    "text": "6.6 When to use queues?\nAn algorithm with two computations A and B where :\n\nB depends on the result of A\nA is independent of B\n\n. . .\nA could be a producer for B, and B a consumer for A.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#how-to-use-queues",
+    "href": "Courses/04_IPC-and-Locking.html#how-to-use-queues",
+    "title": "5  IPC and locking",
+    "section": "6.7 How to use queues?",
+    "text": "6.7 How to use queues?\n┌───────────┐\n│           │\n│ Producer  │\n│           │ Process A\n│           │\n└─────┬─────┘\n      │\n ┌────┼───────────────────────────────────────────────────────────────────┐\n │    │                         Queue                                     │\n │    │        ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┐                │\n │    │        │     │     │     │     │     │     │     │                │\n │    └───────►│     │     │     │     │     │     │     ├──────────┐     │\n │             │     │     │     │     │     │     │     │          │     │\n │             └─────┴─────┴─────┴─────┴─────┴─────┴─────┘          │     │\n │                                                                  │     │\n │        Shared Memory                                             │     │\n └──────────────────────────────────────────────────────────────────┼─────┘\n                                                                    │\n                                                                    ▼\n                                                              ┌───────────┐\n                                                              │           │\n                                                   Process B  │ Consumer  │\n                                                              │           │\n                                                              │           │\n                                                              └───────────┘",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#producerconsumer-examples",
+    "href": "Courses/04_IPC-and-Locking.html#producerconsumer-examples",
+    "title": "5  IPC and locking",
+    "section": "6.8 Producer/consumer, Examples",
+    "text": "6.8 Producer/consumer, Examples\n\nA finds primes in a list of number, B formats and prints them every 10 numbers found.\nA fetches a bunch of images on the web, B downloads them and saves them to disk.\nA takes the orders in the restaurant, B cooks them.\n\n. . .",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#the-main-gotcha",
+    "href": "Courses/04_IPC-and-Locking.html#the-main-gotcha",
+    "title": "5  IPC and locking",
+    "section": "7.1 The main gotcha",
+    "text": "7.1 The main gotcha\nwhat if several processes want to write/read the same shared memory portions at the same time?\n. . .\nEnter the realm of the dreaded race condition",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#simple-example",
+    "href": "Courses/04_IPC-and-Locking.html#simple-example",
+    "title": "5  IPC and locking",
+    "section": "7.2 Simple example",
+    "text": "7.2 Simple example\nPrinting from several processes a string with 10 times the same char.\n\n\nfrom multiprocessing.pool import Pool\nfrom itertools import repeat\n# print \"AAAAAAAAA\", \"BBBBBBBBBBB\" etc.\ndef repeat10Cap(c): \n    print(\"\".join(repeat(chr(c+65),10))) \nwith Pool(8) as pool:\n    pool.map(repeat10Cap, range(10))\n\n\nOutput:\nAAAAAAAAAACCCCCCCCCCBBBBBBBBBBDDDDDDDDDDEEEEEEEEEE\n\n\nFFFFFFFFFFGGGGGGGGGG\nIIIIIIIIII\n\nHHHHHHHHHH\nJJJJJJJJJJ",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#critical-section-workflow",
+    "href": "Courses/04_IPC-and-Locking.html#critical-section-workflow",
+    "title": "5  IPC and locking",
+    "section": "8.1 Critical section workflow",
+    "text": "8.1 Critical section workflow\n\n\nThree processes with critical section",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#a-simple-implementation-in-python-lock",
+    "href": "Courses/04_IPC-and-Locking.html#a-simple-implementation-in-python-lock",
+    "title": "5  IPC and locking",
+    "section": "8.2 A simple implementation in Python : Lock",
+    "text": "8.2 A simple implementation in Python : Lock\n\n\nfrom multiprocessing.pool import Pool\nfrom multiprocessing import Lock\nfrom itertools import repeat\nlock = Lock()\ndef safe_repeat10Cap(c):\n    with lock: \n        # Beginning of critical section\n        print(\"\".join(repeat(chr(c+65),10)))\n        # End of critical section\nwith Pool(8) as pool:\n    pool.map(safe_repeat10Cap, range(10))\n\n\nOutput:\nAAAAAAAAAA\nBBBBBBBBBB\nCCCCCCCCCC\nDDDDDDDDDD\nEEEEEEEEEE\nFFFFFFFFFF\nGGGGGGGGGG\nHHHHHHHHHH\nIIIIIIIIII\nJJJJJJJJJJ",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#consistency-problems-with-fifo-example-i",
+    "href": "Courses/04_IPC-and-Locking.html#consistency-problems-with-fifo-example-i",
+    "title": "5  IPC and locking",
+    "section": "9.1 Consistency problems with FIFO example I",
+    "text": "9.1 Consistency problems with FIFO example I\nProcess A (resp. B) wants to push x (resp. y) on the list.\n\n\n\\Longrightarrow Consistency problem if they both create a new linked node to node 3.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#consistency-problems-with-fifo-example-2",
+    "href": "Courses/04_IPC-and-Locking.html#consistency-problems-with-fifo-example-2",
+    "title": "5  IPC and locking",
+    "section": "9.2 Consistency problems with FIFO example 2",
+    "text": "9.2 Consistency problems with FIFO example 2\nProcess A and B both want to pop the list.\n\n\n\\Longrightarrow Consistency problem if they both pop the same node.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#no-consistency-problems-with-fifo-example-3",
+    "href": "Courses/04_IPC-and-Locking.html#no-consistency-problems-with-fifo-example-3",
+    "title": "5  IPC and locking",
+    "section": "9.3 (No) Consistency problems with FIFO example 3",
+    "text": "9.3 (No) Consistency problems with FIFO example 3\n\n\nNo problem there.\n\n\n\n. . .\n\n\n\n\n\n\nWarning\n\n\n\n⚠ ⚠ As long the list is not empty ⚠ ⚠",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#deadlock-example",
+    "href": "Courses/04_IPC-and-Locking.html#deadlock-example",
+    "title": "5  IPC and locking",
+    "section": "10.1 Deadlock example",
+    "text": "10.1 Deadlock example",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#deadlock-serious-example",
+    "href": "Courses/04_IPC-and-Locking.html#deadlock-serious-example",
+    "title": "5  IPC and locking",
+    "section": "10.2 Deadlock (serious) example",
+    "text": "10.2 Deadlock (serious) example\n\n\nDeadlock illustration\n\n\n\n\nProcess A acquires lock L1. Process B acquires lock L2. Process A tries to acquire lock L2, but it is already held by B. Process B tries to acquire lock L1, but it is already held by A. Both processes are blocked.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/04_IPC-and-Locking.html#avoiding-deadlocks",
+    "href": "Courses/04_IPC-and-Locking.html#avoiding-deadlocks",
+    "title": "5  IPC and locking",
+    "section": "10.3 Avoiding Deadlocks",
+    "text": "10.3 Avoiding Deadlocks\nThere is several ways to avoid deadlocks. One of them is the Dijkstra’s Resource Hiearchy Solution.\n. . .\nIn the previous example, processes should try the lowest numbered locks first. Instead of B acquiring L2 first, it should tries to acquire L1 instead and L2 after.\n. . .\nThis solution isn’t universal but is pretty usable in general case.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html",
+    "href": "Courses/05_Distributed.html",
+    "title": "6  Distributed Computing models",
+    "section": "",
+    "text": "7 Map-Reduce",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#the-real-beating-heart-of-big-data",
+    "href": "Courses/05_Distributed.html#the-real-beating-heart-of-big-data",
+    "title": "6  Distributed Computing models",
+    "section": "7.1 The (real) beating Heart of Big Data",
+    "text": "7.1 The (real) beating Heart of Big Data\nMap\\rightarrow{}Reduce patern is the most common pattern to process data in (real) Big Data.\n. . .\nIt is heavily used by Google, Facebook, and IBM.\n. . .\nHadoop from Apache is a popular Map-Reduce framework (also called MapReduce in the Hadoop framework, not to be confused with the more general Map\\rightarrow{}Reduce Pattern).\n. . .\nHadoop is backed by a HDFS (Hadoop Distributed File System) and a YARN (Yet Another Resource Manager)\n\nHDFS is a distributed file system (a file system that is distributed across a cluster of computers)\nYARN is a resource manager (a program that manages the resources of a cluster)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#split-apply-combine-pattern",
+    "href": "Courses/05_Distributed.html#split-apply-combine-pattern",
+    "title": "6  Distributed Computing models",
+    "section": "7.2 Split-Apply-Combine pattern",
+    "text": "7.2 Split-Apply-Combine pattern\n\n\n\n\nSplit:\n\nSplit the data into smaller pieces\n\nApply:\n\nProcess the data in the pieces\n\nCombine:\n\nMerge the results",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#map",
+    "href": "Courses/05_Distributed.html#map",
+    "title": "6  Distributed Computing models",
+    "section": "7.3 Map",
+    "text": "7.3 Map\nMap takes one pair of data with a type in one data domain, and returns a list of pairs in a different domain:\nMap(k1,v1) → list(k2,v2)\n\\Longrightarrow heavily parallelized",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#reduce",
+    "href": "Courses/05_Distributed.html#reduce",
+    "title": "6  Distributed Computing models",
+    "section": "7.4 Reduce",
+    "text": "7.4 Reduce\nThe values associated from the same key are combined.\nThe Reduce function is then applied in parallel to each group, which in turn produces a collection of values in the same domain:\nReduce(k2, list (v2)) → list((k3, v3))",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#schema",
+    "href": "Courses/05_Distributed.html#schema",
+    "title": "6  Distributed Computing models",
+    "section": "7.5 Schema",
+    "text": "7.5 Schema",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#canonical-example-word-count-i",
+    "href": "Courses/05_Distributed.html#canonical-example-word-count-i",
+    "title": "6  Distributed Computing models",
+    "section": "7.6 Canonical example : Word Count, I",
+    "text": "7.6 Canonical example : Word Count, I\nThe canonical MapReduce example counts the appearance of each word in a set of documents\ndef map(name, document):\n  // name: document name\n  // document: document contents (list of words)\n  for word in document:\n    emit (word, 1)\n\ndef reduce(word, partialCounts):\n  // word: a word\n  // partialCounts: a list of aggregated partial counts\n  sum = 0\n  for pc in partialCounts:\n    sum += pc\n  emit (word, sum)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#canonical-example-word-count-ii",
+    "href": "Courses/05_Distributed.html#canonical-example-word-count-ii",
+    "title": "6  Distributed Computing models",
+    "section": "7.7 Canonical example : Word Count, II",
+    "text": "7.7 Canonical example : Word Count, II",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#spark-spiritual-son-of-mapreduce",
+    "href": "Courses/05_Distributed.html#spark-spiritual-son-of-mapreduce",
+    "title": "6  Distributed Computing models",
+    "section": "7.8 Spark, spiritual son of MapReduce",
+    "text": "7.8 Spark, spiritual son of MapReduce\nSpark is widely used for machine learning on scalable data sets (faster than MapReduce by an order of magnitude).\n. . .\nSpark is largely inspired by the MapReduce pattern but extends it by using a distributed graph rather than a “linear” data flow like Map\\rightarrow{}Reduce.\n\\Longrightarrow Complex disbributed computing.\n. . .\nSpark emphasizes ease of use of the cluster ressources in a simple and functional way",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#spark-code-example-word-count",
+    "href": "Courses/05_Distributed.html#spark-code-example-word-count",
+    "title": "6  Distributed Computing models",
+    "section": "7.9 Spark, code example : Word Count",
+    "text": "7.9 Spark, code example : Word Count\ntext_file = sc.textFile(\"hdfs://...\")\ncounts = text_file.flatMap(lambda line: line.split(\" \")) \\\n             .map(lambda word: (word, 1)) \\\n             .reduceByKey(lambda a, b: a + b)\ncounts.saveAsTextFile(\"hdfs://...\")",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#spark-another-example-machine-learning",
+    "href": "Courses/05_Distributed.html#spark-another-example-machine-learning",
+    "title": "6  Distributed Computing models",
+    "section": "7.10 Spark, another example : machine learning",
+    "text": "7.10 Spark, another example : machine learning\n# Every record of this DataFrame contains the label and\n# features represented by a vector.\ndf = sqlContext.createDataFrame(data, [\"label\", \"features\"])\n\n# Set parameters for the algorithm.\n# Here, we limit the number of iterations to 10.\nlr = LogisticRegression(maxIter=10)\n\n# Fit the model to the data.\nmodel = lr.fit(df)\n\n# Given a dataset, predict each point's label, \n# and show the results.\nmodel.transform(df).show()",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#schema-1",
+    "href": "Courses/05_Distributed.html#schema-1",
+    "title": "6  Distributed Computing models",
+    "section": "8.1 Schema",
+    "text": "8.1 Schema",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/05_Distributed.html#main-message-passing-functions",
+    "href": "Courses/05_Distributed.html#main-message-passing-functions",
+    "title": "6  Distributed Computing models",
+    "section": "8.2 Main message-passing functions",
+    "text": "8.2 Main message-passing functions\n\n\nScatter\n\npartition the data into smaller pieces and send them to the different processes\n\nGather\n\ncollect the data from the different processes and merge them.\n\nBroadcast\n\nSend the same data to all the processes.\n\nReduce\n\nMerge the data from all the processes and produce a single result.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Distributed Computing models</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html",
+    "href": "Courses/06_SIMD.html",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "",
+    "text": "8 Generalities on SIMD",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#why-vectorization",
+    "href": "Courses/06_SIMD.html#why-vectorization",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "8.1 Why vectorization ?",
+    "text": "8.1 Why vectorization ?\n\n\nUbiquitousness\n\nAlmost every CPU made on the market since 2010 got a SIMD unit and it operates on multiple elements at the same time on a single instruction.\n\nNatural congruence with parallel progamming\n\nIn a good number of cases, parallelization of algorithm is often achieved by vectorization and the use of SIMD is then a free bonus.\n\nPerformance boost almost guaranteed\n\nWith a little effort it could boost your performance by a factor of two or more. It is even more energy efficient than raw CPU (non SIMD) computing(Inoue 2016).",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#scalar-vs-vector-operation",
+    "href": "Courses/06_SIMD.html#scalar-vs-vector-operation",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "8.2 Scalar vs Vector operation",
+    "text": "8.2 Scalar vs Vector operation\n\n\n\n\n\nA scalar operation does a single double-precision addition in one cycle. It takes eight cycles to process a 64-byte cache line. In comparison, a vector operation on a 512-bit vector unit can process all eight double-precision values in one cycle.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#terminology",
+    "href": "Courses/06_SIMD.html#terminology",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "8.3 Terminology",
+    "text": "8.3 Terminology\n\nVector (SIMD) lane\n\nA pathway through a vector operation on vector registers for a single data element much like a lane on a multi-lane freeway.\n\nVector width\n\nThe width of the vector unit, usually expressed in bits.\n\nVector length\n\nThe number of data elements that can be processed by the vector in one operation.\n\nVector (SIMD) instruction sets\n\nThe set of instructions that extend the regular scalar processor instructions to utilize the vector processor.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#hardwaresoftware-requirements",
+    "href": "Courses/06_SIMD.html#hardwaresoftware-requirements",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "8.4 Hardware/Software Requirements",
+    "text": "8.4 Hardware/Software Requirements\n\nGeneration of instructions\n\nvector instructions are generated by the compiler OR manually by the programmer via the “intrisics” (explicit SIMD instructions)\n\nMatching of instructions\n\nmatching of the instructions and the hardware, because there is several units and instructions sets. (the compiler does the matching, most of the time).",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#evolution-of-the-vector-length",
+    "href": "Courses/06_SIMD.html#evolution-of-the-vector-length",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "9.1 Evolution of the vector length",
+    "text": "9.1 Evolution of the vector length",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#versions-i",
+    "href": "Courses/06_SIMD.html#versions-i",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "9.2 Versions, I",
+    "text": "9.2 Versions, I\n\n\n\nRelease\nFunctionality\n\n\n\n\nMMX (trademark with no official meaning)\nTargeted towards the graphics market, but GPUs soon took over this function. Vector units shifted their focus to computation rather than graphics. AMD released its version under the name 3DNow! with single-precision support.\n\n\nSSE (Streaming SIMD Extensions)\nFirst Intel vector unit to offer floating-point operations with single-precision support\n\n\nSSE2\nDouble-precision support added",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#versions-ii",
+    "href": "Courses/06_SIMD.html#versions-ii",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "9.3 Versions, II",
+    "text": "9.3 Versions, II\n\n\n\nRelease\nFunctionality\n\n\n\n\nAVX (Advanced Vector Extensions)\nTwice the vector length. AMD added a fused multiply-add FMA vector instruction in its competing hardware, effectively doubling the performance for some loops.\n\n\nAVX2\nIntel added a fused multiply-add (FMA) to its vector processor.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#versions-iii",
+    "href": "Courses/06_SIMD.html#versions-iii",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "9.4 Versions, III",
+    "text": "9.4 Versions, III\n\n\n\nRelease\nFunctionality\n\n\n\n\nAVX512\nFirst offered on the Knights Landing processor; it came to the main-line multi-core processor hardware lineup in 2017.From the years 2018 and on, Intel and AMD (Advanced Micro Devices, Inc.) have created multiple variants of AVX512 as incremental improvements to vector hardware architectures.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#vectors-types-avx",
+    "href": "Courses/06_SIMD.html#vectors-types-avx",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "10.1 Vectors types (AVX)",
+    "text": "10.1 Vectors types (AVX)",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#encoding-scheme",
+    "href": "Courses/06_SIMD.html#encoding-scheme",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "10.2 Encoding scheme",
+    "text": "10.2 Encoding scheme\n_mm256_{operation}{non-alignement}_{dataorganization}{datatype}",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#add-example",
+    "href": "Courses/06_SIMD.html#add-example",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "10.3 Add example",
+    "text": "10.3 Add example",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#various-i",
+    "href": "Courses/06_SIMD.html#various-i",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "10.4 Various, I",
+    "text": "10.4 Various, I\n\ns (single): single precision float (32bits)\nd (double): double precision float (64bits)\ni… (integer): integer\np (packed): contiguous, operates on the whole vector\ns (scalar): operates on a single element",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/06_SIMD.html#various-ii",
+    "href": "Courses/06_SIMD.html#various-ii",
+    "title": "7  Hardware Vectorization with SIMD",
+    "section": "10.5 Various, II",
+    "text": "10.5 Various, II\n\nu (unaligned): data non aligned in memory\nl (low): least significant bits\nh (high): most significant bits\nr (reversed): reversed order",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
+    ]
+  },
+  {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "5  Summary",
+    "title": "8  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever.",
     "crumbs": [
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Summary</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Summary</span>"
     ]
   },
   {
@@ -1374,7 +1834,7 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Fowler, M. 2022. Python Concurrency with Asyncio. Manning. https://www.manning.com/books/python-concurrency-with-asyncio.\n\n\nRobey, R., and Y. Zamora. 2021. Parallel and High Performance\nComputing. Manning. https://www.manning.com/books/parallel-and-high-performance-computing.\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion\nJones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017.\n“Attention Is All You Need.” Advances in Neural\nInformation Processing Systems 30.",
+    "text": "Fowler, M. 2022. Python Concurrency with Asyncio. Manning. https://www.manning.com/books/python-concurrency-with-asyncio.\n\n\nInoue, Hiroshi. 2016. “How SIMD Width Affects Energy Efficiency: A\nCase Study on Sorting.” In 2016 IEEE Symposium in Low-Power\nand High-Speed Chips (COOL CHIPS XIX), 1–3. IEEE.\n\n\nRobey, R., and Y. Zamora. 2021. Parallel and High Performance\nComputing. Manning. https://www.manning.com/books/parallel-and-high-performance-computing.\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion\nJones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017.\n“Attention Is All You Need.” Advances in Neural\nInformation Processing Systems 30.",
     "crumbs": [
       "References"
     ]
@@ -1395,7 +1855,7 @@
     "href": "slides.html",
     "title": "Appendix B — Slides in reveal.js",
     "section": "",
-    "text": "Code Assistants\nIntroduction to parallel computing\nAsynchronous Programming with Python\n\nNo matching items",
+    "text": "Code Assistants\nIntroduction to parallel computing\nAsynchronous Programming with Python\nIPC and locking\nDistributed Computing models\nHardware Vectorization with SIMD\n\nNo matching items",
     "crumbs": [
       "Appendices",
       "<span class='chapter-number'>B</span>  <span class='chapter-title'>Slides in reveal.js</span>"

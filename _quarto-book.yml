@@ -25,6 +25,9 @@ book:
     - Courses/01_Code-Assistant.qmd
     - Courses/02_Parallel-intro.qmd
     - Courses/03_Asynchronous.qmd
+    - Courses/04_IPC-and-Locking.qmd
+    - Courses/05_Distributed.qmd
+    - Courses/06_SIMD.qmd
     - summary.qmd
     - references.qmd
   appendices: 
