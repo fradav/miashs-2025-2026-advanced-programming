@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="François-David Collin">
+<meta name="author" content="Ghislain Durif">
 
 <title>3&nbsp; Introduction to parallel computing – Advanced programming and parallel computing</title>
 <style>
@@ -511,6 +512,7 @@ window.Quarto = {
   <li><a href="#multi-processing-vs-multi-threading" id="toc-multi-processing-vs-multi-threading" class="nav-link" data-scroll-target="#multi-processing-vs-multi-threading"><span class="header-section-number">8.3</span> Multi-processing vs Multi-threading</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">9</span> Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">10</span> References</a></li>
   </ul>
 </nav>
     </div>
@@ -526,7 +528,7 @@ window.Quarto = {
 
 
 <div class="quarto-title-meta-author">
-  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Authors</div>
   <div class="quarto-title-meta-heading">Affiliations</div>
   
     <div class="quarto-title-meta-contents">
@@ -541,6 +543,17 @@ window.Quarto = {
           </p>
         <p class="affiliation">
             Paul-Valéry Montpellier 3 University
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Ghislain Durif <a href="mailto:ghislain.durif@ens-lyon.fr" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            CNRS
+          </p>
+        <p class="affiliation">
+            LBMC
           </p>
       </div>
   </div>
@@ -1053,84 +1066,14 @@ Note
 </section>
 <section id="strong-vs-weak-scaling-schemas" class="level2 smaller" data-number="7.7">
 <h2 class="smaller anchored" data-number="7.7" data-anchor-id="strong-vs-weak-scaling-schemas"><span class="header-section-number">7.7</span> Strong vs Weak Scaling, schemas</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<pre style="font-size: 0.6em;"><code>┌────────────────────────────────────┐
-│                 1000               │
-│         ┌───────────────────┐      │
-│         │                   │      │           1 processor
-│         │                   │      │
-│         │                   │      │
-│ 1000    │                   │      │           
-│         │                   │      │
-│         │                   │      │
-│         └───────────────────┘      │
-│        ┌─────────┐  ┌─────────┐    │
-│        │         │  │         │    │
-│ 500    │         │  │         │    │
-│        │         │  │         │    │
-│        └─────────┘  └─────────┘    │
-│           500                      │           4 processors
-│        ┌─────────┐  ┌─────────┐    │
-│        │         │  │         │    │
-│        │         │  │         │    │
-│        │         │  │         │    │
-│        └─────────┘  └─────────┘    │
-│      250                           │
-│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │
-│ 250 │    │  │    │  │    │  │    │ │
-│     └────┘  └────┘  └────┘  └────┘ │
-│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │
-│     │    │  │    │  │    │  │    │ │
-│     └────┘  └────┘  └────┘  └────┘ │           16 processors
-│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │
-│     │    │  │    │  │    │  │    │ │
-│     └────┘  └────┘  └────┘  └────┘ │
-│     ┌────┐  ┌────┐  ┌────┐  ┌────┐ │
-│     │    │  │    │  │    │  │    │ │
-│     └────┘  └────┘  └────┘  └────┘ │
-└────────────────────────────────────┘</code></pre>
-</div><div class="column" style="width:50%;">
-<pre style="font-size: 0.6em;"><code>┌───────────────────────────────────────────────────────────┐
-│                         1000                              │
-│                      ┌─────────┐                          │
-│                      │         │                          │
-│              1000    │      ───┼──┐                       │
-│                      │         │  │                       │
-│                      └─────────┘  │                       │
-│                   1000            │                       │
-│                 ┌─────────┐  ┌────┼────┐                  │
-│                 │         │  │    │    │                  │
-│           1000  │         │  │    │    │                  │
-│                 │         │  │    │    │                  │
-│                 └─────────┘  └────┼────┘                  │
-│                 ┌─────────┐  ┌────┼────┐                  │
-│                 │         │  │    │    │                  │
-│                 │         │  │    │    │                  │
-│                 │         │  │    │    │                  │
-│                 └─────────┘  └────┼────┘                  │
-│                                   │         1000          │
-│    ┌─────────┐  ┌─────────┐  ┌────┼────┐  ┌─────────┐     │
-│    │         │  │         │  │    │    │  │         │     │
-│    │         │  │         │  │    ▼    │  │         │1000 │
-│    │         │  │         │  │         │  │         │     │
-│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
-│    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│    │         │  │         │  │         │  │         │     │
-│    │         │  │         │  │         │  │         │     │
-│    │         │  │         │  │         │  │         │     │
-│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
-│    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│    │         │  │         │  │         │  │         │     │
-│    │         │  │         │  │         │  │         │     │
-│    │         │  │         │  │         │  │         │     │
-│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
-│    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│    │         │  │         │  │         │  │         │     │
-│    │         │  │         │  │         │  │         │     │
-│    │         │  │         │  │         │  │         │     │
-│    └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
-└───────────────────────────────────────────────────────────┘</code></pre>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 47.5%;justify-content: center;">
+<p><img src="d2-figures/strong-scaling.svg" class="noinvert img-fluid" width="570"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 52.5%;justify-content: center;">
+<p><img src="d2-figures/weak-scaling.svg" class="noinvert img-fluid" width="630"></p>
+</div>
 </div>
 </div>
 </section>
@@ -1256,6 +1199,9 @@ Note
 <li>Two types of <em>scaling</em> with parallelism : strong and weak</li>
 <li>Several types of parallelism : Flynn’s taxonomy, multhreading vs multiprocessing etc.</li>
 </ul>
+</section>
+<section id="references" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> References</h1>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
