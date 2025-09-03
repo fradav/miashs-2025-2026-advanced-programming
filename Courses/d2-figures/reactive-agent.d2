@@ -1,0 +1,13 @@
+style: {
+    fill: transparent
+}
+
+Reactive Agent: {
+  style.fill: transparent
+  shape: rectangle
+  Input -> LLM: "reacts from"
+  LLM -> Action: "decides"
+  Action -> LLM: "output to"
+  LLM -> Input: "generates"
+  label: "Internal Control Flow"
+}

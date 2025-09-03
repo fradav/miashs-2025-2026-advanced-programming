@@ -1,0 +1,50 @@
+style: {
+    fill: transparent
+}
+
+classes: {
+  main: {
+    style : {
+      stroke-dash: 2
+      fill: transparent
+    }
+  }
+}
+
+grid-rows: 1
+
+Editor: {
+  class: main
+  UI
+  Buffers
+  Language_Client: {
+    shape: rectangle
+    label: "Language Client (extension)"
+  }
+  Language_Client <-> *
+}
+
+sourcecontainer : {
+  grid-columns: 1
+  style.opacity: 0
+  "" : { style.opacity: 0 }
+  "Source Code" : { shape: package }
+}
+
+Editor <-> sourcecontainer."Source Code": {label: "R/W"}
+
+"Language Server": {
+  class: main
+  "Completion Service"
+  "Diagnostics Service"
+  "Formatting Service"
+  "etc."
+  "JSON-RPC Router"
+  "JSON-RPC Router" <-> *
+}
+
+"Language Server" <-> sourcecontainer."Source Code": {label: "R"}
+Editor.Language_Client <-> "Language Server"."JSON-RPC Router" : { 
+  label: "LSP" 
+  style.animated: true
+}

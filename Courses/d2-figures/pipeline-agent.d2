@@ -1,0 +1,12 @@
+style: {
+    fill: transparent
+}
+
+Pipeline Agent: {
+  style.fill: transparent
+  shape: rectangle
+  Program -> LLM: "calls"
+  LLM -> Output: "processes"
+  Output -> Program: "returns to"
+  label: "External Control Flow"
+}

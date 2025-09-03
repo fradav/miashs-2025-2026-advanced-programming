@@ -304,7 +304,7 @@
     "href": "Courses/01_Code-Assistant.html#automatic-differentiation",
     "title": "2  Code Assistants",
     "section": "7.2 Automatic differentiation",
-    "text": "7.2 Automatic differentiation\n\n\n\n\nchain rule to compute gradient with respect to \\theta\nkey tool: backpropagation\n\ndon’t need to store the computation graph entirely\ngradient is fast to compute (a single pass)\nbut memory intensive\n\n\n\n\nf(x)=\\nabla\\frac{x_{1}x_{2} sin(x_3) +e^{x_{1}x_{2}}}{x_3}\n\n\n\\begin{darray}{rcl}\nx_4 & = & x_{1}x_{2}, \\\\\nx_5 & = & sin(x_3), \\\\\nx_6 & = & e^{x_4}, \\\\\nx_7 & = & x_{4}x_{5}, \\\\\nx_8 & = & x_{6}+x_7, \\\\\nx_9 & = & x_{8}/x_3.\n\\end{darray}",
+    "text": "7.2 Automatic differentiation\n\n\n\nchain rule to compute gradient with respect to \\theta\nkey tool: backpropagation\n\ndon’t need to store the computation graph entirely\ngradient is fast to compute (a single pass)\nbut memory intensive\n\n\n\nf(x)=\\nabla\\frac{x_{1}x_{2} sin(x_3) +e^{x_{1}x_{2}}}{x_3}\n\n\n\\begin{darray}{rcl}\nx_4 & = & x_{1}x_{2}, \\\\\nx_5 & = & sin(x_3), \\\\\nx_6 & = & e^{x_4}, \\\\\nx_7 & = & x_{4}x_{5}, \\\\\nx_8 & = & x_{6}+x_7, \\\\\nx_9 & = & x_{8}/x_3.\n\\end{darray}",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -314,7 +314,7 @@
     "href": "Courses/01_Code-Assistant.html#gradient-descent",
     "title": "2  Code Assistants",
     "section": "7.3 Gradient descent",
-    "text": "7.3 Gradient descent\nExample with a non-convex function\nf(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2\n\nCode\nPlotly = require(\"plotly.js@2.35.2/dist/plotly.min.js\");\nminX = -5;\nmaxX = 5;\nf = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n{\n  const linspace = d3.scaleLinear().domain([0, 49]).range([minX, maxX]);\n  const X1 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n  const X2 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n\n  // Define your function f here\n  const f = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n  const Z = X1.map((x1,i) =&gt; X2.map((x2,j) =&gt; f([x1,x2])));\n\n  const data = [{\n    x: X1.flat(),\n    y: X2.flat(),\n    z: Z,\n    type: 'surface'\n  }];\n\n  const layout = {\n    // title: '',\n    // autosize: true,\n    // width: 100,\n    // height: 100,\n    paper_bgcolor: \"rgba(0,0,0,0)\",\n    plot_bgcolor: \"rgba(0,0,0,0)\",\n    template: 'plotly_dark',\n    // margin: {\n    //   l: 65,\n    //   r: 50,\n    //   b: 65,\n    //   t: 90,\n    // }\n  };\n\n  const div = document.createElement('div');\n  Plotly.newPlot(div, data, layout,{displayModeBar: false});\n  return div;\n}\nfunction grad_descent(x1,x2,step,max_iter) {\n  let grad = f_grad(x1, x2);\n  let iterations = [[x1, x2]];\n  function f_grad(x1, x2) {\n    let df_x1 = 2 * (-7 + x1 + x2**2 + 2 * x1 * (-11 + x1**2 + x2));\n    let df_x2 = 2 * (-11 + x1**2 + x2 + 2 * x2 * (-7 + x1 + x2**2));\n    return [df_x1, df_x2];\n  }\n  var count = 0;\n  while (count &lt; max_iter) {\n    x1 -= step * grad[0];\n    x2 -= step * grad[1];\n    grad = f_grad(x1, x2);\n    if (isFinite(x1) && isFinite(x2) &&\n      (minX &lt; x1) && (x1 &lt; maxX) &&\n      (minX &lt; x2) && (x2 &lt; maxX))\n        iterations.push([x1, x2]);\n    else iterations.push(iterations[count])\n    count += 1\n  }\n  return iterations;\n}\nviewof descent_params = Inputs.form({\n  x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),\n  x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),\n  step: Inputs.range([0.001, 0.04], {step: 0.001, value: 0.01, label: 'Step size'})\n})\n{\n  var iterations = grad_descent(descent_params.x1,descent_params.x2,descent_params.step,20)\n  return Plot.plot({\n    aspectRatio: 1,\n    x: {tickSpacing: 50, label: \"x1 →\"},\n    y: {tickSpacing: 50, label: \"x2 →\"},\n    width: 600,\n    style: {\n      backgroundColor: 'rgba(0,0,0,0)'\n    },\n    marks: [\n      Plot.contour({\n        fill: (x1, x2) =&gt; Math.sqrt((x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2),\n        x1: minX,\n        y1: minX,\n        x2: maxX,\n        y2: maxX,\n        showlegend: false,\n        colorscale: 'RdBu',\n        ncontours: 30\n      }),\n      Plot.line(iterations,{marker: true})\n    ]\n  })\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSensitivity to initial point and step size",
+    "text": "7.3 Gradient descent\nExample with a non-convex function\nf(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2\n\n\n\n\nCode\nPlotly = require(\"plotly.js@2.35.2/dist/plotly.min.js\");\n\nminX = -5;\nmaxX = 5;\n\nf = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n{\n  const linspace = d3.scaleLinear().domain([0, 49]).range([minX, maxX]);\n  const X1 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n  const X2 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n\n  // Define your function f here\n  const f = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n  const Z = X1.map((x1,i) =&gt; X2.map((x2,j) =&gt; f([x1,x2])));\n\n  const data = [{\n    x: X1.flat(),\n    y: X2.flat(),\n    z: Z,\n    type: 'surface'\n  }];\n\n  const layout = {\n    // title: '',\n    autosize: false,\n    width: 400,\n    height: 400,\n    paper_bgcolor: \"rgba(0,0,0,0)\",\n    plot_bgcolor: \"rgba(0,0,0,0)\",\n    template: 'plotly_dark',\n    margin: {\n      l: 0,\n      r: 0,\n      b: 0,\n      t: 0\n    }\n  };\n\n  const div = document.createElement('div');\n  Plotly.newPlot(div, data, layout,{displayModeBar: false});\n  return div;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\nfunction grad_descent(x1,x2,step,max_iter) {\n  let grad = f_grad(x1, x2);\n  let iterations = [[x1, x2]];\n  function f_grad(x1, x2) {\n    let df_x1 = 2 * (-7 + x1 + x2**2 + 2 * x1 * (-11 + x1**2 + x2));\n    let df_x2 = 2 * (-11 + x1**2 + x2 + 2 * x2 * (-7 + x1 + x2**2));\n    return [df_x1, df_x2];\n  }\n  var count = 0;\n  while (count &lt; max_iter) {\n    x1 -= step * grad[0];\n    x2 -= step * grad[1];\n    grad = f_grad(x1, x2);\n    if (isFinite(x1) && isFinite(x2) &&\n      (minX &lt; x1) && (x1 &lt; maxX) &&\n      (minX &lt; x2) && (x2 &lt; maxX))\n        iterations.push([x1, x2]);\n    else iterations.push(iterations[count])\n    count += 1\n  }\n  return iterations;\n}\n\nviewof descent_params = Inputs.form({\n  x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),\n  x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),\n  step: Inputs.range([0.001, 0.04], {step: 0.001, value: 0.01, label: 'Step size'})\n})\n\nprefix = Inputs.text().classList[0];\n\n{\n  d3.selectAll(`.${prefix}`).style(\"font-size\", \"16px\");\n  var iterations = grad_descent(descent_params.x1,descent_params.x2,descent_params.step,20)\n  return Plot.plot({\n    aspectRatio: 1,\n    x: {tickSpacing: 50, label: \"x1 →\"},\n    y: {tickSpacing: 50, label: \"x2 →\"},\n    width: 600,\n    style: {\n      backgroundColor: 'rgba(0,0,0,0)'\n    },\n    marks: [\n      Plot.contour({\n        fill: (x1, x2) =&gt; Math.sqrt((x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2),\n        x1: minX,\n        y1: minX,\n        x2: maxX,\n        y2: maxX,\n        showlegend: false,\n        colorscale: 'RdBu',\n        ncontours: 30\n      }),\n      Plot.line(iterations,{marker: true})\n    ]\n  })\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSensitivity to initial point and step size",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -574,7 +574,7 @@
     "href": "Courses/01_Code-Assistant.html#on-the-other-hand",
     "title": "2  Code Assistants",
     "section": "10.2 On the other hand…",
-    "text": "10.2 On the other hand…\n\n\n\n\n\n\n\n\n\nBeware of vibe-coding\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. “Attention Is All You Need.” Advances in Neural Information Processing Systems 30.",
+    "text": "10.2 On the other hand…\n\n\n\n\n\n\n\n\n\nBeware of vibe-coding",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -1404,7 +1404,7 @@
     "href": "Courses/04_IPC-and-Locking.html#shared-memory-model",
     "title": "5  IPC and locking",
     "section": "6.3 Shared Memory Model",
-    "text": "6.3 Shared Memory Model\n┌─────────────────────────────┐    ┌─────────────────────────────┐\n│                             │    │                             │\n│ ┌──────────┐   ┌──────────┐ │    │ ┌──────────┐   ┌──────────┐ │\n│ │          │   │          │ │    │ │          │   │          │ │\n│ │  CORE 1  │   │  CORE 2  │ │    │ │  CORE 3  │   │  CORE 4  │ │\n│ │          │   │          │ │    │ │          │   │          │ │\n│ └─┬──┬─────┘   └────┬─────┘ │    │ └┬─────────┘   └──────┬───┘ │\n│   │  │              │       │    │  │                    │     │\n│   │  │              │       │    │  │                    │     │\n│   │  │  CPU 1       │       │    │  │      CPU 2         │     │\n│   │  │              │       │    │  │                    │     │\n└───┼──┼──────────────┼───────┘    └──┼────────────────────┼─────┘\n    │  │              │               │                    │\n    │  │              └────────────┐  │                    │\n    │  │                           │  │                    │\n    │  └─────────────────────────┐ │  │                    │\n    │                            │ │  │  ┌─────────────────┘\n    └──────────────────────────┐ │ │  │  │\n                               │ │ │  │  │\n┌──────────────────────────────┼─┼─┼──┼──┼──────────────────────┐\n│                              │ │ │  │  │                      │\n│ ┌─────┐  ┌─────┐  ┌─────┐  ┌─▼─▼─▼──▼──▼─┐                    │\n│ │     │  │     │  │     │  │Shared Memory│                    │\n│ └─────┘  └─────┘  └─────┘  └─────────────┘                    │\n│                                      Main Memory              │\n└───────────────────────────────────────────────────────────────┘",
+    "text": "6.3 Shared Memory Model\n\n\nShared Memory Model",
     "crumbs": [
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
     ]
@@ -1444,7 +1444,7 @@
     "href": "Courses/04_IPC-and-Locking.html#how-to-use-queues",
     "title": "5  IPC and locking",
     "section": "6.7 How to use queues?",
-    "text": "6.7 How to use queues?\n┌───────────┐\n│           │\n│ Producer  │\n│           │ Process A\n│           │\n└─────┬─────┘\n      │\n ┌────┼───────────────────────────────────────────────────────────────────┐\n │    │                         Queue                                     │\n │    │        ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┐                │\n │    │        │     │     │     │     │     │     │     │                │\n │    └───────►│     │     │     │     │     │     │     ├──────────┐     │\n │             │     │     │     │     │     │     │     │          │     │\n │             └─────┴─────┴─────┴─────┴─────┴─────┴─────┘          │     │\n │                                                                  │     │\n │        Shared Memory                                             │     │\n └──────────────────────────────────────────────────────────────────┼─────┘\n                                                                    │\n                                                                    ▼\n                                                              ┌───────────┐\n                                                              │           │\n                                                   Process B  │ Consumer  │\n                                                              │           │\n                                                              │           │\n                                                              └───────────┘",
+    "text": "6.7 How to use queues?",
     "crumbs": [
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>IPC and locking</span>"
     ]
@@ -1690,153 +1690,13 @@
     ]
   },
   {
-    "objectID": "Courses/06_SIMD.html",
-    "href": "Courses/06_SIMD.html",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "",
-    "text": "8 Generalities on SIMD",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#why-vectorization",
-    "href": "Courses/06_SIMD.html#why-vectorization",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "8.1 Why vectorization ?",
-    "text": "8.1 Why vectorization ?\n\n\nUbiquitousness\n\nAlmost every CPU made on the market since 2010 got a SIMD unit and it operates on multiple elements at the same time on a single instruction.\n\nNatural congruence with parallel progamming\n\nIn a good number of cases, parallelization of algorithm is often achieved by vectorization and the use of SIMD is then a free bonus.\n\nPerformance boost almost guaranteed\n\nWith a little effort it could boost your performance by a factor of two or more. It is even more energy efficient than raw CPU (non SIMD) computing(Inoue 2016).",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#scalar-vs-vector-operation",
-    "href": "Courses/06_SIMD.html#scalar-vs-vector-operation",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "8.2 Scalar vs Vector operation",
-    "text": "8.2 Scalar vs Vector operation\n\n\n\n\n\nA scalar operation does a single double-precision addition in one cycle. It takes eight cycles to process a 64-byte cache line. In comparison, a vector operation on a 512-bit vector unit can process all eight double-precision values in one cycle.",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#terminology",
-    "href": "Courses/06_SIMD.html#terminology",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "8.3 Terminology",
-    "text": "8.3 Terminology\n\nVector (SIMD) lane\n\nA pathway through a vector operation on vector registers for a single data element much like a lane on a multi-lane freeway.\n\nVector width\n\nThe width of the vector unit, usually expressed in bits.\n\nVector length\n\nThe number of data elements that can be processed by the vector in one operation.\n\nVector (SIMD) instruction sets\n\nThe set of instructions that extend the regular scalar processor instructions to utilize the vector processor.",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#hardwaresoftware-requirements",
-    "href": "Courses/06_SIMD.html#hardwaresoftware-requirements",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "8.4 Hardware/Software Requirements",
-    "text": "8.4 Hardware/Software Requirements\n\nGeneration of instructions\n\nvector instructions are generated by the compiler OR manually by the programmer via the “intrisics” (explicit SIMD instructions)\n\nMatching of instructions\n\nmatching of the instructions and the hardware, because there is several units and instructions sets. (the compiler does the matching, most of the time).",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#evolution-of-the-vector-length",
-    "href": "Courses/06_SIMD.html#evolution-of-the-vector-length",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "9.1 Evolution of the vector length",
-    "text": "9.1 Evolution of the vector length",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#versions-i",
-    "href": "Courses/06_SIMD.html#versions-i",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "9.2 Versions, I",
-    "text": "9.2 Versions, I\n\n\n\nRelease\nFunctionality\n\n\n\n\nMMX (trademark with no official meaning)\nTargeted towards the graphics market, but GPUs soon took over this function. Vector units shifted their focus to computation rather than graphics. AMD released its version under the name 3DNow! with single-precision support.\n\n\nSSE (Streaming SIMD Extensions)\nFirst Intel vector unit to offer floating-point operations with single-precision support\n\n\nSSE2\nDouble-precision support added",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#versions-ii",
-    "href": "Courses/06_SIMD.html#versions-ii",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "9.3 Versions, II",
-    "text": "9.3 Versions, II\n\n\n\nRelease\nFunctionality\n\n\n\n\nAVX (Advanced Vector Extensions)\nTwice the vector length. AMD added a fused multiply-add FMA vector instruction in its competing hardware, effectively doubling the performance for some loops.\n\n\nAVX2\nIntel added a fused multiply-add (FMA) to its vector processor.",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#versions-iii",
-    "href": "Courses/06_SIMD.html#versions-iii",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "9.4 Versions, III",
-    "text": "9.4 Versions, III\n\n\n\nRelease\nFunctionality\n\n\n\n\nAVX512\nFirst offered on the Knights Landing processor; it came to the main-line multi-core processor hardware lineup in 2017.From the years 2018 and on, Intel and AMD (Advanced Micro Devices, Inc.) have created multiple variants of AVX512 as incremental improvements to vector hardware architectures.",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#vectors-types-avx",
-    "href": "Courses/06_SIMD.html#vectors-types-avx",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "10.1 Vectors types (AVX)",
-    "text": "10.1 Vectors types (AVX)",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#encoding-scheme",
-    "href": "Courses/06_SIMD.html#encoding-scheme",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "10.2 Encoding scheme",
-    "text": "10.2 Encoding scheme\n_mm256_{operation}{non-alignement}_{dataorganization}{datatype}",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#add-example",
-    "href": "Courses/06_SIMD.html#add-example",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "10.3 Add example",
-    "text": "10.3 Add example",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#various-i",
-    "href": "Courses/06_SIMD.html#various-i",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "10.4 Various, I",
-    "text": "10.4 Various, I\n\ns (single): single precision float (32bits)\nd (double): double precision float (64bits)\ni… (integer): integer\np (packed): contiguous, operates on the whole vector\ns (scalar): operates on a single element",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
-    "objectID": "Courses/06_SIMD.html#various-ii",
-    "href": "Courses/06_SIMD.html#various-ii",
-    "title": "7  Hardware Vectorization with SIMD",
-    "section": "10.5 Various, II",
-    "text": "10.5 Various, II\n\nu (unaligned): data non aligned in memory\nl (low): least significant bits\nh (high): most significant bits\nr (reversed): reversed order",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Hardware Vectorization with SIMD</span>"
-    ]
-  },
-  {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "8  Summary",
+    "title": "7  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever.",
     "crumbs": [
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Summary</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Summary</span>"
     ]
   },
   {
@@ -1844,7 +1704,7 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Fowler, M. 2022. Python Concurrency with Asyncio. Manning. https://www.manning.com/books/python-concurrency-with-asyncio.\n\n\nInoue, Hiroshi. 2016. “How SIMD Width Affects Energy Efficiency: A\nCase Study on Sorting.” In 2016 IEEE Symposium in Low-Power\nand High-Speed Chips (COOL CHIPS XIX), 1–3. IEEE.\n\n\nRobey, R., and Y. Zamora. 2021. Parallel and High Performance\nComputing. Manning. https://www.manning.com/books/parallel-and-high-performance-computing.\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion\nJones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017.\n“Attention Is All You Need.” Advances in Neural\nInformation Processing Systems 30.",
+    "text": "Fowler, M. 2022. Python Concurrency with Asyncio. Manning. https://www.manning.com/books/python-concurrency-with-asyncio.\n\n\nRobey, R., and Y. Zamora. 2021. Parallel and High Performance\nComputing. Manning. https://www.manning.com/books/parallel-and-high-performance-computing.\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion\nJones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017.\n“Attention Is All You Need.” Advances in Neural\nInformation Processing Systems 30.",
     "crumbs": [
       "References"
     ]
@@ -1865,7 +1725,7 @@
     "href": "slides.html",
     "title": "Appendix B — Slides in reveal.js",
     "section": "",
-    "text": "Code Assistants\nIntroduction to parallel computing\nAsynchronous Programming with Python\nIPC and locking\nDistributed Computing models\nHardware Vectorization with SIMD\n\nNo matching items",
+    "text": "Code Assistants\nNumpy Workout\nIntroduction to parallel computing\nAsynchronous Programming with Python\nIPC and locking\nDistributed Computing models\n\nNo matching items",
     "crumbs": [
       "Appendices",
       "<span class='chapter-number'>B</span>  <span class='chapter-title'>Slides in reveal.js</span>"

@@ -326,8 +326,8 @@ $\Rightarrow$ input can be anything: images, videos, text, sound, …
 
 ## Automatic differentiation
 
-::::{ layout-ncol="2"}
-:::{#chain-rule}
+::::{ .columns }
+:::{.column}
 - chain rule to compute gradient with respect to $\theta$
 - key tool: *backpropagation*
     - don't need to store the computation graph entirely
@@ -335,7 +335,7 @@ $\Rightarrow$ input can be anything: images, videos, text, sound, …
     - but memory intensive
 :::
 
-:::{#chain-rule-formula}
+:::{.column}
 $$f(x)=\nabla\frac{x_{1}x_{2} sin(x_3) +e^{x_{1}x_{2}}}{x_3}$$
 
 ![](../images/flow.png){ style="float: left;" }
@@ -360,22 +360,16 @@ Example with a non-convex function
 
 $f(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2$
 
-::::{ layout="[[30,20,50]]" }
+::::{.columns}
 
-:::{#descent-surface }
+::: {.column}
 ```{ojs}
 //| code-fold: true
 Plotly = require("plotly.js@2.35.2/dist/plotly.min.js");
-```
 
-```{ojs}
-//| code-fold: true
 minX = -5;
 maxX = 5;
-```
 
-```{ojs}
-//| code-fold: true
 f = ([x1, x2]) => (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;
 
 {
@@ -397,18 +391,18 @@ f = ([x1, x2]) => (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;
 
   const layout = {
     // title: '',
-    // autosize: true,
-    // width: 100,
-    // height: 100,
+    autosize: false,
+    width: 400,
+    height: 400,
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
     template: 'plotly_dark',
-    // margin: {
-    //   l: 65,
-    //   r: 50,
-    //   b: 65,
-    //   t: 90,
-    // }
+    margin: {
+      l: 0,
+      r: 0,
+      b: 0,
+      t: 0
+    }
   };
 
   const div = document.createElement('div');
@@ -416,11 +410,9 @@ f = ([x1, x2]) => (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;
   return div;
 }
 ```
-
 :::
 
-:::{#descent-surface-interaction}
-
+::: {.column}
 ```{ojs}
 //| code-fold: true
 function grad_descent(x1,x2,step,max_iter) {
@@ -445,22 +437,17 @@ function grad_descent(x1,x2,step,max_iter) {
   }
   return iterations;
 }
-```
 
-```{ojs}
-//| code-fold: true
 viewof descent_params = Inputs.form({
   x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),
   x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),
   step: Inputs.range([0.001, 0.04], {step: 0.001, value: 0.01, label: 'Step size'})
 })
-```
-:::
 
-:::{style="width: 300px;"}
-```{ojs}
-//| code-fold: true
+prefix = Inputs.text().classList[0];
+
 {
+  d3.selectAll(`.${prefix}`).style("font-size", "16px");
   var iterations = grad_descent(descent_params.x1,descent_params.x2,descent_params.step,20)
   return Plot.plot({
     aspectRatio: 1,
@@ -870,7 +857,7 @@ Reactive/Pipeline agents are defined by the control flow :
 
 ## Reactive agents
 
-:::{ layout-ncol="2"}
+:::{ layout-ncol="2" }
 
 ::::{}
 Examples:
@@ -885,13 +872,14 @@ $\Rightarrow$ Control is done by the LLM itself with all risks : infinite loops,
 
 ::::
 
-![](../images/reactive-agent.svg)
+![](d2-figures/reactive-agent.svg){ .noinvert width="300px"}
+
 
 :::
 
 ## Pipeline Agents
 
-:::{ layout-ncol="2"}
+:::{ layout-ncol="2" }
 
 ::::{}
 Examples:
@@ -906,7 +894,7 @@ $\Rightarrow$ Control is done by normal, program logic
 
 ::::
 
-![](../images/pipeline-agent.svg)
+![](d2-figures/pipeline-agent.svg){ .noinvert width="300px"}
 
 :::
 
@@ -1026,3 +1014,4 @@ The general answer is:
 
 ::::
 
+# References
