@@ -28,34 +28,7 @@ nocite: |
 
 ## Shared Memory Model
 
-```{.asciiflow}
-┌─────────────────────────────┐    ┌─────────────────────────────┐
-│                             │    │                             │
-│ ┌──────────┐   ┌──────────┐ │    │ ┌──────────┐   ┌──────────┐ │
-│ │          │   │          │ │    │ │          │   │          │ │
-│ │  CORE 1  │   │  CORE 2  │ │    │ │  CORE 3  │   │  CORE 4  │ │
-│ │          │   │          │ │    │ │          │   │          │ │
-│ └─┬──┬─────┘   └────┬─────┘ │    │ └┬─────────┘   └──────┬───┘ │
-│   │  │              │       │    │  │                    │     │
-│   │  │              │       │    │  │                    │     │
-│   │  │  CPU 1       │       │    │  │      CPU 2         │     │
-│   │  │              │       │    │  │                    │     │
-└───┼──┼──────────────┼───────┘    └──┼────────────────────┼─────┘
-    │  │              │               │                    │
-    │  │              └────────────┐  │                    │
-    │  │                           │  │                    │
-    │  └─────────────────────────┐ │  │                    │
-    │                            │ │  │  ┌─────────────────┘
-    └──────────────────────────┐ │ │  │  │
-                               │ │ │  │  │
-┌──────────────────────────────┼─┼─┼──┼──┼──────────────────────┐
-│                              │ │ │  │  │                      │
-│ ┌─────┐  ┌─────┐  ┌─────┐  ┌─▼─▼─▼──▼──▼─┐                    │
-│ │     │  │     │  │     │  │Shared Memory│                    │
-│ └─────┘  └─────┘  └─────┘  └─────────────┘                    │
-│                                      Main Memory              │
-└───────────────────────────────────────────────────────────────┘
-```
+![Shared Memory Model](d2-figures/shared-memory-model.svg){ .noinvert fig-align="center"}
 
 ## Aside : memory models
 
@@ -104,33 +77,7 @@ $A$ could be a *producer* for $B$, and $B$ a *consumer* for $A$.
 
 ## How to use queues?
 
-```{.asciiflow}
-┌───────────┐
-│           │
-│ Producer  │
-│           │ Process A
-│           │
-└─────┬─────┘
-      │
- ┌────┼───────────────────────────────────────────────────────────────────┐
- │    │                         Queue                                     │
- │    │        ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┐                │
- │    │        │     │     │     │     │     │     │     │                │
- │    └───────►│     │     │     │     │     │     │     ├──────────┐     │
- │             │     │     │     │     │     │     │     │          │     │
- │             └─────┴─────┴─────┴─────┴─────┴─────┴─────┘          │     │
- │                                                                  │     │
- │        Shared Memory                                             │     │
- └──────────────────────────────────────────────────────────────────┼─────┘
-                                                                    │
-                                                                    ▼
-                                                              ┌───────────┐
-                                                              │           │
-                                                   Process B  │ Consumer  │
-                                                              │           │
-                                                              │           │
-                                                              └───────────┘
-```
+![](d2-figures/producer-consumer-queue.svg){ .noinvert fig-align="center" }
 
 ## Producer/consumer, Examples
 
@@ -193,8 +140,8 @@ JJJJJJJJJJ
 
 # The answer : critical section 
 
-:::::::::::::: {.columns}
-::: {.column width="60%"}
+::::{layout-ncol="2"}
+::: {}
 
 A critical section is :
 
@@ -202,36 +149,15 @@ A critical section is :
 - guaranteed to be run by only ONE process at a time.
 
 :::
-::: {.column width="40%"}
-```{.asciiflow}
-┌─────────────┐
-│             │
-│    Normal   │
-│     Code    │      Parallelized
-│             │
-└──────┬──────┘
-       │
-┌──────▼──────┐
-│             │
-│   Critical  │      Not parallelized
-│    Section  │
-│             │
-└──────┬──────┘
-       │
-┌──────▼──────┐
-│             │
-│    Normal   │      Parallelized
-│     Code    │
-│             │
-└─────────────┘
-```
-:::
-::::::::::::::
+
+![](d2-figures/critical-section.svg){.noinvert fig-align="center" width="450px" }
+
+::::
 
 ## Critical section workflow
 
 :::{.content-hidden when-format="revealjs"}
-![Three processes with critical section](tikz-figures/critical-section.svg){width=100%}
+![Three processes with critical section](tikz-figures/critical-section.svg){ width=100%}
 :::
 
 :::{.content-visible when-format="revealjs"}

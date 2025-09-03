@@ -1,0 +1,40 @@
+
+style: {
+    fill: transparent
+}
+
+*.style.opacity: 0.5
+*.*.style.opacity: 0.8
+
+"CPU 1": {
+    "Core 1"
+    "Core 2"
+}
+
+"CPU 2": {
+    "Core 1"
+    "Core 2"
+}
+
+"Main Memory".*.height: 100
+"Main Memory".*.height: 100
+
+"Main Memory": {
+    label.near: bottom-center
+    box1: {
+        label: ""
+    }
+    box2: {
+        label: ""
+    }
+    box3: {
+        label: ""
+    }
+    "Shared Memory" : "Shared\nMemory"
+}
+
+
+
+CPU*.Core* -> "Main Memory"."Shared Memory": {
+    style.animated: true
+}

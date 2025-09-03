@@ -1,0 +1,46 @@
+
+style: {
+    fill: transparent
+}
+
+*.style.opacity: 0.5
+*.*.style.opacity: 0.8
+
+Process A: {
+    Producer
+    near: top-left
+    label.near: outside-right-center
+}
+
+Shared Memory: {
+    Queue: {
+        style: {
+            fill: transparent
+            stroke: transparent
+        }
+        grid-columns: 8
+        horizontal-gap: 0
+        empty1
+        empty2
+        empty3
+        empty4
+        empty5
+        empty6
+        empty7
+        empty8
+        empty*: ""
+    }
+}
+
+Process B: {
+    Consumer
+    near: bottom-right
+    label.near: outside-left-center
+}
+
+Process A.Producer -> Shared Memory.Queue.empty1 : {
+    style.animated: true
+}
+Process B.Consumer <- Shared Memory.Queue.empty8 : {
+    style.animated: true
+}

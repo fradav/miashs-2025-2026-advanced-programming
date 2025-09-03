@@ -1,0 +1,62 @@
+direction: down
+
+style.fill: transparent
+
+grid-rows: 3
+vertical-gap: 0
+horizontal-gap: 0
+classes: {
+  notpar: {
+    style.fill: red
+  }
+  par: {
+    style.fill: green
+  }
+  lab: {
+    style: {
+      fill: transparent
+      stroke: transparent
+      font-size: 24
+    }
+  }
+}
+
+line1: "" {
+  grid-columns: 2
+  class: par
+  normal1: "Normal Code"
+  Parallel: {
+    class: lab
+  }
+}
+
+*.style.stroke: transparent
+
+lab*.*.style: {
+  fill: transparent
+  stroke: transparent
+}
+
+line2: "" {
+  grid-columns: 2
+  class: notpar
+  critical: "Critical Section" {style.animated: true}
+  Not Parallel: {
+    class: lab
+  }
+}
+
+line3: "" {
+  grid-columns: 2
+  class: par
+  normal2: "Normal Code"
+  Parallel: {
+    class: lab
+  }
+}
+
+line*.*.width: 150
+
+line1.normal1 -> line2.critical -> line3.normal2: {
+  style.animated: true
+}

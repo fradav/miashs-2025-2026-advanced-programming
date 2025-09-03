@@ -113,9 +113,7 @@ We want a function that takes as argument two unidimensional numpy arrays, the f
 
 ## Illustration 
 
-:::{.content-hidden when-format="revealjs"}
 ![Sequence search](../tikz-figures/sequence-search.svg){width=100%}
-:::
 
 :::{.content-visible when-format="revealjs"}
 

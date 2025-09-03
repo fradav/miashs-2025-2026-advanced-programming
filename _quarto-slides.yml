@@ -1,5 +1,6 @@
 project:
   render: 
+    - Courses/Applications/02_0_Numpy_Workout.qmd
     - Courses/01_Code-Assistant.qmd
     - Courses/02_Parallel-intro.qmd
     - Courses/03_Asynchronous.qmd

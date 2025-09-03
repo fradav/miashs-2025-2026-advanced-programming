@@ -27,7 +27,7 @@ book:
     - Courses/03_Asynchronous.qmd
     - Courses/04_IPC-and-Locking.qmd
     - Courses/05_Distributed.qmd
-    - Courses/06_SIMD.qmd
+#    - Courses/06_SIMD.qmd
     - summary.qmd
     - references.qmd
   appendices: 
