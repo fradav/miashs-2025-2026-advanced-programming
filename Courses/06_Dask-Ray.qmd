@@ -1,0 +1,243 @@
+---
+title: Dask and Ray
+subtitle: A deep dive into cluster parallel computing
+---
+
+# Dask vs. Ray: Programming Paradigm Comparison
+
+Here's a structured outline for your lecture comparing Dask and Ray from a programming paradigm perspective
+
+<!-- - Brief overview of both frameworks
+- Why paradigm matters in distributed computing
+- Target audience: data scientists/engineers who need to choose between them -->
+
+
+## ![](../images/dask_icon.svg){ .noinvert fig-align="center" width="150px" fig-align="right"} Dask
+
+:::{ layout-ncol="2"}
+
+:::incremental
+- **Dask** is a flexible parallel computing library for analytics.
+- Integrates seamlessly with NumPy, Pandas, and Scikit-learn.
+- Uses a **task graph paradigm** to break down computations into smaller tasks.
+- Enables parallel execution of tasks for scalable analytics.
+:::
+
+![](d2-figures/dask-overview.svg){ .noinvert}
+
+:::
+
+## ![](../images/ray-logo.svg){ fig-align="center" width="350px" fig-align="right"}
+
+:::{ layout-ncol="2"}
+
+:::incremental
+- **Ray** is a distributed execution framework for building and running distributed applications.
+- Supports a wide range of workloads, including machine learning and reinforcement learning.
+- Uses an **actor model paradigm** for stateful computations.
+- Allows dynamic task scheduling and fine-grained control over distributed execution.
+:::
+
+![](../images/map-of-ray.svg)
+
+:::
+
+## Dask: Task Graph Computing
+
+```{python}
+#| echo: true
+#| output-location: column-fragment
+import numpy as np
+import dask.array as da
+
+data = np.arange(100_000).reshape(200, 500)
+a = da.from_array(data, chunks=(100, 100))
+a
+```
+
+## Dask: Task Graph Computing (2)
+
+```{python}
+#| echo: true
+#| output-location: column-fragment
+
+mean_graph = a.mean()
+mean_graph.visualize()
+```
+
+## Dask: Task Graph Computing (3)
+
+```{python}
+#| echo: true
+#| output-location: column-fragment
+
+result = mean_graph.compute()
+result
+```
+
+## Ray's actor model example
+
+```{python}
+#| echo: true
+#| output-location: column-fragment
+import ray
+
+@ray.remote
+class Counter:
+    def __init__(self):
+        self.value = 0
+
+    def increment(self):
+        self.value += 1
+        return self.value
+
+# Create actor instances
+counters = [Counter.remote() for _ in range(4)]
+# Increment counters in parallel
+ray.get([counter.increment.remote() for counter in counters])
+```
+
+## Key Differences Dask vs Ray
+| Feature          | Dask                          | Ray                          |
+|------------------|-------------------------------|------------------------------|
+| Paradigm         | Task graph (functional)       | Actor model (OOP)            |
+| State            | Stateless (pure functions)    | Stateful (actor instances)   |
+| Scheduling       | Static graph optimization     | Dynamic task scheduling      |
+| Best for         | Array/collection operations   | Heterogeneous workloads      |
+
+## Practical Examples 
+
+:::{ layout-ncol="2"}
+```python
+# Dask version (graph-based)
+import dask.bag as db
+
+bag = db.read_text('large_file.txt')
+result = bag.map(lambda x: x.upper()).compute()
+```
+
+```python
+# Ray version (actor-based)
+@ray.remote
+def process_line(line):
+    return line.upper()
+
+with open('large_file.txt') as f:
+    lines = f.readlines()
+
+results = ray.get([process_line.remote(line) for line in lines])
+```
+:::
+
+
+## Example 2: Machine Learning
+
+:::{ layout-ncol="2"}
+```python
+# Dask-ML example
+from dask_ml.linear_model import LogisticRegression
+from dask_ml.datasets import make_classification
+
+X, y = make_classification(n_samples=100000, chunks=1000)
+clf = LogisticRegression()
+clf.fit(X, y)
+```
+
+```python
+# Ray Train example
+from ray.train.xgboost import XGBoostTrainer
+
+trainer = XGBoostTrainer(
+    label_column="target",
+    params={"objective": "binary:logistic"},
+    datasets={"train": ray.data.from_pandas(df)},
+)
+result = trainer.fit()
+```
+:::
+
+## Performance Considerations
+
+:::{ layout-ncol="2"}
+
+:::{.fragment}
+Dask excels at:
+
+:::incremental
+  - Large array operations
+  - Predictable workloads
+  - Numpy/Pandas-like workflows
+:::
+
+:::
+
+:::{.fragment}
+Ray excels at:
+
+:::incremental
+  - Heterogeneous tasks
+  - Stateful applications
+  - Reinforcement learning
+:::
+
+:::
+
+:::
+
+## Hybrid Approaches
+
+```python
+# Using both together
+import dask.dataframe as dd
+import ray
+
+# Process data with Dask
+ddf = dd.read_csv('large_dataset.csv')
+processed = ddf.groupby('category').mean()
+
+# Use Ray for model serving
+@ray.remote
+class ModelServer:
+    def __init__(self, model):
+        self.model = model
+    def predict(self, data):
+        return self.model.predict(data)
+
+# Convert Dask results to Ray tasks
+model = train_model(processed.compute())
+servers = [ModelServer.remote(model) for _ in range(4)]
+```
+
+# Conclusion
+
+:::::{layout-ncol="2"}
+
+::::{.fragment}
+
+**Choose Dask if:**
+
+:::incremental
+
+- Your workload is similar to NumPy/Pandas
+- You need lazy evaluation
+- You're doing numerical computing
+
+:::
+
+::::
+
+::::{.fragment}
+
+**Choose Ray if:**
+
+:::incremental
+
+- You need stateful actors or dynamic task scheduling
+- Your workload is heterogeneous
+- You're building microservices
+
+:::
+
+::::
+
+:::::

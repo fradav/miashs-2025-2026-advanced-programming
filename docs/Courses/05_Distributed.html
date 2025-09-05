@@ -86,7 +86,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../summary.html" rel="next">
+<link href="../Courses/06_Dask-Ray.html" rel="next">
 <link href="../Courses/04_IPC-and-Locking.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -415,8 +415,26 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../Courses/06_Dask-Ray.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dask and Ray</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/07_Dask-delayed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Dask <code>delayed</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/08_SIMD.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hardware Vectorization with SIMD</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -527,17 +545,22 @@ window.Quarto = {
 <h1 data-number="7"><span class="header-section-number">7</span> Map-Reduce</h1>
 <section id="the-real-beating-heart-of-big-data" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="the-real-beating-heart-of-big-data"><span class="header-section-number">7.1</span> The (real) beating Heart of Big Data</h2>
-<p><span class="math inline">Map\rightarrow{}Reduce</span> patern is the most common pattern to process data in (real) Big Data.</p>
-<p>. . .</p>
+<p><span class="math inline">Map\rightarrow{}Reduce</span> pattern is the most common pattern to process data in (real) Big Data.</p>
+<div class="fragment">
 <p>It is heavily used by Google, Facebook, and IBM.</p>
-<p>. . .</p>
+</div>
+<div class="fragment">
 <p><a href="https://hadoop.apache.org/"><em>Hadoop</em></a> from Apache is a popular Map-Reduce framework (also called <code>MapReduce</code> in the <em>Hadoop</em> framework, not to be confused with the more general <span class="math inline">Map\rightarrow{}Reduce</span> Pattern).</p>
-<p>. . .</p>
+</div>
+<div class="fragment">
 <p><em>Hadoop</em> is backed by a HDFS (Hadoop Distributed File System) and a YARN (Yet Another Resource Manager)</p>
-<ul>
+</div>
+<div class="incremental">
+<ul class="incremental">
 <li>HDFS is a distributed file system (a file system that is distributed across a cluster of computers)</li>
 <li>YARN is a resource manager (a program that manages the resources of a cluster)</li>
 </ul>
+</div>
 </section>
 <section id="split-apply-combine-pattern" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="split-apply-combine-pattern"><span class="header-section-number">7.2</span> Split-Apply-Combine pattern</h2>
@@ -618,11 +641,15 @@ window.Quarto = {
 <section id="spark-spiritual-son-of-mapreduce" class="level2" data-number="7.8">
 <h2 data-number="7.8" class="anchored" data-anchor-id="spark-spiritual-son-of-mapreduce"><span class="header-section-number">7.8</span> Spark, spiritual son of MapReduce</h2>
 <p><a href="https://spark.apache.org/"><em>Spark</em></a> is widely used for machine learning on scalable data sets (faster than MapReduce by an order of magnitude).</p>
-<p>. . .</p>
+<div class="fragment">
 <p>Spark is largely inspired by the MapReduce pattern but extends it by using a <em>distributed graph</em> rather than a “linear” data flow like <span class="math inline">Map\rightarrow{}Reduce</span>.</p>
-<p><span class="math inline">\Longrightarrow</span> Complex disbributed computing.</p>
-<p>. . .</p>
-<p>Spark emphasizes ease of use of the cluster ressources in a simple and functional way</p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\Longrightarrow</span> Complex distributed computing.</p>
+</div>
+<div class="fragment">
+<p>Spark emphasizes ease of use of the cluster resources in a simple and functional way</p>
+</div>
 </section>
 <section id="spark-code-example-word-count" class="level2" data-number="7.9">
 <h2 data-number="7.9" class="anchored" data-anchor-id="spark-code-example-word-count"><span class="header-section-number">7.9</span> Spark, code example : Word Count</h2>
@@ -1123,8 +1150,8 @@ Wikipedia. 2021. <span>“<span>MapReduce</span> — <span>W</span>ikipedia<span
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../summary.html" class="pagination-link" aria-label="Summary">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../Courses/06_Dask-Ray.html" class="pagination-link" aria-label="Dask and Ray">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dask and Ray</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

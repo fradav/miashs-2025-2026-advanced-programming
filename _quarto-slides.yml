@@ -6,7 +6,9 @@ project:
     - Courses/03_Asynchronous.qmd
     - Courses/04_IPC-and-Locking.qmd
     - Courses/05_Distributed.qmd
-    - Courses/06_SIMD.qmd
+    - Courses/06_Dask-Ray.qmd
+    - Courses/07_Dask-delayed.qmd
+    - Courses/08_SIMD.qmd
   pre-render: project-scripts/prepare-slides.py
   output-dir: docs-resources/Slides
   resources:

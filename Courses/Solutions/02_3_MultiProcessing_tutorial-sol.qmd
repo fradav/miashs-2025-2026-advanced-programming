@@ -186,11 +186,7 @@ with Pool(6) as pool:
 # Use a lock around print
 from multiprocessing import Lock, Manager
 
-def init_worker(lock):
-    global safe_print_lock
-    safe_print_lock = lock
-
-def safe_printing_method(provider, vm_name):
+def safe_printing_method(lock, provider, vm_name):
     with lock:
         print('Pretend delete: {} on {}. (Pid: {})'
               .format(vm_name, provider, getpid()))
@@ -200,10 +196,10 @@ def safe_printing_method(provider, vm_name):
 #| slideshow: {slide_type: fragment}
 with Manager() as manager:
     lock = manager.Lock()
-    with Pool(6, initializer=init_worker, initargs=(lock,)) as pool:
+    with Pool(6) as pool:
         pool.starmap(
             safe_printing_method, 
-            [(key, vm) for key, vms in example_provider_vm_lists.items() for vm in vms])
+            [(lock, key, vm) for key, vms in example_provider_vm_lists.items() for vm in vms])
 ```
 
 # Queues

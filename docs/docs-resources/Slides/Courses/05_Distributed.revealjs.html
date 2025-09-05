@@ -275,7 +275,7 @@ François-David Collin
 </section>
 <section id="the-real-beating-heart-of-big-data" class="slide level2 center">
 <h2>The (real) beating Heart of Big Data</h2>
-<p><span class="math inline">Map\rightarrow{}Reduce</span> patern is the most common pattern to process data in (real) Big Data.</p>
+<p><span class="math inline">Map\rightarrow{}Reduce</span> pattern is the most common pattern to process data in (real) Big Data.</p>
 <div class="fragment">
 <p>It is heavily used by Google, Facebook, and IBM.</p>
 </div>
@@ -284,11 +284,11 @@ François-David Collin
 </div>
 <div class="fragment">
 <p><em>Hadoop</em> is backed by a HDFS (Hadoop Distributed File System) and a YARN (Yet Another Resource Manager)</p>
-<ul>
-<li>HDFS is a distributed file system (a file system that is distributed across a cluster of computers)</li>
-<li>YARN is a resource manager (a program that manages the resources of a cluster)</li>
-</ul>
 </div>
+<ul>
+<li class="fragment">HDFS is a distributed file system (a file system that is distributed across a cluster of computers)</li>
+<li class="fragment">YARN is a resource manager (a program that manages the resources of a cluster)</li>
+</ul>
 </section>
 <section id="split-apply-combine-pattern" class="slide level2 center">
 <h2>Split-Apply-Combine pattern</h2>
@@ -360,10 +360,12 @@ François-David Collin
 <p><a href="https://spark.apache.org/"><em>Spark</em></a> is widely used for machine learning on scalable data sets (faster than MapReduce by an order of magnitude).</p>
 <div class="fragment">
 <p>Spark is largely inspired by the MapReduce pattern but extends it by using a <em>distributed graph</em> rather than a “linear” data flow like <span class="math inline">Map\rightarrow{}Reduce</span>.</p>
-<p><span class="math inline">\Longrightarrow</span> Complex disbributed computing.</p>
 </div>
 <div class="fragment">
-<p>Spark emphasizes ease of use of the cluster ressources in a simple and functional way</p>
+<p><span class="math inline">\Longrightarrow</span> Complex distributed computing.</p>
+</div>
+<div class="fragment">
+<p>Spark emphasizes ease of use of the cluster resources in a simple and functional way</p>
 </div>
 </section>
 <section id="spark-code-example-word-count" class="slide level2 center">

@@ -10,22 +10,26 @@ nocite: |
 
 ## The (real) beating Heart of Big Data
 
-$Map\rightarrow{}Reduce$ patern is the most common pattern to process data in (real) Big Data.
 
-. . .
+$Map\rightarrow{}Reduce$ pattern is the most common pattern to process data in (real) Big Data.
 
+:::{.fragment}
 It is heavily used by Google, Facebook, and IBM.
+:::
 
-. . .
-
+:::{.fragment}
 [*Hadoop*](https://hadoop.apache.org/) from Apache is a popular Map-Reduce framework (also called `MapReduce` in the *Hadoop* framework, not to be confused with the more general $Map\rightarrow{}Reduce$ Pattern).
+:::
 
-. . .
-
+:::{.fragment}
 *Hadoop* is backed by a HDFS (Hadoop Distributed File System) and a YARN (Yet Another Resource Manager)
+:::
+
+:::incremental
 
 - HDFS is a distributed file system (a file system that is distributed across a cluster of computers)
 - YARN is a resource manager (a program that manages the resources of a cluster)
+:::
 
 ## Split-Apply-Combine pattern
 
@@ -95,15 +99,18 @@ def reduce(word, partialCounts):
 
 [*Spark*](https://spark.apache.org/) is widely used for machine learning on scalable data sets (faster than MapReduce by an order of magnitude).
 
-. . .
 
+:::{.fragment}
 Spark is largely inspired by the MapReduce pattern but extends it by using a _distributed graph_ rather than a "linear" data flow like $Map\rightarrow{}Reduce$.
+:::
 
-$\Longrightarrow$ Complex disbributed computing.
+:::{.fragment}
+$\Longrightarrow$ Complex distributed computing.
+:::
 
-. . .
-
-Spark emphasizes ease of use of the cluster ressources in a simple and functional way
+:::{.fragment}
+Spark emphasizes ease of use of the cluster resources in a simple and functional way
+:::
 
 ## Spark, code example : Word Count
 
@@ -167,5 +174,6 @@ Reduce
 : Merge the data from all the processes and produce a single result.
 
 ::::
+
 
 # References
