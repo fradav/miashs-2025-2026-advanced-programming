@@ -2220,25 +2220,91 @@
     ]
   },
   {
+    "objectID": "Projects/list.html",
+    "href": "Projects/list.html",
+    "title": "Appendix A — List of projects",
+    "section": "",
+    "text": "A.1 General Indications\nThis is a list of project ideas, some are of different difficulty levels, and some are cross-over projects that combine multiple subjects of the course.\nThose projects should be done alone or in pairs. The deliverables are also indicative, you can propose something else if you think it is more appropriate.\nAs one say “It’s not about the destination, it’s about the journey”, so the goal is to learn, and to showcase what you have learned.\nYou need to demonstrate intellectual curiosity, to dig into the subject, search for related work, and to understand what is already done in the field of the project you choose. Sometimes there is already prior work, you need to understand it, and to build on top of it if it is relevant.",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>List of projects</span>"
+    ]
+  },
+  {
+    "objectID": "Projects/list.html#general-indications",
+    "href": "Projects/list.html#general-indications",
+    "title": "Appendix A — List of projects",
+    "section": "",
+    "text": "Important\n\n\n\nDon’t hesitate to propose your own project idea if you have something else in mind that is not listed here!",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>List of projects</span>"
+    ]
+  },
+  {
+    "objectID": "Projects/list.html#terminology",
+    "href": "Projects/list.html#terminology",
+    "title": "Appendix A — List of projects",
+    "section": "A.2 Terminology",
+    "text": "A.2 Terminology\n\nA.2.1 ETL\nExtract, transform, load\n\n\n\n\n\n\n\nA.2.2 HPO\nHyperparameter optimization\n\n\n\n\n\n\n\nA.2.3 Deep Research\n\nDeep Research is composed of an LLM (which can be selected from the current list of LLMs provided by OpenAI, 4o, o1, o3, etc) and an internal “agentic framework” which guide the LLM to use tools like web search and organize its actions in steps.\n\nHere, we may broaden the “Deep Research” domain of application to any type of search like codebase extraction (instead of web search).\nSee Building Deep Research from scratch\n\n\n\n\n\n\n\nA.2.4 Work-Stealing\nWork-stealing is a scheduling strategy for parallel computing where idle processors dynamically “steal” tasks from busy processors to balance the workload and improve efficiency.\n\n\n\n\n\n\n\nA.2.5 OLAP (Online Analytical Processing)\nOnline Analytical Processing is a category of software technology that enables analysts, managers, and executives to gain insight into data through fast, consistent, interactive access in a variety of ways.",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>List of projects</span>"
+    ]
+  },
+  {
+    "objectID": "Projects/list.html#code-assistants",
+    "href": "Projects/list.html#code-assistants",
+    "title": "Appendix A — List of projects",
+    "section": "A.3 Code Assistants",
+    "text": "A.3 Code Assistants\n\n(1) Deep research assistant for creating a README for a codebase (pipeline version)\n\n\n\n\nDescription\n\nBuild an assistant that analyzes a codebase, infers project structure, and generates a high‑quality README with a summary, usage and architecture details.\n\nDeliverables\n\nCLI/Notebook that ingests a repo and outputs a README.md file.\n\n\n\n\n\n\n\n\n\n\n(2) Deep research assistant for creating a README for a codebase (agentic/mcp version in continue.dev)\n\n\n\n\nDescription\n\nBuild an agentic/mcp assistant that analyzes a codebase, infers project structure, and generates a high‑quality README with a summary, usage and architecture details.\n\nDeliverables\n\na set of LLM setup with mcp servers and promopts in vscode continue extension that can generate a README.md file for a codebase.\n\n\n\n\n\n\n\n\n\n\n(3) Generating docstrings for Python code in a codebase\n\n\n\n\nDescription\n\nAuto-generate docstrings for functions and classes, then implement automated checks and tests that validate docstring correctness against function behavior.\n\nDeliverables\n\ntools that annotates Python code with docstrings, and a test suite that checks docstring claims (examples/expected behavior)\n\n\n\n\n\n\n\n\n\n\n(4) Code summarization/explanation and modularization suggestions for long Python scripts\n\n\n\n\nDescription\n\nCreate a tool that parses very long Python scripts and outputs modularization suggestions (module boundaries, function extraction) and a summary with refactor hints.\n\nDeliverables\n\nTool that takes a long Python script and outputs a summary and modularization suggestions (mcp server)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExamples of long scripts\n\n\n\n\nhttps://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py\nhttps://github.com/aws/aws-cli/blob/develop/awscli/clidriver.py\nhttps://github.com/sqlalchemy/sqlalchemy/blob/main/lib/sqlalchemy/orm/session.py\nhttps://github.com/pallets/jinja/blob/main/src/jinja2/environment.py\nhttps://github.com/ipython/ipython/blob/main/IPython/core/interactiveshell.py\n\n\n\n\n\n(5) Pipeline for generating D2lang diagrams with a vision LLM\n\n\n\n\nDescription\n\nPipeline that takes a prompt, translates/templates it for a RAG query over the D2lang documentation, and generates a D2 diagram, compiles it to SVG/PNG, analyzes it for correctness and completeness, and iterates to improve it.\n\nDeliverables\n\nGennerate tool that takes a prompt and outputs a D2lang diagram over multiple iterations.\n\n\n\n\n\n\n\n\nD2 Documentation\n\n\n\n\n\n\nTip\n\n\n\nmistral is a vision LLM.\n\n\n\n\nA.3.1 Cross-over : Code Assistants + Numba or Dask\n\n(6) Refactoring bottleneck functions in a codebase to use Numba both with benchmarks, profiling, and tests.\n\n\n\n\nDescription\n\nIdentify hotspots, refactor to Numba, and quantify speedup/accuracy tradeoffs with tests and profiles.\n\nDeliverables\n\nOriginal vs optimized implementations, benchmark script, profiling report, tests verifying numerical parity. Clear reporting of reproducible use of LLMS/Deep Research for codebase understanding and refactoring and reproducibility.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExamples of codebases\n\n\n\n\nscikit-learn/scikit-learn — sklearn/manifold/_locally_linear.py — _locally_linear_embedding()\npandas-dev/pandas — pandas/core/window/common.py — flex_binary_moment()\nultralytics/yolov5 — train.py — train()\nPaddlePaddle/PaddleOCR\nultralytics/yolov5 — utils/plots.py, utils/segment/plots.py\nmdobook/resources - exercises/tenbartruss/truss.py\n\n\n\n\n\n\n\n\n\nExamples of numba uses\n\n\n\npandas/core/_numba/kernels/* — sliding_mean/var/sum/min_max\n\n\n\n\n(7) Translating PySpark pipelines to Dask — practical migration guide + AI Code Assistant.\n\n\n\n\nDescription\n\nPort small-to-medium PySpark ETL pipelines to Dask, preserve semantics, benchmark PySpark vs Dask, and provide an AI assistant that suggests rewrites, generates patches/tests, and explains tuning/semantic differences.\n\nDeliverables\n\nPySpark examples, Dask reimplementations, benchmark notebook, migration checklist, assistant (mapping rules + prompt templates + patch/test generator), and evaluation report.",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>List of projects</span>"
+    ]
+  },
+  {
+    "objectID": "Projects/list.html#parallel-computing",
+    "href": "Projects/list.html#parallel-computing",
+    "title": "Appendix A — List of projects",
+    "section": "A.4 Parallel Computing",
+    "text": "A.4 Parallel Computing\n\n(8) Locking Strategy Lab: coarse vs fine vs optimistic vs RW locks\n\n\n\n\nDescription\n\nImplement and compare multiple locking strategies on a shared structure (e.g., graph or ledger).\n\nDeliverables\n\nImplementations, microbench harness, plots comparing throughput vs contention, write-up with recommendations.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStrategies to consider\n\n\n\nCoarse grain: unique global Lock protecting whole structure Fine grain: sharded locks or per-node locks Reader‑Writer lock: shared readers, exclusive writers Optimistic read (versioning / retry): read w/o lock, validate version/cas (Optionnel) Lock‑free / CAS implementations in lower level language\n\n\n\n\n\n\n\n\nLinks\n\n\n\n\nGeneral background on locks and trade‑offs.\nTheory and common variants.\nClassical OCC discussion.\nPython threading locks.\nPython atomicts\n\n\n\n\n\n(9) Multi‑stage Image Pipeline with Backpressure & Flow Control\n\n\n\n\nDescription\n\nImplement a 3+ stage image processing pipeline with bounded queues, backpressure propagation, and dynamic scaling heuristics.\n\nDeliverables\n\nPipeline code, scaling heuristics, benchmark, short UI or logging dashboard.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTypical pipelines\n\n\n\n\nGeneric supervised CV pipeline (classification/recognition)\nOCR pipeline (detection + recognition)\n\n\n\n\n\n(10) Adaptive Concurrent Downloader with Politeness & Rate‑Limits (e.g., Google Scholar scraping or LLM API application)\n\n\n\n\nDescription\n\nImplement polite, adaptive downloader that enforces per-domain politeness, adapts concurrency to observed latency and failures, supports cancellation/priorities. Application to recursive scraping in google scholar or LLM API calls with rate limits.\n\nDeliverables\n\nCLI downloader, simulator of remote servers, policies and tests with real-world scraping or API calls example.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExemple of polite scraper\n\n\n\nhttps://github.com/dmi3kno/polite\n\n\n\n\n(11) Filesystem Work‑Stealing Crawler (toy distributed scheduler)\n\n\n\n\nDescription\n\nParallel filesystem walker and worker pool using work-stealing deques to deal with skewed directories.\n\nDeliverables\n\nCrawler implementation, skewed tree generator, benchmark and analysis.\n\n\n\n\n\n\n\n\n\n\nA.4.1 Dask/Ray based\n\n(12) Ray Tune: distributed HPO with comparison of strategies\n\n\n\n\nDescription\n\nImplement reproducible HPO experiments comparing grid/random/ASHA on a model and present best practices for local vs distributed runs.\n\nDeliverables\n\nExperiment suite, plots, reproducible configs with\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nRay Tune\n\n\n\n\n(13) ETL dask/ray pipeline + Front‑end (Streamlit/Panel/React)\n\n\n\n\nDescription\n\nBuild an ETL that scales locally with Dask or Ray and expose controls/visualization through a simple front-end.\n\nDeliverables\n\nETL code + front-end, README, sample dataset and demo video.\n\n\n\n\n\n\n\n\n\n\n(14) Synthetic Dask DAGs generator for evaluating dask task fusion and scheduling strategies.\n\n\n\n\nDescription\n\nCreate a synthetic DAG generator that can vary task sizes, dependencies, and fusion parameters to evaluate scheduler behavior.\n\nDeliverables\n\nGenerator, benchmark harness, plots and scheduler tuning recommendations.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\nOfficial Dask benchmarks\nDask Graphs\nDask Transformations\n\n\n\n\n\n(15) Streaming source + sliding window aggregation + dashboard (air quality / financial / river monitoring)\n\n\n\n\nDescription\n\nBuild a streaming pipeline using a local source (or Kafka emulator) performing sliding-window aggregations with a Streamlit/Dash dashboard. Apply to air quality, financial data, river monitoring, etc.\n\nDeliverables\n\nStreaming app, dashboard, reproducible synthetic generator, evaluation of latency/accuracy.",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>List of projects</span>"
+    ]
+  },
+  {
+    "objectID": "Projects/list.html#webgpu",
+    "href": "Projects/list.html#webgpu",
+    "title": "Appendix A — List of projects",
+    "section": "A.5 WebGPU",
+    "text": "A.5 WebGPU\n\n(16) Proof of concept for using WebGPU for Olap queries in the browser\n\n\n\n\nDescription\n\nDemonstrate how WebGPU can accelerate in‑browser OLAP operations (filters/group-bys/aggregates) on columnar data.\n\nDeliverables\n\nIn-browser demo, short perf report.\n\n\n\n\n\n\n\n\n\n\n(17) WebGPU app for counting people in a video stream (browser)\n\n\n\n\nDescription\n\nImplement a browser-based (WebGPU-accelerated) pipeline that performs simple frame-level processing to count people (using a small model or heuristic).\n\nDeliverables\n\nWeb demo\n\n\n\n\n\n\n\n\n\n\n(18) WebGPU path-tracing\n\n\n\n\nDescription\n\nhttps://github.com/ferminLR/webgpu-path-tracing \\Rightarrow Implement one or more of the TODO items in the referenced path-tracing repo: advanced shader/task mapping and performance tuning etc.\n\nDeliverables\n\nPR to the repo with one or more completed TODO items.\n\n\n\n\n\n\n\n\n\n\nA.5.1 Crossover : Webgpu + LLMs\n\n(19) WebGPU/WebLLM RAG app for document/website Q&A in browser\n\n\n\n\nDescription\n\nImplement Retrieval-Augmented-Generation entirely in the browser: use WebGPU for vector similarity (ANN) and a small local WebLLM. Application to document or website Q&A.\n\nDeliverables\n\nWeb demo with interface to upload a document or URL and ask questions.\n\n\n\n\n\n\n\n\n\n\n\nA.5.2 Crossover : WebGPU + Dask\n\n(20) ETL + WebGPU visualization dashboard with Dask and Streamlit\n\n\n\n\nDescription\n\nRun ETL at scale locally with Dask and visualize large aggregated results in-browser using WebGPU for rendering (or via Streamlit embedding).\n\nDeliverables\n\nDask ETL pipeline, frontend WebGPU visualizer, fallback renderer, performance report.",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>List of projects</span>"
+    ]
+  },
+  {
     "objectID": "applications.html",
     "href": "applications.html",
-    "title": "Appendix A — Applications",
+    "title": "Appendix B — Applications",
     "section": "",
     "text": "Original (In Percent Format)\nOnline Html (Corrected)\nNotebook (Corrected)\n\n\n\n\nPrompt engineering exercises\nSolution\nNotebook\n\n\nAI Agent\nSolution\nNotebook\n\n\nNumpy Workout\nSolution\nNotebook\n\n\nDecorators Tutorial\nSolution\nNotebook\n\n\nA tutorial on Python generators\nSolution\nNotebook\n\n\nMultiprocessing in Python 3\nSolution\nNotebook\n\n\nScaling App with multiprocessing\n\n\n\n\nAn asyncio application\n\n\n\n\nIPC and Locking\n\n\n\n\nLocking with multiprocessing.Value\n\n\n\n\nDistributed models examples\n\n\n\n\nDask delayed App\n\n\n\n\nNumba Introduction\nSolution\nNotebook\n\n\nNumba first steps\n\n\n\n\n\nNo matching items",
     "crumbs": [
       "Appendices",
-      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Applications</span>"
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Applications</span>"
     ]
   },
   {
     "objectID": "slides.html",
     "href": "slides.html",
-    "title": "Appendix B — Slides in reveal.js",
+    "title": "Appendix C — Slides in reveal.js",
     "section": "",
     "text": "Code Assistants\nNumpy Workout\nIntroduction to parallel computing\nAsynchronous Programming with Python\nIPC and locking\nDistributed Computing models\nDask and Ray\nDask delayed\nHardware Vectorization with SIMD\n\nNo matching items",
     "crumbs": [
       "Appendices",
-      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Slides in reveal.js</span>"
+      "<span class='chapter-number'>C</span>  <span class='chapter-title'>Slides in reveal.js</span>"
     ]
   }
 ]

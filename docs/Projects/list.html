@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.34">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="François-David Collin">
+
+<title>Appendix A — List of projects – Advanced programming and parallel computing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../applications.html" rel="next">
+<link href="../references.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-ce4a70ea6339eb1d769f2074d78edf30.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-9da23aa6082cb3b1220f94005998b921.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Projects/list.html">Appendices</a></li><li class="breadcrumb-item"><a href="../Projects/list.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">List of projects</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Advanced programming and parallel computing</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Software Prerequisites</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/01_Code-Assistant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Code Assistants</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/02_Parallel-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to parallel computing</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/03_Asynchronous.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Asynchronous Programming with Python</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/04_IPC-and-Locking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">IPC and locking</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/05_Distributed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Distributed Computing models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/06_Dask-Ray.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Dask and Ray</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/07_Dask-delayed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Dask <code>delayed</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/08_SIMD.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Hardware Vectorization with SIMD</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Projects/list.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">List of projects</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Applications</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Slides in reveal.js</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#general-indications" id="toc-general-indications" class="nav-link active" data-scroll-target="#general-indications"><span class="header-section-number">A.1</span> General Indications</a></li>
+  <li><a href="#terminology" id="toc-terminology" class="nav-link" data-scroll-target="#terminology"><span class="header-section-number">A.2</span> Terminology</a>
+  <ul>
+  <li><a href="#etl" id="toc-etl" class="nav-link" data-scroll-target="#etl"><span class="header-section-number">A.2.1</span> ETL</a></li>
+  <li><a href="#hpo" id="toc-hpo" class="nav-link" data-scroll-target="#hpo"><span class="header-section-number">A.2.2</span> HPO</a></li>
+  <li><a href="#deep-research" id="toc-deep-research" class="nav-link" data-scroll-target="#deep-research"><span class="header-section-number">A.2.3</span> Deep Research</a></li>
+  <li><a href="#work-stealing" id="toc-work-stealing" class="nav-link" data-scroll-target="#work-stealing"><span class="header-section-number">A.2.4</span> Work-Stealing</a></li>
+  <li><a href="#olap-online-analytical-processing" id="toc-olap-online-analytical-processing" class="nav-link" data-scroll-target="#olap-online-analytical-processing"><span class="header-section-number">A.2.5</span> OLAP (Online Analytical Processing)</a></li>
+  </ul></li>
+  <li><a href="#code-assistants" id="toc-code-assistants" class="nav-link" data-scroll-target="#code-assistants"><span class="header-section-number">A.3</span> Code Assistants</a>
+  <ul>
+  <li><a href="#deep-research-assistant-for-creating-a-readme-for-a-codebase-pipeline-version" id="toc-deep-research-assistant-for-creating-a-readme-for-a-codebase-pipeline-version" class="nav-link" data-scroll-target="#deep-research-assistant-for-creating-a-readme-for-a-codebase-pipeline-version"><span class="project-number">(1)</span> Deep research assistant for creating a README for a codebase (pipeline version)</a></li>
+  <li><a href="#deep-research-assistant-for-creating-a-readme-for-a-codebase-agenticmcp-version-in-continue.dev" id="toc-deep-research-assistant-for-creating-a-readme-for-a-codebase-agenticmcp-version-in-continue.dev" class="nav-link" data-scroll-target="#deep-research-assistant-for-creating-a-readme-for-a-codebase-agenticmcp-version-in-continue.dev"><span class="project-number">(2)</span> Deep research assistant for creating a README for a codebase (agentic/mcp version in continue.dev)</a></li>
+  <li><a href="#generating-docstrings-for-python-code-in-a-codebase" id="toc-generating-docstrings-for-python-code-in-a-codebase" class="nav-link" data-scroll-target="#generating-docstrings-for-python-code-in-a-codebase"><span class="project-number">(3)</span> Generating docstrings for Python code in a codebase</a></li>
+  <li><a href="#code-summarizationexplanation-and-modularization-suggestions-for-long-python-scripts" id="toc-code-summarizationexplanation-and-modularization-suggestions-for-long-python-scripts" class="nav-link" data-scroll-target="#code-summarizationexplanation-and-modularization-suggestions-for-long-python-scripts"><span class="project-number">(4)</span> Code summarization/explanation and modularization suggestions for long Python scripts</a></li>
+  <li><a href="#pipeline-for-generating-d2lang-diagrams-with-a-vision-llm" id="toc-pipeline-for-generating-d2lang-diagrams-with-a-vision-llm" class="nav-link" data-scroll-target="#pipeline-for-generating-d2lang-diagrams-with-a-vision-llm"><span class="project-number">(5)</span> Pipeline for generating D2lang diagrams with a vision LLM</a></li>
+  <li><a href="#cross-over-code-assistants-numba-or-dask" id="toc-cross-over-code-assistants-numba-or-dask" class="nav-link" data-scroll-target="#cross-over-code-assistants-numba-or-dask"><span class="header-section-number">A.3.1</span> Cross-over&nbsp;: Code Assistants + Numba or Dask</a>
+  <ul class="collapse">
+  <li><a href="#refactoring-bottleneck-functions-in-a-codebase-to-use-numba-both-with-benchmarks-profiling-and-tests." id="toc-refactoring-bottleneck-functions-in-a-codebase-to-use-numba-both-with-benchmarks-profiling-and-tests." class="nav-link" data-scroll-target="#refactoring-bottleneck-functions-in-a-codebase-to-use-numba-both-with-benchmarks-profiling-and-tests."><span class="project-number">(6)</span> Refactoring bottleneck functions in a codebase to use Numba both with benchmarks, profiling, and tests.</a></li>
+  <li><a href="#translating-pyspark-pipelines-to-dask-practical-migration-guide-ai-code-assistant." id="toc-translating-pyspark-pipelines-to-dask-practical-migration-guide-ai-code-assistant." class="nav-link" data-scroll-target="#translating-pyspark-pipelines-to-dask-practical-migration-guide-ai-code-assistant."><span class="project-number">(7)</span> Translating PySpark pipelines to Dask — practical migration guide + AI Code Assistant.</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#parallel-computing" id="toc-parallel-computing" class="nav-link" data-scroll-target="#parallel-computing"><span class="header-section-number">A.4</span> Parallel Computing</a>
+  <ul>
+  <li><a href="#locking-strategy-lab-coarse-vs-fine-vs-optimistic-vs-rw-locks" id="toc-locking-strategy-lab-coarse-vs-fine-vs-optimistic-vs-rw-locks" class="nav-link" data-scroll-target="#locking-strategy-lab-coarse-vs-fine-vs-optimistic-vs-rw-locks"><span class="project-number">(8)</span> Locking Strategy Lab: coarse vs fine vs optimistic vs RW locks</a></li>
+  <li><a href="#multistage-image-pipeline-with-backpressure-flow-control" id="toc-multistage-image-pipeline-with-backpressure-flow-control" class="nav-link" data-scroll-target="#multistage-image-pipeline-with-backpressure-flow-control"><span class="project-number">(9)</span> Multi‑stage Image Pipeline with Backpressure &amp; Flow Control</a></li>
+  <li><a href="#adaptive-concurrent-downloader-with-politeness-ratelimits-e.g.-google-scholar-scraping-or-llm-api-application" id="toc-adaptive-concurrent-downloader-with-politeness-ratelimits-e.g.-google-scholar-scraping-or-llm-api-application" class="nav-link" data-scroll-target="#adaptive-concurrent-downloader-with-politeness-ratelimits-e.g.-google-scholar-scraping-or-llm-api-application"><span class="project-number">(10)</span> Adaptive Concurrent Downloader with Politeness &amp; Rate‑Limits (e.g., Google Scholar scraping or LLM API application)</a></li>
+  <li><a href="#filesystem-workstealing-crawler-toy-distributed-scheduler" id="toc-filesystem-workstealing-crawler-toy-distributed-scheduler" class="nav-link" data-scroll-target="#filesystem-workstealing-crawler-toy-distributed-scheduler"><span class="project-number">(11)</span> Filesystem Work‑Stealing Crawler (toy distributed scheduler)</a></li>
+  <li><a href="#daskray-based" id="toc-daskray-based" class="nav-link" data-scroll-target="#daskray-based"><span class="header-section-number">A.4.1</span> Dask/Ray based</a>
+  <ul class="collapse">
+  <li><a href="#ray-tune-distributed-hpo-with-comparison-of-strategies" id="toc-ray-tune-distributed-hpo-with-comparison-of-strategies" class="nav-link" data-scroll-target="#ray-tune-distributed-hpo-with-comparison-of-strategies"><span class="project-number">(12)</span> Ray Tune: distributed HPO with comparison of strategies</a></li>
+  <li><a href="#etl-daskray-pipeline-frontend-streamlitpanelreact" id="toc-etl-daskray-pipeline-frontend-streamlitpanelreact" class="nav-link" data-scroll-target="#etl-daskray-pipeline-frontend-streamlitpanelreact"><span class="project-number">(13)</span> ETL dask/ray pipeline + Front‑end (Streamlit/Panel/React)</a></li>
+  <li><a href="#synthetic-dask-dags-generator-for-evaluating-dask-task-fusion-and-scheduling-strategies." id="toc-synthetic-dask-dags-generator-for-evaluating-dask-task-fusion-and-scheduling-strategies." class="nav-link" data-scroll-target="#synthetic-dask-dags-generator-for-evaluating-dask-task-fusion-and-scheduling-strategies."><span class="project-number">(14)</span> Synthetic Dask DAGs generator for evaluating dask task fusion and scheduling strategies.</a></li>
+  <li><a href="#streaming-source-sliding-window-aggregation-dashboard-air-quality-financial-river-monitoring" id="toc-streaming-source-sliding-window-aggregation-dashboard-air-quality-financial-river-monitoring" class="nav-link" data-scroll-target="#streaming-source-sliding-window-aggregation-dashboard-air-quality-financial-river-monitoring"><span class="project-number">(15)</span> Streaming source + sliding window aggregation + dashboard (air quality / financial / river monitoring)</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#webgpu" id="toc-webgpu" class="nav-link" data-scroll-target="#webgpu"><span class="header-section-number">A.5</span> WebGPU</a>
+  <ul>
+  <li><a href="#proof-of-concept-for-using-webgpu-for-olap-queries-in-the-browser" id="toc-proof-of-concept-for-using-webgpu-for-olap-queries-in-the-browser" class="nav-link" data-scroll-target="#proof-of-concept-for-using-webgpu-for-olap-queries-in-the-browser"><span class="project-number">(16)</span> Proof of concept for using WebGPU for Olap queries in the browser</a></li>
+  <li><a href="#webgpu-app-for-counting-people-in-a-video-stream-browser" id="toc-webgpu-app-for-counting-people-in-a-video-stream-browser" class="nav-link" data-scroll-target="#webgpu-app-for-counting-people-in-a-video-stream-browser"><span class="project-number">(17)</span> WebGPU app for counting people in a video stream (browser)</a></li>
+  <li><a href="#webgpu-path-tracing" id="toc-webgpu-path-tracing" class="nav-link" data-scroll-target="#webgpu-path-tracing"><span class="project-number">(18)</span> WebGPU path-tracing</a></li>
+  <li><a href="#crossover-webgpu-llms" id="toc-crossover-webgpu-llms" class="nav-link" data-scroll-target="#crossover-webgpu-llms"><span class="header-section-number">A.5.1</span> Crossover : Webgpu + LLMs</a>
+  <ul class="collapse">
+  <li><a href="#webgpuwebllm-rag-app-for-documentwebsite-qa-in-browser" id="toc-webgpuwebllm-rag-app-for-documentwebsite-qa-in-browser" class="nav-link" data-scroll-target="#webgpuwebllm-rag-app-for-documentwebsite-qa-in-browser"><span class="project-number">(19)</span> WebGPU/WebLLM RAG app for document/website Q&amp;A in browser</a></li>
+  </ul></li>
+  <li><a href="#crossover-webgpu-dask" id="toc-crossover-webgpu-dask" class="nav-link" data-scroll-target="#crossover-webgpu-dask"><span class="header-section-number">A.5.2</span> Crossover : WebGPU + Dask</a>
+  <ul class="collapse">
+  <li><a href="#etl-webgpu-visualization-dashboard-with-dask-and-streamlit" id="toc-etl-webgpu-visualization-dashboard-with-dask-and-streamlit" class="nav-link" data-scroll-target="#etl-webgpu-visualization-dashboard-with-dask-and-streamlit"><span class="project-number">(20)</span> ETL + WebGPU visualization dashboard with Dask and Streamlit</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Projects/list.html">Appendices</a></li><li class="breadcrumb-item"><a href="../Projects/list.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">List of projects</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Appendix A — List of projects</h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliations</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">François-David Collin <a href="mailto:francois-david.collin@umontpellier.fr" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            CNRS
+          </p>
+        <p class="affiliation">
+            IMAG
+          </p>
+        <p class="affiliation">
+            Paul-Valéry Montpellier 3 University
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="general-indications" class="level2" data-number="A.1">
+<h2 data-number="A.1" class="anchored" data-anchor-id="general-indications"><span class="header-section-number">A.1</span> General Indications</h2>
+<p>This is a list of project ideas, some are of different difficulty levels, and some are cross-over projects that combine multiple subjects of the course.</p>
+<p>Those projects should be done alone or in pairs. The deliverables are also indicative, you can propose something else if you think it is more appropriate.</p>
+<p>As one say “It’s not about the destination, it’s about the journey”, so the goal is to learn, and to showcase what you have learned.</p>
+<p>You need to demonstrate intellectual curiosity, to dig into the subject, search for related work, and to understand what is already done in the field of the project you choose. Sometimes there is already prior work, you need to understand it, and to build on top of it if it is relevant.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Don’t hesitate to propose your own project idea if you have something else in mind that is not listed here!</p>
+</div>
+</div>
+</section>
+<section id="terminology" class="level2" data-number="A.2">
+<h2 data-number="A.2" class="anchored" data-anchor-id="terminology"><span class="header-section-number">A.2</span> Terminology</h2>
+<section id="etl" class="level3" data-number="A.2.1">
+<h3 data-number="A.2.1" class="anchored" data-anchor-id="etl"><span class="header-section-number">A.2.1</span> ETL</h3>
+<p><a href="https://en.wikipedia.org/wiki/Extract,_transform,_load">Extract, transform, load</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./etl.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img" width="600"></p>
+</figure>
+</div>
+</section>
+<section id="hpo" class="level3" data-number="A.2.2">
+<h3 data-number="A.2.2" class="anchored" data-anchor-id="hpo"><span class="header-section-number">A.2.2</span> HPO</h3>
+<p><a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">Hyperparameter optimization</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./hpo.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="deep-research" class="level3" data-number="A.2.3">
+<h3 data-number="A.2.3" class="anchored" data-anchor-id="deep-research"><span class="header-section-number">A.2.3</span> Deep Research</h3>
+<blockquote class="blockquote">
+<p><a href="https://huggingface.co/blog/open-deep-research">Deep Research</a> is composed of an LLM (which can be selected from the current list of LLMs provided by OpenAI, 4o, o1, o3, etc) and an internal “agentic framework” which guide the LLM to use tools like web search and organize its actions in steps.</p>
+</blockquote>
+<p>Here, we may broaden the “Deep Research” domain of application to any type of search like codebase extraction (instead of web search).</p>
+<p>See <a href="https://www.newsletter.swirlai.com/p/building-deep-research-agent-from">Building Deep Research from scratch</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./deep-research.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img" width="600"></p>
+</figure>
+</div>
+</section>
+<section id="work-stealing" class="level3" data-number="A.2.4">
+<h3 data-number="A.2.4" class="anchored" data-anchor-id="work-stealing"><span class="header-section-number">A.2.4</span> Work-Stealing</h3>
+<p><a href="https://en.wikipedia.org/wiki/Work_stealing">Work-stealing</a> is a scheduling strategy for parallel computing where idle processors dynamically “steal” tasks from busy processors to balance the workload and improve efficiency.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./stealing.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img" width="600"></p>
+</figure>
+</div>
+</section>
+<section id="olap-online-analytical-processing" class="level3" data-number="A.2.5">
+<h3 data-number="A.2.5" class="anchored" data-anchor-id="olap-online-analytical-processing"><span class="header-section-number">A.2.5</span> OLAP (Online Analytical Processing)</h3>
+<p><a href="https://en.wikipedia.org/wiki/Online_analytical_processing">Online Analytical Processing</a> is a category of software technology that enables analysts, managers, and executives to gain insight into data through fast, consistent, interactive access in a variety of ways.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./olap.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img" width="600"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="code-assistants" class="level2" data-number="A.3">
+<h2 data-number="A.3" class="anchored" data-anchor-id="code-assistants"><span class="header-section-number">A.3</span> Code Assistants</h2>
+<section id="deep-research-assistant-for-creating-a-readme-for-a-codebase-pipeline-version" class="level4">
+<h4 class="anchored" data-anchor-id="deep-research-assistant-for-creating-a-readme-for-a-codebase-pipeline-version"><span class="project-number">(1)</span> Deep research assistant for creating a README for a codebase (pipeline version)</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Build an assistant that analyzes a codebase, infers project structure, and generates a high‑quality README with a summary, usage and architecture details.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+CLI/Notebook that ingests a repo and outputs a README.md file.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_01.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="deep-research-assistant-for-creating-a-readme-for-a-codebase-agenticmcp-version-in-continue.dev" class="level4">
+<h4 class="anchored" data-anchor-id="deep-research-assistant-for-creating-a-readme-for-a-codebase-agenticmcp-version-in-continue.dev"><span class="project-number">(2)</span> Deep research assistant for creating a README for a codebase (agentic/mcp version in continue.dev)</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Build an agentic/mcp assistant that analyzes a codebase, infers project structure, and generates a high‑quality README with a summary, usage and architecture details.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+a set of LLM setup with mcp servers and promopts in vscode continue extension that can generate a README.md file for a codebase.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_02.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="generating-docstrings-for-python-code-in-a-codebase" class="level4">
+<h4 class="anchored" data-anchor-id="generating-docstrings-for-python-code-in-a-codebase"><span class="project-number">(3)</span> Generating docstrings for Python code in a codebase</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Auto-generate docstrings for functions and classes, then implement automated checks and tests that validate docstring correctness against function behavior.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+tools that annotates Python code with docstrings, and a test suite that checks docstring claims (examples/expected behavior)
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_03.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="code-summarizationexplanation-and-modularization-suggestions-for-long-python-scripts" class="level4">
+<h4 class="anchored" data-anchor-id="code-summarizationexplanation-and-modularization-suggestions-for-long-python-scripts"><span class="project-number">(4)</span> Code summarization/explanation and modularization suggestions for long Python scripts</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Create a tool that parses very long Python scripts and outputs modularization suggestions (module boundaries, function extraction) and a summary with refactor hints.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Tool that takes a long Python script and outputs a summary and modularization suggestions (mcp server)
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_04.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Examples of long scripts">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Examples of long scripts
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py</li>
+<li>https://github.com/aws/aws-cli/blob/develop/awscli/clidriver.py</li>
+<li>https://github.com/sqlalchemy/sqlalchemy/blob/main/lib/sqlalchemy/orm/session.py</li>
+<li>https://github.com/pallets/jinja/blob/main/src/jinja2/environment.py</li>
+<li>https://github.com/ipython/ipython/blob/main/IPython/core/interactiveshell.py</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="pipeline-for-generating-d2lang-diagrams-with-a-vision-llm" class="level4">
+<h4 class="anchored" data-anchor-id="pipeline-for-generating-d2lang-diagrams-with-a-vision-llm"><span class="project-number">(5)</span> Pipeline for generating D2lang diagrams with a vision LLM</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Pipeline that takes a prompt, translates/templates it for a RAG query over the D2lang documentation, and generates a D2 diagram, compiles it to SVG/PNG, analyzes it for correctness and completeness, and iterates to improve it.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Gennerate tool that takes a prompt and outputs a D2lang diagram over multiple iterations.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_05.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+<p><a href="https://d2lang.com/">D2 Documentation</a></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>mistral is a vision LLM.</p>
+</div>
+</div>
+</section>
+<section id="cross-over-code-assistants-numba-or-dask" class="level3" data-number="A.3.1">
+<h3 data-number="A.3.1" class="anchored" data-anchor-id="cross-over-code-assistants-numba-or-dask"><span class="header-section-number">A.3.1</span> Cross-over&nbsp;: Code Assistants + Numba or Dask</h3>
+<section id="refactoring-bottleneck-functions-in-a-codebase-to-use-numba-both-with-benchmarks-profiling-and-tests." class="level4">
+<h4 class="anchored" data-anchor-id="refactoring-bottleneck-functions-in-a-codebase-to-use-numba-both-with-benchmarks-profiling-and-tests."><span class="project-number">(6)</span> Refactoring bottleneck functions in a codebase to use Numba both with benchmarks, profiling, and tests.</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Identify hotspots, refactor to Numba, and quantify speedup/accuracy tradeoffs with tests and profiles.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Original vs optimized implementations, benchmark script, profiling report, tests verifying numerical parity. Clear reporting of reproducible use of LLMS/Deep Research for codebase understanding and refactoring and reproducibility.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_06.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Examples of codebases">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Examples of codebases
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>scikit-learn/scikit-learn — sklearn/manifold/_locally_linear.py — _locally_linear_embedding()</li>
+<li>pandas-dev/pandas — pandas/core/window/common.py — flex_binary_moment()</li>
+<li>ultralytics/yolov5 — train.py — train()</li>
+<li>PaddlePaddle/PaddleOCR</li>
+<li>ultralytics/yolov5 — utils/plots.py, utils/segment/plots.py</li>
+<li>mdobook/resources - exercises/tenbartruss/truss.py</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Examples of numba uses">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Examples of numba uses
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>pandas/core/_numba/kernels/* — sliding_mean/var/sum/min_max</p>
+</div>
+</div>
+</section>
+<section id="translating-pyspark-pipelines-to-dask-practical-migration-guide-ai-code-assistant." class="level4">
+<h4 class="anchored" data-anchor-id="translating-pyspark-pipelines-to-dask-practical-migration-guide-ai-code-assistant."><span class="project-number">(7)</span> Translating PySpark pipelines to Dask — practical migration guide + AI Code Assistant.</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Port small-to-medium PySpark ETL pipelines to Dask, preserve semantics, benchmark PySpark vs Dask, and provide an AI assistant that suggests rewrites, generates patches/tests, and explains tuning/semantic differences.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+PySpark examples, Dask reimplementations, benchmark notebook, migration checklist, assistant (mapping rules + prompt templates + patch/test generator), and evaluation report.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_07.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="parallel-computing" class="level2" data-number="A.4">
+<h2 data-number="A.4" class="anchored" data-anchor-id="parallel-computing"><span class="header-section-number">A.4</span> Parallel Computing</h2>
+<section id="locking-strategy-lab-coarse-vs-fine-vs-optimistic-vs-rw-locks" class="level4">
+<h4 class="anchored" data-anchor-id="locking-strategy-lab-coarse-vs-fine-vs-optimistic-vs-rw-locks"><span class="project-number">(8)</span> Locking Strategy Lab: coarse vs fine vs optimistic vs RW locks</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Implement and compare multiple locking strategies on a shared structure (e.g., graph or ledger).
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Implementations, microbench harness, plots comparing throughput vs contention, write-up with recommendations.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_08.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Strategies to consider">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Strategies to consider
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Coarse grain: unique global Lock protecting whole structure Fine grain: sharded locks or per-node locks Reader‑Writer lock: shared readers, exclusive writers Optimistic read (versioning / retry): read w/o lock, validate version/cas (Optionnel) Lock‑free / CAS implementations in lower level language</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Links">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Links
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Lock_(computer_science)">General background on locks and trade‑offs.</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock">Theory and common variants.</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Optimistic_concurrency_control">Classical OCC discussion.</a></li>
+<li><a href="https://docs.python.org/3/library/threading.html#lock-objects">Python threading locks.</a></li>
+<li><a href="https://github.com/doodspav/atomics">Python atomicts</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="multistage-image-pipeline-with-backpressure-flow-control" class="level4">
+<h4 class="anchored" data-anchor-id="multistage-image-pipeline-with-backpressure-flow-control"><span class="project-number">(9)</span> Multi‑stage Image Pipeline with Backpressure &amp; Flow Control</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Implement a 3+ stage image processing pipeline with bounded queues, backpressure propagation, and dynamic scaling heuristics.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Pipeline code, scaling heuristics, benchmark, short UI or logging dashboard.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_09.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="multistage.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img" width="600"></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Typical pipelines">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Typical pipelines
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Generic supervised CV pipeline (classification/recognition)</li>
+<li>OCR pipeline (detection + recognition)</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="adaptive-concurrent-downloader-with-politeness-ratelimits-e.g.-google-scholar-scraping-or-llm-api-application" class="level4">
+<h4 class="anchored" data-anchor-id="adaptive-concurrent-downloader-with-politeness-ratelimits-e.g.-google-scholar-scraping-or-llm-api-application"><span class="project-number">(10)</span> Adaptive Concurrent Downloader with Politeness &amp; Rate‑Limits (e.g., Google Scholar scraping or LLM API application)</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Implement polite, adaptive downloader that enforces per-domain politeness, adapts concurrency to observed latency and failures, supports cancellation/priorities. Application to recursive scraping in google scholar or LLM API calls with rate limits.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+CLI downloader, simulator of remote servers, policies and tests with real-world scraping or API calls example.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_10.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Exemple of polite scraper">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exemple of polite scraper
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>https://github.com/dmi3kno/polite</p>
+</div>
+</div>
+</section>
+<section id="filesystem-workstealing-crawler-toy-distributed-scheduler" class="level4">
+<h4 class="anchored" data-anchor-id="filesystem-workstealing-crawler-toy-distributed-scheduler"><span class="project-number">(11)</span> Filesystem Work‑Stealing Crawler (toy distributed scheduler)</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Parallel filesystem walker and worker pool using work-stealing deques to deal with skewed directories.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Crawler implementation, skewed tree generator, benchmark and analysis.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_11.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="daskray-based" class="level3" data-number="A.4.1">
+<h3 data-number="A.4.1" class="anchored" data-anchor-id="daskray-based"><span class="header-section-number">A.4.1</span> Dask/Ray based</h3>
+<section id="ray-tune-distributed-hpo-with-comparison-of-strategies" class="level4">
+<h4 class="anchored" data-anchor-id="ray-tune-distributed-hpo-with-comparison-of-strategies"><span class="project-number">(12)</span> Ray Tune: distributed HPO with comparison of strategies</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Implement reproducible HPO experiments comparing grid/random/ASHA on a model and present best practices for local vs distributed runs.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Experiment suite, plots, reproducible configs with
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_12.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://docs.ray.io/en/latest/tune/index.html">Ray Tune</a></p>
+</div>
+</div>
+</section>
+<section id="etl-daskray-pipeline-frontend-streamlitpanelreact" class="level4">
+<h4 class="anchored" data-anchor-id="etl-daskray-pipeline-frontend-streamlitpanelreact"><span class="project-number">(13)</span> ETL dask/ray pipeline + Front‑end (Streamlit/Panel/React)</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Build an ETL that scales locally with Dask or Ray and expose controls/visualization through a simple front-end.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+ETL code + front-end, README, sample dataset and demo video.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_13.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="synthetic-dask-dags-generator-for-evaluating-dask-task-fusion-and-scheduling-strategies." class="level4">
+<h4 class="anchored" data-anchor-id="synthetic-dask-dags-generator-for-evaluating-dask-task-fusion-and-scheduling-strategies."><span class="project-number">(14)</span> Synthetic Dask DAGs generator for evaluating dask task fusion and scheduling strategies.</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Create a synthetic DAG generator that can vary task sizes, dependencies, and fusion parameters to evaluate scheduler behavior.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Generator, benchmark harness, plots and scheduler tuning recommendations.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_14.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://github.com/dask/dask-benchmarks">Official Dask benchmarks</a></li>
+<li><a href="https://docs.dask.org/en/latest/graphs.html">Dask Graphs</a></li>
+<li><a href="https://docs.dask.org/en/stable/optimize.html">Dask Transformations</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="streaming-source-sliding-window-aggregation-dashboard-air-quality-financial-river-monitoring" class="level4">
+<h4 class="anchored" data-anchor-id="streaming-source-sliding-window-aggregation-dashboard-air-quality-financial-river-monitoring"><span class="project-number">(15)</span> Streaming source + sliding window aggregation + dashboard (air quality / financial / river monitoring)</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Build a streaming pipeline using a local source (or Kafka emulator) performing sliding-window aggregations with a Streamlit/Dash dashboard. Apply to air quality, financial data, river monitoring, etc.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Streaming app, dashboard, reproducible synthetic generator, evaluation of latency/accuracy.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_15.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./streaming.svg" class="noinvert img-fluid quarto-figure quarto-figure-center figure-img" width="600"></p>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="webgpu" class="level2" data-number="A.5">
+<h2 data-number="A.5" class="anchored" data-anchor-id="webgpu"><span class="header-section-number">A.5</span> WebGPU</h2>
+<section id="proof-of-concept-for-using-webgpu-for-olap-queries-in-the-browser" class="level4">
+<h4 class="anchored" data-anchor-id="proof-of-concept-for-using-webgpu-for-olap-queries-in-the-browser"><span class="project-number">(16)</span> Proof of concept for using WebGPU for Olap queries in the browser</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Demonstrate how WebGPU can accelerate in‑browser OLAP operations (filters/group-bys/aggregates) on columnar data.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+In-browser demo, short perf report.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_16.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="webgpu-app-for-counting-people-in-a-video-stream-browser" class="level4">
+<h4 class="anchored" data-anchor-id="webgpu-app-for-counting-people-in-a-video-stream-browser"><span class="project-number">(17)</span> WebGPU app for counting people in a video stream (browser)</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Implement a browser-based (WebGPU-accelerated) pipeline that performs simple frame-level processing to count people (using a small model or heuristic).
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Web demo
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_17.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="webgpu-path-tracing" class="level4">
+<h4 class="anchored" data-anchor-id="webgpu-path-tracing"><span class="project-number">(18)</span> WebGPU path-tracing</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+https://github.com/ferminLR/webgpu-path-tracing <span class="math inline">\Rightarrow</span> Implement one or more of the TODO items in the referenced path-tracing repo: advanced shader/task mapping and performance tuning etc.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+PR to the repo with one or more completed TODO items.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_18.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="crossover-webgpu-llms" class="level3" data-number="A.5.1">
+<h3 data-number="A.5.1" class="anchored" data-anchor-id="crossover-webgpu-llms"><span class="header-section-number">A.5.1</span> Crossover : Webgpu + LLMs</h3>
+<section id="webgpuwebllm-rag-app-for-documentwebsite-qa-in-browser" class="level4">
+<h4 class="anchored" data-anchor-id="webgpuwebllm-rag-app-for-documentwebsite-qa-in-browser"><span class="project-number">(19)</span> WebGPU/WebLLM RAG app for document/website Q&amp;A in browser</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Implement Retrieval-Augmented-Generation entirely in the browser: use WebGPU for vector similarity (ANN) and a small local WebLLM. Application to document or website Q&amp;A.
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Web demo with interface to upload a document or URL and ask questions.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_19.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="crossover-webgpu-dask" class="level3" data-number="A.5.2">
+<h3 data-number="A.5.2" class="anchored" data-anchor-id="crossover-webgpu-dask"><span class="header-section-number">A.5.2</span> Crossover : WebGPU + Dask</h3>
+<section id="etl-webgpu-visualization-dashboard-with-dask-and-streamlit" class="level4">
+<h4 class="anchored" data-anchor-id="etl-webgpu-visualization-dashboard-with-dask-and-streamlit"><span class="project-number">(20)</span> ETL + WebGPU visualization dashboard with Dask and Streamlit</h4>
+<div class="quarto-layout-panel" data-layout="[[60,40]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Description</dt>
+<dd>
+Run ETL at scale locally with Dask and visualize large aggregated results in-browser using WebGPU for rendering (or via Streamlit embedding).
+</dd>
+<dt>Deliverables</dt>
+<dd>
+Dask ETL pipeline, frontend WebGPU visualizer, fallback renderer, performance report.
+</dd>
+</dl>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="./output_20.png" class="noinvert img-fluid" width="200"></p>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../references.html" class="pagination-link" aria-label="References">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">References</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../applications.html" class="pagination-link" aria-label="Applications">
+        <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Applications</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-SA 4.0</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
