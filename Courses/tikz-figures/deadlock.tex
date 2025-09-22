@@ -1,9 +1,7 @@
-\documentclass[dvisvgm]{standalone}
+\documentclass[tikz,dvisvgm]{standalone}
 
-\usepackage{tikz}
 \begin{document}
 
-\resizebox{40cm}{!}{%
 \begin{tikzpicture}[distance=5mm and 5mm]
     \special{dvisvgm:raw <g id="A">}
 	\node (A) {Process $A$};
@@ -25,8 +23,7 @@
     \special{dvisvgm:raw <g id="BL1">}
 	\draw [->] (B) -- (L1);
     \special{dvisvgm:raw </g>}
-\end{tikzpicture}% 
-}
+\end{tikzpicture}
 
 
 \end{document}

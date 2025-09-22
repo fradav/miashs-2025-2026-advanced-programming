@@ -1,5 +1,8 @@
-\documentclass[tikz]{standalone}
+\documentclass[tikz,dvisvgm]{standalone}
+
 \usetikzlibrary{calc,positioning,shapes.multipart,shapes.misc,chains,arrows}
+\usepackage{xcolor}
+\colorlet{myred}{red!80!black}
 
 \begin{document}
 
@@ -12,7 +15,7 @@
   \node(P1) [above of=C,xshift=30mm] {Process $A$};
   \node(P2) [below of=C,xshift=30mm] {Process $B$};
   \node[on chain,draw,inner sep=6pt] (D) [right of=C] {};
-  \node (dot) [right of=D,font=\LARGE\color{red}] {?}; 
+  \node (dot) [right of=D,font=\LARGE,fill=myred] {?}; 
   \draw (D.north east) -- (D.south west);
   \draw (D.north west) -- (D.south east);
   \draw[*->] let \p1 = (A.two), \p2 = (A.center) in (\x1,\y2) -- (B);

@@ -1,6 +1,9 @@
-\documentclass[tikz]{standalone}
+\documentclass[tikz,dvisvgm]{standalone}
 
 \usetikzlibrary{calc,positioning,shapes.multipart,shapes.misc,chains,arrows}
+\usepackage{xcolor}
+\colorlet{myred}{red!80!black}
+
 \begin{document}
 
 \begin{tikzpicture}[list/.style={rectangle split, rectangle split parts=2,
@@ -9,7 +12,7 @@
   \node[list,on chain] (A) {3};
   \node[list, on chain,label=Process $A$](P1) [above of=A,xshift=-30mm] {$x$};
   \node[list, on chain,label=below:Process $B$](P2) [below of=A,xshift=-30mm] {$y$};
-  \node (dot) [left of=A,font=\LARGE\color{red}] {?}; 
+  \node (dot) [left of=A,font=\LARGE,fill=myred] {?}; 
   \node[list,on chain] (B) [right of=A] {2};
   \node[list,on chain] (C) {1};
   \node[on chain,draw,inner sep=6pt] (D) {};
