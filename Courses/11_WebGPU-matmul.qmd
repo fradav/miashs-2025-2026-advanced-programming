@@ -348,8 +348,10 @@ mutable verify_value = false
 
 ```{ojs}
 // UI controls that update mutable values but don't trigger reactivity elsewhere
+max_dim = 16384
+
 m_input = {
-  const input = Inputs.range([64, 8192], {value: mutable m_value, step: 16, label: 'M (rows of A/C)'})
+  const input = Inputs.range([64, max_dim], {value: mutable m_value, step: 16, label: 'M (rows of A/C)'})
   input.addEventListener('input', () => mutable m_value = input.value)
   return input
 }
@@ -357,7 +359,7 @@ m_input = {
 
 ```{ojs}
 k_input = {
-  const input = Inputs.range([64, 8192], {value: mutable k_value, step: 16, label: 'K (cols of A / rows of B)'})
+  const input = Inputs.range([64, max_dim], {value: mutable k_value, step: 16, label: 'K (cols of A / rows of B)'})
   input.addEventListener('input', () => mutable k_value = input.value)
   return input
 }
@@ -365,7 +367,7 @@ k_input = {
 
 ```{ojs}
 n_input = {
-  const input = Inputs.range([64, 8192], {value: mutable n_value, step: 16, label: 'N (cols of B/C)'})
+  const input = Inputs.range([64, max_dim], {value: mutable n_value, step: 16, label: 'N (cols of B/C)'})
   input.addEventListener('input', () => mutable n_value = input.value)
   return input
 }
@@ -511,8 +513,32 @@ async function runMatmulSafe(dims, kernel, verify) {
 ```
 
 ```{ojs}
+mutable compute_status = ({
+  state: 'idle',
+  message: 'Idle — ready'
+})
+```
+
+```{ojs}
+mutable status_trigger = 0
+```
+
+```{ojs}
+compute_status_value = {
+  status_trigger; // Force dependency on trigger
+  return mutable compute_status;
+}
+```
+
+```{ojs}
 // WebGPU Matrix Multiplication Runner - only executes on button click
 results = {
+  if (!run) {
+    mutable compute_status = { state: 'idle', message: 'Idle — ready' }
+    mutable status_trigger = mutable status_trigger + 1
+    return null
+  }
+
   // Capture current values at button click time
   const currentDims = {
     M: Math.max(1, Math.floor(Number(mutable m_value) || 0)),
@@ -521,14 +547,35 @@ results = {
   }
   const currentKernel = mutable kernel_value
   const currentVerify = !!mutable verify_value
+
+  const kernelInfo = kernels.find(k => k.key === currentKernel)
+  const kernelLabel = kernelInfo?.label ?? String(currentKernel)
   
   if (!webgpu_ok) {
-    return { error: 'WebGPU not available' }
+    const error = 'WebGPU not available'
+    mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error }
   }
   
   if (!device) {
-    return { error: 'No WebGPU device' }
+    const error = 'No WebGPU device'
+    mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error }
   }
+
+  mutable compute_status = {
+    state: 'running',
+    message: `Running ${kernelLabel} — ${currentDims.M}×${currentDims.K}×${currentDims.N}`,
+    progress: null,
+    kernelLabel,
+    dims: currentDims
+  }
+  mutable status_trigger = mutable status_trigger + 1
+
+  // Yield to the browser so the status panel can refresh before the GPU work finishes.
+  await new Promise(requestAnimationFrame)
   
   try {
     const { M, K, N } = currentDims
@@ -538,23 +585,98 @@ results = {
     const result = await runMatmul(currentDims, currentKernel, currentVerify)
     
     if (!result) {
-      return { error: 'runMatmul returned null/undefined' }
+      const error = 'runMatmul returned null/undefined'
+      mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+      mutable status_trigger = mutable status_trigger + 1
+      return { error }
     }
     
     if (result.error) {
-      return { error: result.error }
+      const error = result.error
+      mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+      mutable status_trigger = mutable status_trigger + 1
+      return { error }
     }
     
     // Add metadata for display
-    return { 
+    const enriched = { 
       ...result, 
       totalMB, 
       runNumber: run 
     }
+
+    mutable compute_status = {
+      state: 'done',
+      message: `Completed ${kernelLabel} in ${enriched.ms.toFixed(2)} ms`,
+      kernelLabel,
+      dims: currentDims,
+      gpuTimeMs: enriched.ms,
+      gpuGflops: enriched.gflops,
+      progress: 1
+    }
+    mutable status_trigger = mutable status_trigger + 1
+
+    return enriched
   } catch (e) {
-    return { error: e.message || e.toString() }
+    const error = e.message || e.toString()
+    mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error }
   }
 }
+```
+
+```{ojs}
+status_panel = {
+  const status = compute_status_value || { state: 'idle', message: 'Idle — ready' }
+  const container = html`<div class="callout status-panel"></div>`
+  container.classList.add(status.state === 'error' ? 'callout-warning' : 'callout-note')
+
+  const progressEl = document.createElement('progress')
+  progressEl.max = 1
+  progressEl.style.width = '100%'
+  progressEl.style.height = '1rem'
+
+  if (status.state === 'running') {
+    if (Number.isFinite(status.progress)) {
+      progressEl.value = Math.min(1, Math.max(0, status.progress))
+    } else {
+      progressEl.removeAttribute('value')
+    }
+  } else if (status.state === 'done') {
+    progressEl.value = 1
+  } else {
+    progressEl.value = 0
+  }
+
+  container.append(progressEl)
+
+  const heading = document.createElement('div')
+  heading.style.fontWeight = '600'
+  heading.textContent = status.message ?? 'Idle — ready'
+  container.append(heading)
+
+  if (status.state === 'done' && Number.isFinite(status.gpuGflops)) {
+    const detail = document.createElement('div')
+    detail.textContent = `${status.kernelLabel ?? ''} — ${status.gpuGflops.toFixed(2)} GFLOP/s`
+    container.append(detail)
+  } else if (status.state === 'error' && status.error) {
+    const detail = document.createElement('div')
+    detail.textContent = status.error
+    container.append(detail)
+  } else if (status.dims) {
+    const dims = status.dims
+    const detail = document.createElement('div')
+    detail.textContent = `Dims: ${dims.M}×${dims.K}×${dims.N}`
+    container.append(detail)
+  }
+
+  return container
+}
+```
+
+```{ojs}
+html`${status_panel}`
 ```
 
 ```{ojs}
