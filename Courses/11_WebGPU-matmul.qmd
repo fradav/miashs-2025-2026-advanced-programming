@@ -417,9 +417,18 @@ viewof run = Inputs.button('Run matmul', { reduce: v => (v ?? 0) + 1 })
 
 ```{ojs}
 // Create typed arrays and buffers, dispatch, read back C if needed, and time it
-async function runMatmul({M,K,N}, kernelKey, verify) {
+async function runMatmul({M,K,N}, kernelKey, verify, onStatus = null) {
   if (!device) return { error: 'No WebGPU device' }
-  // Normalize kernel key: Inputs.select may yield a string or an option object
+
+  const totalStart = performance.now()
+
+  const notify = (message, spinning = true) => {
+    if (onStatus) onStatus({ message, spinning })
+  }
+
+  notify('1/9 Initializing computation...')
+  await new Promise(requestAnimationFrame)
+
   const key = (typeof kernelKey === 'string')
     ? kernelKey
     : (kernelKey && typeof kernelKey === 'object' && ('value' in kernelKey || 'key' in kernelKey))
@@ -428,17 +437,21 @@ async function runMatmul({M,K,N}, kernelKey, verify) {
   const ker = kernels.find(k => k.key === key)
   if (!ker) return { error: 'Unknown kernel' }
 
-  // Coerce and validate dims
   M = Math.max(1, Math.floor(+M || 0))
   K = Math.max(1, Math.floor(+K || 0))
   N = Math.max(1, Math.floor(+N || 0))
 
+  notify('2/9 Creating input matrices...')
+  await new Promise(requestAnimationFrame)
+
   const elemA = M*K, elemB = K*N, elemC = M*N
   const A = new Float32Array(elemA)
   const B = new Float32Array(elemB)
-  // Fill with deterministic pseudo-randoms for repeatability
-  for (let i=0;i<elemA;i++) A[i] = (Math.sin(i*17.13)+1)*0.5
-  for (let i=0;i<elemB;i++) B[i] = (Math.cos(i*9.97)+1)*0.5
+  for (let i = 0; i < elemA; i++) A[i] = (Math.sin(i * 17.13) + 1) * 0.5
+  for (let i = 0; i < elemB; i++) B[i] = (Math.cos(i * 9.97) + 1) * 0.5
+
+  notify('3/9 Creating GPU buffers...')
+  await new Promise(requestAnimationFrame)
 
   const aBuf = createBuffer(device, A, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST)
   const bBuf = createBuffer(device, B, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST)
@@ -446,6 +459,9 @@ async function runMatmul({M,K,N}, kernelKey, verify) {
   const sizeBytesC = Math.ceil(bytesC / 4) * 4
   const cBuf = createBuffer(device, sizeBytesC, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST)
   const uBuf = makeDimsUniform(device, M, K, N)
+
+  notify('4/9 Setting up GPU pipeline...')
+  await new Promise(requestAnimationFrame)
 
   const pipeline = makePipeline(device, ker.wgsl)
   const bind = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [
@@ -459,17 +475,24 @@ async function runMatmul({M,K,N}, kernelKey, verify) {
   const pass = encoder.beginComputePass()
   pass.setPipeline(pipeline)
   pass.setBindGroup(0, bind)
-  const [dx, dy, dz] = ker.dispatch({M,N})
+  const [dx, dy, dz] = ker.dispatch({ M, N })
   pass.dispatchWorkgroups(dx, dy, dz)
   pass.end()
 
-  const t0 = performance.now()
-  device.queue.submit([encoder.finish()])
-  await device.queue.onSubmittedWorkDone()
-  const t1 = performance.now()
-  const ms = t1 - t0
+  notify('5/9 Submitting GPU work...')
+  await new Promise(requestAnimationFrame)
 
-  // Optionally read back for correctness (or always, to avoid reuse of old data)
+  const gpuStart = performance.now()
+  device.queue.submit([encoder.finish()])
+
+  notify('6/9 GPU computing...')
+  await device.queue.onSubmittedWorkDone()
+  const gpuEnd = performance.now()
+  const gpuMs = gpuEnd - gpuStart
+
+  notify('7/9 Reading back results...')
+  await new Promise(requestAnimationFrame)
+
   const readBuf = createBuffer(device, sizeBytesC, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ)
   const enc2 = device.createCommandEncoder()
   enc2.copyBufferToBuffer(cBuf, 0, readBuf, 0, sizeBytesC)
@@ -480,24 +503,51 @@ async function runMatmul({M,K,N}, kernelKey, verify) {
 
   let check = null
   let cpuTime = null
-  if (verify && M*K <= 1024*1024 && K*N <= 1024*1024) {
-    // Measure CPU time for comparison
+  if (verify && M * K <= 1024 * 1024 && K * N <= 1024 * 1024) {
+    notify('8/9 CPU verification...')
+    await new Promise(requestAnimationFrame)
+
     const cpuStart = performance.now()
     const ref = cpuMatmul(A, B, M, K, N)
     const cpuEnd = performance.now()
     cpuTime = cpuEnd - cpuStart
-    
-    // Check accuracy
+
     let maxAbs = 0
-    for (let i=0;i<elemC;i++) maxAbs = Math.max(maxAbs, Math.abs(ref[i]-C[i]))
+    for (let i = 0; i < elemC; i++) maxAbs = Math.max(maxAbs, Math.abs(ref[i] - C[i]))
     check = { maxAbs, cpuTime }
+  } else if (verify) {
+    notify('8/9 Skipping CPU verification (too large)...')
+    await new Promise(requestAnimationFrame)
+  } else {
+    notify('8/9 CPU verification disabled')
+    await new Promise(requestAnimationFrame)
   }
 
-  const flops = 2 * M * K * N // multiply-add per output element
-  const gflops = flops / (ms/1000) / 1e9
-  const cpuGflops = cpuTime ? flops / (cpuTime/1000) / 1e9 : null
+  const totalEnd = performance.now()
+  const totalMs = totalEnd - totalStart
 
-  return { ms, gflops, M, K, N, kernel: ker.label, kernelKey: ker.key, dx, dy, dz, check, cpuTime, cpuGflops }
+  notify('9/9 Complete!', false)
+
+  const flops = 2 * M * K * N
+  const gflops = flops / (gpuMs / 1000) / 1e9
+  const cpuGflops = cpuTime ? flops / (cpuTime / 1000) / 1e9 : null
+
+  return {
+    ms: gpuMs,
+    totalMs,
+    gflops,
+    M,
+    K,
+    N,
+    kernel: ker.label,
+    kernelKey: ker.key,
+    dx,
+    dy,
+    dz,
+    check,
+    cpuTime,
+    cpuGflops
+  }
 }
 ```
 
@@ -568,7 +618,7 @@ results = {
   mutable compute_status = {
     state: 'running',
     message: `Running ${kernelLabel} — ${currentDims.M}×${currentDims.K}×${currentDims.N}`,
-    progress: null,
+    spinner: true,
     kernelLabel,
     dims: currentDims
   }
@@ -581,8 +631,23 @@ results = {
     const { M, K, N } = currentDims
     const totalMB = (M * K + K * N + M * N) * 4 / 1024 / 1024
     
-    // Call the computation with captured values
-    const result = await runMatmul(currentDims, currentKernel, currentVerify)
+    // Status callback to update phase / spinner state
+    const updateStatus = (statusUpdate) => {
+      const { message, spinning = true } = (typeof statusUpdate === 'string')
+        ? { message: statusUpdate, spinning: true }
+        : statusUpdate || {}
+      mutable compute_status = {
+        state: 'running',
+        message: `${kernelLabel} — ${message}`,
+        spinner: !!spinning,
+        kernelLabel,
+        dims: currentDims
+      }
+      mutable status_trigger = mutable status_trigger + 1
+    }
+    
+  // Call the computation with captured values and status callback
+    const result = await runMatmul(currentDims, currentKernel, currentVerify, updateStatus)
     
     if (!result) {
       const error = 'runMatmul returned null/undefined'
@@ -607,12 +672,13 @@ results = {
 
     mutable compute_status = {
       state: 'done',
-      message: `Completed ${kernelLabel} in ${enriched.ms.toFixed(2)} ms`,
+      message: `Completed ${kernelLabel} in ${enriched.ms.toFixed(2)} ms GPU (${enriched.totalMs.toFixed(2)} ms total)`,
       kernelLabel,
       dims: currentDims,
       gpuTimeMs: enriched.ms,
+      totalTimeMs: enriched.totalMs,
       gpuGflops: enriched.gflops,
-      progress: 1
+      spinner: false
     }
     mutable status_trigger = mutable status_trigger + 1
 
@@ -632,24 +698,30 @@ status_panel = {
   const container = html`<div class="callout status-panel"></div>`
   container.classList.add(status.state === 'error' ? 'callout-warning' : 'callout-note')
 
-  const progressEl = document.createElement('progress')
-  progressEl.max = 1
-  progressEl.style.width = '100%'
-  progressEl.style.height = '1rem'
-
-  if (status.state === 'running') {
-    if (Number.isFinite(status.progress)) {
-      progressEl.value = Math.min(1, Math.max(0, status.progress))
-    } else {
-      progressEl.removeAttribute('value')
+  if (status.state === 'running' && status.spinner) {
+    if (!document.getElementById('status-spinner-style')) {
+      const style = document.createElement('style')
+      style.id = 'status-spinner-style'
+      style.textContent = `
+        .status-spinner {
+          width: 1.25rem;
+          height: 1.25rem;
+          border: 2px solid rgba(0,0,0,0.1);
+          border-top-color: rgba(0,0,0,0.6);
+          border-radius: 9999px;
+          animation: status-spin 0.8s linear infinite;
+          margin-bottom: 0.5rem;
+        }
+        @keyframes status-spin {
+          to { transform: rotate(360deg); }
+        }
+      `
+      document.head.append(style)
     }
-  } else if (status.state === 'done') {
-    progressEl.value = 1
-  } else {
-    progressEl.value = 0
+    const spinner = document.createElement('div')
+    spinner.className = 'status-spinner'
+    container.append(spinner)
   }
-
-  container.append(progressEl)
 
   const heading = document.createElement('div')
   heading.style.fontWeight = '600'
@@ -702,6 +774,7 @@ html`${status_panel}`
     memoryMB: results.totalMB,
     dispatch: [results.dx, results.dy, results.dz],
     gpuTimeMs: results.ms,
+    totalTimeMs: results.totalMs,
     gpuGflops: results.gflops,
     cpuTimeMs: results.cpuTime,
     cpuGflops: results.cpuGflops,
@@ -719,6 +792,7 @@ html`${status_panel}`
     'Memory': Number.isFinite(tableRow.memoryMB) ? `${tableRow.memoryMB.toFixed(1)} MB` : dash,
     'Dispatch': `[${tableRow.dispatch[0]}, ${tableRow.dispatch[1]}, ${tableRow.dispatch[2]}]`,
     'GPU Time': Number.isFinite(tableRow.gpuTimeMs) ? `${tableRow.gpuTimeMs.toFixed(2)} ms` : dash,
+    'Total Time': Number.isFinite(tableRow.totalTimeMs) ? `${tableRow.totalTimeMs.toFixed(2)} ms` : dash,
     'GPU Throughput': Number.isFinite(tableRow.gpuGflops) ? `${tableRow.gpuGflops.toFixed(2)} GFLOP/s` : dash,
     'CPU Time': Number.isFinite(tableRow.cpuTimeMs) ? `${tableRow.cpuTimeMs.toFixed(2)} ms` : dash,
     'CPU Throughput': Number.isFinite(tableRow.cpuGflops) ? `${tableRow.cpuGflops.toFixed(2)} GFLOP/s` : dash,
