@@ -339,7 +339,7 @@ mutable n_value = 512
 ```
 
 ```{ojs}
-mutable kernel_value = 'twoD8x8'
+mutable kernel_value = 'naive1d'
 ```
 
 ```{ojs}
@@ -409,24 +409,6 @@ html`<div>
 ```{ojs}
 // Only the submit button triggers computation - increment on each click
 viewof run = Inputs.button('Run matmul', { reduce: v => (v ?? 0) + 1 })
-```
-
-```{ojs}
-// Extract values from mutable variables only when run is triggered
-dims = ({
-  M: Math.max(1, Math.floor(Number(mutable m_value) || 0)),
-  K: Math.max(1, Math.floor(Number(mutable k_value) || 0)),
-  N: Math.max(1, Math.floor(Number(mutable n_value) || 0))
-})
-```
-
-```{ojs}
-// Extract kernel and verify values only when run is triggered
-kernel = mutable kernel_value
-```
-
-```{ojs}
-verify = mutable verify_value
 ```
 
 ### Runner
@@ -532,9 +514,13 @@ async function runMatmulSafe(dims, kernel, verify) {
 // WebGPU Matrix Multiplication Runner - only executes on button click
 results = {
   // Capture current values at button click time
-  const currentDims = dims
-  const currentKernel = kernel
-  const currentVerify = verify
+  const currentDims = {
+    M: Math.max(1, Math.floor(Number(mutable m_value) || 0)),
+    K: Math.max(1, Math.floor(Number(mutable k_value) || 0)),
+    N: Math.max(1, Math.floor(Number(mutable n_value) || 0))
+  }
+  const currentKernel = mutable kernel_value
+  const currentVerify = !!mutable verify_value
   
   if (!webgpu_ok) {
     return { error: 'WebGPU not available' }
