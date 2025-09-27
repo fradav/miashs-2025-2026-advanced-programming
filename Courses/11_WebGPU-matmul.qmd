@@ -886,6 +886,7 @@ results_plot_data = {
     gpuMs: entry.ms ?? null,
     gpuGflops: entry.gflops ?? null,
     cpuGflops: entry.cpuGflops ?? null,
+    memoryMB: entry.totalMB ?? null,
     dims: entry.dims ?? { M: entry.M, K: entry.K, N: entry.N }
   }))
 }
@@ -984,6 +985,28 @@ results_plots = {
     </div>
   </div>`
 
+  // Calculate dynamic ticks based on data range
+  const memoryData = data.filter(d => Number.isFinite(d.memoryMB))
+  let dynamicTicks = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
+  
+  if (memoryData.length > 0) {
+    const minMemory = Math.min(...memoryData.map(d => d.memoryMB))
+    const maxMemory = Math.max(...memoryData.map(d => d.memoryMB))
+    
+    // If there's only one unique value or very close range, show fewer ticks
+    if (memoryData.length === 1 || (maxMemory / minMemory) < 2) {
+      // Find the closest tick to the actual value
+      const targetMemory = memoryData[0].memoryMB
+      const closestTick = dynamicTicks.reduce((prev, curr) => 
+        Math.abs(curr - targetMemory) < Math.abs(prev - targetMemory) ? curr : prev
+      )
+      dynamicTicks = [closestTick]
+    } else {
+      // Filter ticks to only show relevant range
+      dynamicTicks = dynamicTicks.filter(tick => tick >= minMemory * 0.5 && tick <= maxMemory * 2)
+    }
+  }
+
   const combinedPlot = Plot.plot({
     height: 320,
     marginBottom: 40,
@@ -991,8 +1014,10 @@ results_plots = {
     marginRight: 80,
     grid: true,
     x: {
-      label: "Run",
-      tickFormat: d => `#${d}`
+      type: "log",
+      label: "Memory (MB)",
+      tickFormat: d => d >= 1 ? `${d.toFixed(0)}` : `${d.toFixed(1)}`,
+      ticks: dynamicTicks
     },
     y: {
       label: "GPU Throughput (GFLOP/s)"
@@ -1002,12 +1027,12 @@ results_plots = {
       throughputData.length ? leftAxisMark : null,
       scaledTimeData.length ? rightAxisMark : null,
       throughputData.length ? Plot.lineY(throughputData, {
-        x: "runNumber",
+        x: "memoryMB",
         y: "gpuGflops",
         stroke: "kernel"
       }) : null,
       throughputData.length ? Plot.dot(throughputData, {
-        x: "runNumber",
+        x: "memoryMB",
         y: "gpuGflops",
         fill: "kernel",
         stroke: "kernel",
@@ -1015,14 +1040,14 @@ results_plots = {
         title: tooltipThroughput
       }) : null,
       scaledTimeData.length ? Plot.lineY(scaledTimeData, {
-        x: "runNumber",
+        x: "memoryMB",
         y: "scaled",
         stroke: "kernel",
         strokeDasharray: "6,4",
         title: tooltipTime
       }) : null,
       scaledTimeData.length ? Plot.dot(scaledTimeData, {
-        x: "runNumber",
+        x: "memoryMB",
         y: "scaled",
         stroke: "kernel",
         fill: "white",
