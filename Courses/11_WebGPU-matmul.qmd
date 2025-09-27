@@ -43,6 +43,7 @@ device = adapter && (await adapter.requestDevice({
     maxBufferSize: Math.min(adapter.limits.maxBufferSize, 2 * 1024 * 1024 * 1024), // 2GB or adapter max
     maxStorageBuffersPerShaderStage: Math.max(adapter.limits.maxStorageBuffersPerShaderStage, 8),
     maxComputeWorkgroupStorageSize: Math.max(adapter.limits.maxComputeWorkgroupStorageSize, 32768)
+
   }
 }))
 ```
@@ -323,6 +324,15 @@ kernels = [
   { key: 'tile1x4', label: 'Tiled 1×4 (16×16 wg)', wgsl: wgsl_tile_1x4, dispatch: ({M,N}) => [Math.ceil(N/(16*4)), Math.ceil(M/16), 1], limits: { recommendMaxMN: 4096*4096 } },
   { key: 'tile4x4', label: 'Tiled 4×4 (16×16 wg)', wgsl: wgsl_tile_4x4, dispatch: ({M,N}) => [Math.ceil(N/(16*4)), Math.ceil(M/(16*4)), 1], limits: { recommendMaxMN: 4096*4096 } }
 ]
+
+normalizeKernelKey = value => {
+  if (typeof value === 'string') return value
+  if (value && typeof value === 'object') {
+    if (typeof value.value === 'string') return value.value
+    if (typeof value.key === 'string') return value.key
+  }
+  return kernels[0]?.key ?? 'naive1d'
+}
 ```
 
 ```{ojs}
@@ -409,8 +419,57 @@ html`<div>
 ```
 
 ```{ojs}
+// Control buttons
+html`<div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+  ${viewof run}
+  ${viewof clear_results}
+</div>`
+```
+
+```{ojs}
+// Internal cache to store history without creating reactive self-dependencies
+results_history_cache = (() => {
+  const data = []
+  return {
+    get value() {
+      return data.slice()
+    },
+    push(item) {
+      data.push(item)
+      return data.slice()
+    },
+    clear() {
+      data.length = 0
+      return data.slice()
+    }
+  }
+})()
+```
+
+```{ojs}
+// Mutable array to store all results
+mutable results_history = []
+```
+
+```{ojs}
 // Only the submit button triggers computation - increment on each click
 viewof run = Inputs.button('Run matmul', { reduce: v => (v ?? 0) + 1 })
+```
+
+```{ojs}
+// Clear results button
+viewof clear_results = Inputs.button('Clear results', { reduce: v => (v ?? 0) + 1 })
+```
+
+```{ojs}
+// Handle clear button clicks
+clear_handler = {
+  if (clear_results > 0) {
+    const emptied = results_history_cache.clear()
+    mutable results_history = emptied
+  }
+  return clear_results
+}
 ```
 
 ### Runner
@@ -595,7 +654,8 @@ results = {
     K: Math.max(1, Math.floor(Number(mutable k_value) || 0)),
     N: Math.max(1, Math.floor(Number(mutable n_value) || 0))
   }
-  const currentKernel = mutable kernel_value
+  const currentKernelValue = mutable kernel_value
+  const currentKernel = normalizeKernelKey(currentKernelValue)
   const currentVerify = !!mutable verify_value
 
   const kernelInfo = kernels.find(k => k.key === currentKernel)
@@ -663,12 +723,16 @@ results = {
       return { error }
     }
     
-    // Add metadata for display
+    // Add metadata for display and append to history
     const enriched = { 
       ...result, 
       totalMB, 
       runNumber: run 
     }
+
+  // Append to history via cache to avoid self-dependency loops
+  const updatedHistory = results_history_cache.push(enriched)
+  mutable results_history = updatedHistory
 
     mutable compute_status = {
       state: 'done',
@@ -752,56 +816,203 @@ html`${status_panel}`
 ```
 
 ```{ojs}
-// Display results - this cell only updates when results change
-{
-  if (!run) {
-    return html`<em>Click Run matmul to execute the selected kernel</em>`
+// Display results - shows all results in history
+results_table = {
+  clear_handler; // React to clear button
+  
+  const history = results_history || []
+  console.log('[results_table] history length:', history.length, history)
+  
+  if (history.length === 0) {
+    return html`<em>Click Run matmul to execute the selected kernel. Results will be added to the table below.</em>`
   }
   
-  // Handle async results
-  if (results instanceof Promise) {
-    return html`<div>Computing... Please wait...</div>`
-  }
-  
-  if (results.error) {
-    return html`<div class="callout callout-warning"><strong>Error:</strong> ${results.error}</div>`
-  }
-  
-  const tableRow = {
-    runNumber: results.runNumber,
-    kernel: results.kernel,
-    shape: { M: results.M, K: results.K, N: results.N },
-    memoryMB: results.totalMB,
-    dispatch: [results.dx, results.dy, results.dz],
-    gpuTimeMs: results.ms,
-    totalTimeMs: results.totalMs,
-    gpuGflops: results.gflops,
-    cpuTimeMs: results.cpuTime,
-    cpuGflops: results.cpuGflops,
-    speedup: (Number.isFinite(results.cpuTime) && Number.isFinite(results.ms) && results.ms > 0)
-      ? results.cpuTime / results.ms
-      : null,
-    maxAbs: results.check?.maxAbs ?? null
-  }
+  // Convert all results to table rows
+  const tableRows = history.map(result => {
+    const tableRow = {
+      runNumber: result.runNumber,
+      kernel: result.kernel,
+      shape: { M: result.M, K: result.K, N: result.N },
+      memoryMB: result.totalMB,
+      dispatch: [result.dx, result.dy, result.dz],
+      gpuTimeMs: result.ms,
+      totalTimeMs: result.totalMs,
+      gpuGflops: result.gflops,
+      cpuTimeMs: result.cpuTime,
+      cpuGflops: result.cpuGflops,
+      speedup: (Number.isFinite(result.cpuTime) && Number.isFinite(result.ms) && result.ms > 0)
+        ? result.cpuTime / result.ms
+        : null,
+      maxAbs: result.check?.maxAbs ?? null
+    }
 
-  const dash = '—'
-  const formattedRow = {
-    'Run': `#${tableRow.runNumber}`,
-    'Kernel': tableRow.kernel,
-    'Shape': `(${tableRow.shape.M}×${tableRow.shape.K}) · (${tableRow.shape.K}×${tableRow.shape.N}) → (${tableRow.shape.M}×${tableRow.shape.N})`,
-    'Memory': Number.isFinite(tableRow.memoryMB) ? `${tableRow.memoryMB.toFixed(1)} MB` : dash,
-    'Dispatch': `[${tableRow.dispatch[0]}, ${tableRow.dispatch[1]}, ${tableRow.dispatch[2]}]`,
-    'GPU Time': Number.isFinite(tableRow.gpuTimeMs) ? `${tableRow.gpuTimeMs.toFixed(2)} ms` : dash,
-    'Total Time': Number.isFinite(tableRow.totalTimeMs) ? `${tableRow.totalTimeMs.toFixed(2)} ms` : dash,
-    'GPU Throughput': Number.isFinite(tableRow.gpuGflops) ? `${tableRow.gpuGflops.toFixed(2)} GFLOP/s` : dash,
-    'CPU Time': Number.isFinite(tableRow.cpuTimeMs) ? `${tableRow.cpuTimeMs.toFixed(2)} ms` : dash,
-    'CPU Throughput': Number.isFinite(tableRow.cpuGflops) ? `${tableRow.cpuGflops.toFixed(2)} GFLOP/s` : dash,
-    'GPU Speedup': Number.isFinite(tableRow.speedup) ? `${tableRow.speedup.toFixed(1)}×` : dash,
-    'Max |Δ| vs CPU': Number.isFinite(tableRow.maxAbs) ? tableRow.maxAbs.toExponential(2) : dash
-  }
+    const dash = '—'
+    return {
+      'Run': `#${tableRow.runNumber}`,
+      'Kernel': tableRow.kernel,
+      'Shape': `(${tableRow.shape.M}×${tableRow.shape.K}) · (${tableRow.shape.K}×${tableRow.shape.N}) → (${tableRow.shape.M}×${tableRow.shape.N})`,
+      'Memory': Number.isFinite(tableRow.memoryMB) ? `${tableRow.memoryMB.toFixed(1)} MB` : dash,
+      'Dispatch': `[${tableRow.dispatch[0]}, ${tableRow.dispatch[1]}, ${tableRow.dispatch[2]}]`,
+      'GPU Time': Number.isFinite(tableRow.gpuTimeMs) ? `${tableRow.gpuTimeMs.toFixed(2)} ms` : dash,
+      'Total Time': Number.isFinite(tableRow.totalTimeMs) ? `${tableRow.totalTimeMs.toFixed(2)} ms` : dash,
+      'GPU Throughput': Number.isFinite(tableRow.gpuGflops) ? `${tableRow.gpuGflops.toFixed(2)} GFLOP/s` : dash,
+      'CPU Time': Number.isFinite(tableRow.cpuTimeMs) ? `${tableRow.cpuTimeMs.toFixed(2)} ms` : dash,
+      'CPU Throughput': Number.isFinite(tableRow.cpuGflops) ? `${tableRow.cpuGflops.toFixed(2)} GFLOP/s` : dash,
+      'GPU Speedup': Number.isFinite(tableRow.speedup) ? `${tableRow.speedup.toFixed(1)}×` : dash,
+      'Max |Δ| vs CPU': Number.isFinite(tableRow.maxAbs) ? tableRow.maxAbs.toExponential(2) : dash
+    }
+  })
 
-  return Inputs.table([formattedRow])
+  return Inputs.table(tableRows, {
+    sort: "Run",
+    reverse: true // Show newest results first
+  })
 }
+```
+
+```{ojs}
+html`${results_table}`
+```
+
+```{ojs}
+results_plot_data = {
+  clear_handler;
+  const history = results_history || []
+  return history.map((entry, index) => ({
+    runNumber: entry.runNumber ?? (index + 1),
+    kernel: entry.kernel,
+    kernelKey: entry.kernelKey ?? entry.kernel,
+    totalMs: entry.totalMs ?? entry.ms ?? null,
+    gpuMs: entry.ms ?? null,
+    gpuGflops: entry.gflops ?? null,
+    cpuGflops: entry.cpuGflops ?? null,
+    dims: entry.dims ?? { M: entry.M, K: entry.K, N: entry.N }
+  }))
+}
+```
+
+```{ojs}
+plot_kernel_colors = {
+  const palette = [
+    "#1f77b4",
+    "#ff7f0e",
+    "#2ca02c",
+    "#d62728",
+    "#9467bd",
+    "#8c564b",
+    "#e377c2",
+    "#7f7f7f",
+    "#bcbd22",
+    "#17becf"
+  ]
+  const domain = kernels.map(k => k.label)
+  const range = domain.map((_, i) => palette[i % palette.length])
+  return { domain, range }
+}
+```
+
+```{ojs}
+results_plots = {
+  clear_handler;
+  const data = results_plot_data ?? []
+  if (!data.length) {
+    return html`<em>Run matmul to populate timing and throughput charts.</em>`
+  }
+
+  const { domain, range } = plot_kernel_colors
+
+  const legend = Plot.legend({ color: { domain, range, label: "Kernel" } })
+  legend.style.marginBottom = '0.5rem'
+
+  const tooltip = d => {
+    const dims = d.dims || { M: '?', K: '?', N: '?' }
+    return `${d.kernel}\nRun: #${d.runNumber}\nDims: ${dims.M}×${dims.K}×${dims.N}` +
+      (Number.isFinite(d.totalMs) ? `\nTotal: ${d.totalMs.toFixed(2)} ms` : '') +
+      (Number.isFinite(d.gpuGflops) ? `\nGPU Throughput: ${d.gpuGflops.toFixed(2)} GFLOP/s` : '')
+  }
+
+  const throughputData = data.filter(d => Number.isFinite(d.gpuGflops))
+  const totalTimeData = data.filter(d => Number.isFinite(d.totalMs))
+
+  const throughputPlot = throughputData.length > 0
+    ? Plot.plot({
+        height: 260,
+        marginBottom: 40,
+        marginLeft: 70,
+        grid: true,
+        x: {
+          label: "Run",
+          tickFormat: d => `#${d}`
+        },
+        y: {
+          label: "GPU Throughput (GFLOP/s)"
+        },
+  color: { domain, range },
+        marks: [
+          Plot.lineY(throughputData, {
+            x: "runNumber",
+            y: "gpuGflops",
+            stroke: "kernel"
+          }),
+          Plot.dot(throughputData, {
+            x: "runNumber",
+            y: "gpuGflops",
+            fill: "kernel",
+            stroke: "kernel",
+            r: 4,
+            title: tooltip
+          })
+        ]
+      })
+    : html`<em>No GPU throughput measurements yet.</em>`
+
+  const totalTimePlot = totalTimeData.length > 0
+    ? Plot.plot({
+        height: 260,
+        marginBottom: 40,
+        marginLeft: 70,
+        grid: true,
+        x: {
+          label: "Run",
+          tickFormat: d => `#${d}`
+        },
+        y: {
+          label: "Total wall-clock time (ms)"
+        },
+  color: { domain, range },
+        marks: [
+          Plot.lineY(totalTimeData, {
+            x: "runNumber",
+            y: "totalMs",
+            stroke: "kernel"
+          }),
+          Plot.dot(totalTimeData, {
+            x: "runNumber",
+            y: "totalMs",
+            fill: "kernel",
+            stroke: "kernel",
+            r: 4,
+            title: tooltip
+          })
+        ]
+      })
+    : html`<em>No total time measurements yet.</em>`
+
+  const container = html`<div class="results-plots"></div>`
+  container.style.display = 'flex'
+  container.style.flexDirection = 'column'
+  container.style.gap = '1.5rem'
+  container.append(legend)
+  container.append(html`<div style="font-weight:600;">GPU Throughput</div>`)
+  container.append(throughputPlot)
+  container.append(html`<div style="font-weight:600;">Completion Time</div>`)
+  container.append(totalTimePlot)
+  return container
+}
+```
+
+```{ojs}
+html`${results_plots}`
 ```
 
 ## Notes and tips
