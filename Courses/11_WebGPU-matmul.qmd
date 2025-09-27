@@ -924,89 +924,95 @@ results_plots = {
   const legend = Plot.legend({ color: { domain, range, label: "Kernel" } })
   legend.style.marginBottom = '0.5rem'
 
-  const tooltip = d => {
-    const dims = d.dims || { M: '?', K: '?', N: '?' }
-    return `${d.kernel}\nRun: #${d.runNumber}\nDims: ${dims.M}×${dims.K}×${dims.N}` +
-      (Number.isFinite(d.totalMs) ? `\nTotal: ${d.totalMs.toFixed(2)} ms` : '') +
-      (Number.isFinite(d.gpuGflops) ? `\nGPU Throughput: ${d.gpuGflops.toFixed(2)} GFLOP/s` : '')
-  }
-
   const throughputData = data.filter(d => Number.isFinite(d.gpuGflops))
   const totalTimeData = data.filter(d => Number.isFinite(d.totalMs))
 
-  const throughputPlot = throughputData.length > 0
-    ? Plot.plot({
-        height: 260,
-        marginBottom: 40,
-        marginLeft: 70,
-        grid: true,
-        x: {
-          label: "Run",
-          tickFormat: d => `#${d}`
-        },
-        y: {
-          label: "GPU Throughput (GFLOP/s)"
-        },
-  color: { domain, range },
-        marks: [
-          Plot.lineY(throughputData, {
-            x: "runNumber",
-            y: "gpuGflops",
-            stroke: "kernel"
-          }),
-          Plot.dot(throughputData, {
-            x: "runNumber",
-            y: "gpuGflops",
-            fill: "kernel",
-            stroke: "kernel",
-            r: 4,
-            title: tooltip
-          })
-        ]
-      })
-    : html`<em>No GPU throughput measurements yet.</em>`
+  if (!throughputData.length && !totalTimeData.length) {
+    return html`<em>No results with throughput or total time available yet.</em>`
+  }
 
-  const totalTimePlot = totalTimeData.length > 0
-    ? Plot.plot({
-        height: 260,
-        marginBottom: 40,
-        marginLeft: 70,
-        grid: true,
-        x: {
-          label: "Run",
-          tickFormat: d => `#${d}`
-        },
-        y: {
-          label: "Total wall-clock time (ms)"
-        },
-  color: { domain, range },
-        marks: [
-          Plot.lineY(totalTimeData, {
-            x: "runNumber",
-            y: "totalMs",
-            stroke: "kernel"
-          }),
-          Plot.dot(totalTimeData, {
-            x: "runNumber",
-            y: "totalMs",
-            fill: "kernel",
-            stroke: "kernel",
-            r: 4,
-            title: tooltip
-          })
-        ]
-      })
-    : html`<em>No total time measurements yet.</em>`
+  const baseThroughputMax = throughputData.reduce((acc, d) => Math.max(acc, d.gpuGflops), 0)
+  const baseTimeMax = totalTimeData.reduce((acc, d) => Math.max(acc, d.totalMs), 0)
+  const yMax = Math.max(baseThroughputMax, 1)
+  const timeScaleFactor = baseTimeMax > 0 ? yMax / baseTimeMax : 1
+  const timeColor = '#d62728'
+
+  const tooltipThroughput = d => {
+    const dims = d.dims || { M: '?', K: '?', N: '?' }
+    return `${d.kernel}\nRun: #${d.runNumber}\nDims: ${dims.M}×${dims.K}×${dims.N}` +
+      (Number.isFinite(d.gpuGflops) ? `\nGPU Throughput: ${d.gpuGflops.toFixed(2)} GFLOP/s` : '')
+  }
+
+  const tooltipTime = d => {
+    const dims = d.dims || { M: '?', K: '?', N: '?' }
+    return `${d.kernel}\nRun: #${d.runNumber}\nDims: ${dims.M}×${dims.K}×${dims.N}` +
+      (Number.isFinite(d.totalMs) ? `\nTotal: ${d.totalMs.toFixed(2)} ms` : '')
+  }
+
+  const scaledTimeData = totalTimeData.map(d => ({ ...d, scaled: d.totalMs * timeScaleFactor }))
+
+  const combinedPlot = Plot.plot({
+    height: 320,
+    marginBottom: 40,
+    marginLeft: 70,
+    marginRight: 80,
+    grid: true,
+    x: {
+      label: "Run",
+      tickFormat: d => `#${d}`
+    },
+    y: {
+      label: "GPU Throughput (GFLOP/s)"
+    },
+    color: { domain, range },
+    marks: [
+      throughputData.length ? Plot.lineY(throughputData, {
+        x: "runNumber",
+        y: "gpuGflops",
+        stroke: "kernel"
+      }) : null,
+      throughputData.length ? Plot.dot(throughputData, {
+        x: "runNumber",
+        y: "gpuGflops",
+        fill: "kernel",
+        stroke: "kernel",
+        r: 4,
+        title: tooltipThroughput
+      }) : null,
+      scaledTimeData.length ? Plot.lineY(scaledTimeData, {
+        x: "runNumber",
+        y: "scaled",
+        stroke: "kernel",
+        strokeDasharray: "6,4",
+        title: tooltipTime
+      }) : null,
+      scaledTimeData.length ? Plot.dot(scaledTimeData, {
+        x: "runNumber",
+        y: "scaled",
+        stroke: "kernel",
+        fill: "white",
+        r: 5,
+        symbol: "cross",
+        strokeWidth: 1.5,
+        title: tooltipTime
+      }) : null,
+      scaledTimeData.length ? Plot.axisY({
+        anchor: "right",
+        label: "Total time (ms)",
+        tickFormat: d => (d / timeScaleFactor).toFixed(0),
+        ticks: 5,
+        color: timeColor
+      }) : null
+    ].filter(Boolean)
+  })
 
   const container = html`<div class="results-plots"></div>`
   container.style.display = 'flex'
   container.style.flexDirection = 'column'
-  container.style.gap = '1.5rem'
+  container.style.gap = '1rem'
   container.append(legend)
-  container.append(html`<div style="font-weight:600;">GPU Throughput</div>`)
-  container.append(throughputPlot)
-  container.append(html`<div style="font-weight:600;">Completion Time</div>`)
-  container.append(totalTimePlot)
+  container.append(combinedPlot)
+
   return container
 }
 ```
