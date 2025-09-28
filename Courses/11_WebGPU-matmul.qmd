@@ -422,6 +422,8 @@ html`<div>
 // Control buttons
 html`<div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
   ${viewof run}
+  ${viewof sweep}
+  ${viewof download_results}
   ${viewof clear_results}
 </div>`
 ```
@@ -457,6 +459,16 @@ viewof run = Inputs.button('Run matmul', { reduce: v => (v ?? 0) + 1 })
 ```
 
 ```{ojs}
+// Sweep button for running all kernels with power-of-2 dimensions
+viewof sweep = Inputs.button('Sweep all kernels', { reduce: v => (v ?? 0) + 1 })
+```
+
+```{ojs}
+// Download results button
+viewof download_results = Inputs.button('Download CSV', { reduce: v => (v ?? 0) + 1 })
+```
+
+```{ojs}
 // Clear results button
 viewof clear_results = Inputs.button('Clear results', { reduce: v => (v ?? 0) + 1 })
 ```
@@ -469,6 +481,145 @@ clear_handler = {
     mutable results_history = emptied
   }
   return clear_results
+}
+```
+
+```{ojs}
+// Handle download button clicks
+download_handler = {
+  if (download_results > 0) {
+    const history = results_history || []
+    if (history.length === 0) {
+      alert('No results to download. Run some tests first.')
+      return
+    }
+    
+    // Convert results to CSV format
+    const csvData = history.map(result => ({
+      'Run': result.runNumber ?? '',
+      'Kernel': result.kernel ?? '',
+      'M': result.M ?? '',
+      'K': result.K ?? '',
+      'N': result.N ?? '',
+      'Memory_MB': result.totalMB ? result.totalMB.toFixed(1) : '',
+      'Dispatch_X': result.dx ?? '',
+      'Dispatch_Y': result.dy ?? '',
+      'Dispatch_Z': result.dz ?? '',
+      'GPU_Time_ms': result.ms ? result.ms.toFixed(2) : '',
+      'Total_Time_ms': result.totalMs ? result.totalMs.toFixed(2) : '',
+      'GPU_Throughput_GFLOPS': result.gflops ? result.gflops.toFixed(2) : '',
+      'CPU_Time_ms': result.cpuTime ? result.cpuTime.toFixed(2) : '',
+      'CPU_Throughput_GFLOPS': result.cpuGflops ? result.cpuGflops.toFixed(2) : '',
+      'GPU_Speedup': (result.cpuTime && result.ms && result.ms > 0) ? (result.cpuTime / result.ms).toFixed(1) : '',
+      'Max_Error_vs_CPU': result.check?.maxAbs ? result.check.maxAbs.toExponential(2) : ''
+    }))
+    
+    // Convert to CSV string
+    const headers = Object.keys(csvData[0])
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => headers.map(header => row[header]).join(','))
+    ].join('\n')
+    
+    // Create and trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `webgpu-matmul-results-${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+  return download_results
+}
+```
+
+```{ojs}
+// Sweep runner - runs all kernels with power-of-2 dimensions
+sweep_results = {
+  if (!sweep) return null
+  
+  if (!webgpu_ok || !device) {
+    const error = 'WebGPU not available'
+    mutable compute_status = { state: 'error', message: error, error }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error }
+  }
+
+  const dimensions = [512, 1024, 2048, 4096, 8192]
+  const allKernels = kernels.map(k => k.key)
+  const totalRuns = dimensions.length * allKernels.length
+  let completedRuns = 0
+  
+  mutable compute_status = {
+    state: 'running',
+    message: `Running sweep: 0/${totalRuns} completed`,
+    spinner: true
+  }
+  mutable status_trigger = mutable status_trigger + 1
+  
+  // Yield to browser for status update
+  await new Promise(requestAnimationFrame)
+  
+  try {
+    for (const dim of dimensions) {
+      for (const kernelKey of allKernels) {
+        const dims = { M: dim, K: dim, N: dim }
+        const totalMB = (dim * dim + dim * dim + dim * dim) * 4 / 1024 / 1024
+        
+        // Update status for current run
+        const kernelInfo = kernels.find(k => k.key === kernelKey)
+        const kernelLabel = kernelInfo?.label ?? kernelKey
+        
+        mutable compute_status = {
+          state: 'running',
+          message: `Running sweep: ${completedRuns}/${totalRuns} - ${kernelLabel} ${dim}×${dim}×${dim}`,
+          spinner: true
+        }
+        mutable status_trigger = mutable status_trigger + 1
+        
+        // Yield to browser for status update
+        await new Promise(requestAnimationFrame)
+        
+        const result = await runMatmul(dims, kernelKey, false) // Don't verify during sweep
+        
+        if (result && !result.error) {
+          const enriched = { 
+            ...result, 
+            totalMB,
+            runNumber: Date.now() + completedRuns // Use timestamp + counter for unique IDs
+          }
+          
+          // Append to history
+          const updatedHistory = results_history_cache.push(enriched)
+          mutable results_history = updatedHistory
+        }
+        
+        completedRuns++
+      }
+    }
+    
+    mutable compute_status = {
+      state: 'done',
+      message: `Sweep completed: ${completedRuns}/${totalRuns} runs finished`,
+      spinner: false
+    }
+    mutable status_trigger = mutable status_trigger + 1
+    
+    return { completed: completedRuns, total: totalRuns }
+  } catch (e) {
+    const error = e.message || e.toString()
+    mutable compute_status = { 
+      state: 'error', 
+      message: `Sweep failed: ${error} (completed ${completedRuns}/${totalRuns})`, 
+      error 
+    }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error, completed: completedRuns, total: totalRuns }
+  }
 }
 ```
 
@@ -821,7 +972,7 @@ results_table = {
   clear_handler; // React to clear button
   
   const history = results_history || []
-  console.log('[results_table] history length:', history.length, history)
+  // console.log('[results_table] history length:', history.length, history)
   
   if (history.length === 0) {
     return html`<em>Click Run matmul to execute the selected kernel. Results will be added to the table below.</em>`
