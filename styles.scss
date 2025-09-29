@@ -28,12 +28,10 @@ ol > li > ol > li:before {
     }
 }
 
-
-
-svg:not(.nostretch) {
-    width: 60%;
-    height: auto;
-}
+// svg:not(.nostretch) {
+//     width: 60%;
+//     height: auto;
+// }
 
 body:not(.reveal-viewport) code {
         font-size: 0.8em;
@@ -77,3 +75,30 @@ body > div:not(.reveal) div.attribution {
     // }   
 }
 
+h4 > span.project-number {
+    color: #ff0019 !important;
+}
+
+h4 {
+    color:rgb(163, 211, 247) !important;
+    border-top: #8accef 2px solid;
+}
+
+h4 + dl > dt, h4 + div dl > dt {
+    font-style: italic;
+    color: antiquewhite !important;
+}
+
+.plot-container {
+    display: flex;
+    justify-content: center;
+}   
+
+#fig-gradient-descent .cell-output-display {
+    height: 400px;
+}
+
+.gl-container > div  {
+    width: 400px !important;
+    height: 400px !important;
+}

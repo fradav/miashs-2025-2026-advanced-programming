@@ -362,9 +362,9 @@ $f(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2$
 
 ::::{.columns}
 
-::: {.column}
+::: {.column #fig-gradient-descent }
 ```{ojs}
-//| code-fold: true
+//| echo: false
 Plotly = require("plotly.js@2.35.2/dist/plotly.min.js");
 
 minX = -5;
@@ -412,9 +412,9 @@ f = ([x1, x2]) => (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;
 ```
 :::
 
-::: {.column}
+::: {.column }
 ```{ojs}
-//| code-fold: true
+//| echo: false
 function grad_descent(x1,x2,step,max_iter) {
   let grad = f_grad(x1, x2);
   let iterations = [[x1, x2]];
@@ -437,13 +437,20 @@ function grad_descent(x1,x2,step,max_iter) {
   }
   return iterations;
 }
+```
 
+```{ojs}
+//| panel: sidebar
+//| echo: false
 viewof descent_params = Inputs.form({
   x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),
   x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),
   step: Inputs.range([0.001, 0.04], {step: 0.001, value: 0.01, label: 'Step size'})
 })
+```
 
+```{ojs}
+//| echo: false
 prefix = Inputs.text().classList[0];
 
 {
@@ -473,6 +480,7 @@ prefix = Inputs.text().classList[0];
   })
 }
 ```
+
 :::
 
 ::::

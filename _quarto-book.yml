@@ -30,9 +30,13 @@ book:
     - Courses/06_Dask-Ray.qmd
     - Courses/07_Dask-delayed.qmd
     - Courses/08_SIMD.qmd
+    - Courses/09_GPU-Caching-etc.qmd
+    - Courses/10_WebGPU-First-App.qmd
+    - Courses/11_WebGPU-matmul.qmd
     - summary.qmd
     - references.qmd
   appendices: 
+    - Projects/list.qmd
     - applications.qmd
     - slides.qmd
 
@@ -45,6 +49,7 @@ format:
     number-depth: 3
     toc-depth: 4
     html-math-method: katex
+    respect-user-color-scheme: true
   # pdf:
   #   documentclass: scrreprt
   #   pdf-engine: latexmk

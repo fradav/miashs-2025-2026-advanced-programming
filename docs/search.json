@@ -314,7 +314,7 @@
     "href": "Courses/01_Code-Assistant.html#gradient-descent",
     "title": "2  Code Assistants",
     "section": "7.3 Gradient descent",
-    "text": "7.3 Gradient descent\nExample with a non-convex function\nf(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2\n\n\n\n\nCode\nPlotly = require(\"plotly.js@2.35.2/dist/plotly.min.js\");\n\nminX = -5;\nmaxX = 5;\n\nf = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n{\n  const linspace = d3.scaleLinear().domain([0, 49]).range([minX, maxX]);\n  const X1 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n  const X2 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n\n  // Define your function f here\n  const f = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n  const Z = X1.map((x1,i) =&gt; X2.map((x2,j) =&gt; f([x1,x2])));\n\n  const data = [{\n    x: X1.flat(),\n    y: X2.flat(),\n    z: Z,\n    type: 'surface'\n  }];\n\n  const layout = {\n    // title: '',\n    autosize: false,\n    width: 400,\n    height: 400,\n    paper_bgcolor: \"rgba(0,0,0,0)\",\n    plot_bgcolor: \"rgba(0,0,0,0)\",\n    template: 'plotly_dark',\n    margin: {\n      l: 0,\n      r: 0,\n      b: 0,\n      t: 0\n    }\n  };\n\n  const div = document.createElement('div');\n  Plotly.newPlot(div, data, layout,{displayModeBar: false});\n  return div;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\nfunction grad_descent(x1,x2,step,max_iter) {\n  let grad = f_grad(x1, x2);\n  let iterations = [[x1, x2]];\n  function f_grad(x1, x2) {\n    let df_x1 = 2 * (-7 + x1 + x2**2 + 2 * x1 * (-11 + x1**2 + x2));\n    let df_x2 = 2 * (-11 + x1**2 + x2 + 2 * x2 * (-7 + x1 + x2**2));\n    return [df_x1, df_x2];\n  }\n  var count = 0;\n  while (count &lt; max_iter) {\n    x1 -= step * grad[0];\n    x2 -= step * grad[1];\n    grad = f_grad(x1, x2);\n    if (isFinite(x1) && isFinite(x2) &&\n      (minX &lt; x1) && (x1 &lt; maxX) &&\n      (minX &lt; x2) && (x2 &lt; maxX))\n        iterations.push([x1, x2]);\n    else iterations.push(iterations[count])\n    count += 1\n  }\n  return iterations;\n}\n\nviewof descent_params = Inputs.form({\n  x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),\n  x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),\n  step: Inputs.range([0.001, 0.04], {step: 0.001, value: 0.01, label: 'Step size'})\n})\n\nprefix = Inputs.text().classList[0];\n\n{\n  d3.selectAll(`.${prefix}`).style(\"font-size\", \"16px\");\n  var iterations = grad_descent(descent_params.x1,descent_params.x2,descent_params.step,20)\n  return Plot.plot({\n    aspectRatio: 1,\n    x: {tickSpacing: 50, label: \"x1 →\"},\n    y: {tickSpacing: 50, label: \"x2 →\"},\n    width: 600,\n    style: {\n      backgroundColor: 'rgba(0,0,0,0)'\n    },\n    marks: [\n      Plot.contour({\n        fill: (x1, x2) =&gt; Math.sqrt((x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2),\n        x1: minX,\n        y1: minX,\n        x2: maxX,\n        y2: maxX,\n        showlegend: false,\n        colorscale: 'RdBu',\n        ncontours: 30\n      }),\n      Plot.line(iterations,{marker: true})\n    ]\n  })\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSensitivity to initial point and step size",
+    "text": "7.3 Gradient descent\nExample with a non-convex function\nf(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2\n\n\n\n\nFigure 7.1\n\n\n\nPlotly = require(\"plotly.js@2.35.2/dist/plotly.min.js\");\n\nminX = -5;\nmaxX = 5;\n\nf = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n{\n  const linspace = d3.scaleLinear().domain([0, 49]).range([minX, maxX]);\n  const X1 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n  const X2 = Array.from({length: 50}, (_, i) =&gt; linspace(i));\n\n  // Define your function f here\n  const f = ([x1, x2]) =&gt; (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2;\n\n  const Z = X1.map((x1,i) =&gt; X2.map((x2,j) =&gt; f([x1,x2])));\n\n  const data = [{\n    x: X1.flat(),\n    y: X2.flat(),\n    z: Z,\n    type: 'surface'\n  }];\n\n  const layout = {\n    // title: '',\n    autosize: false,\n    width: 400,\n    height: 400,\n    paper_bgcolor: \"rgba(0,0,0,0)\",\n    plot_bgcolor: \"rgba(0,0,0,0)\",\n    template: 'plotly_dark',\n    margin: {\n      l: 0,\n      r: 0,\n      b: 0,\n      t: 0\n    }\n  };\n\n  const div = document.createElement('div');\n  Plotly.newPlot(div, data, layout,{displayModeBar: false});\n  return div;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nfunction grad_descent(x1,x2,step,max_iter) {\n  let grad = f_grad(x1, x2);\n  let iterations = [[x1, x2]];\n  function f_grad(x1, x2) {\n    let df_x1 = 2 * (-7 + x1 + x2**2 + 2 * x1 * (-11 + x1**2 + x2));\n    let df_x2 = 2 * (-11 + x1**2 + x2 + 2 * x2 * (-7 + x1 + x2**2));\n    return [df_x1, df_x2];\n  }\n  var count = 0;\n  while (count &lt; max_iter) {\n    x1 -= step * grad[0];\n    x2 -= step * grad[1];\n    grad = f_grad(x1, x2);\n    if (isFinite(x1) && isFinite(x2) &&\n      (minX &lt; x1) && (x1 &lt; maxX) &&\n      (minX &lt; x2) && (x2 &lt; maxX))\n        iterations.push([x1, x2]);\n    else iterations.push(iterations[count])\n    count += 1\n  }\n  return iterations;\n}\n\n\n\n\n\n\n\nviewof descent_params = Inputs.form({\n  x1: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x1 initial'}),\n  x2: Inputs.range([minX, maxX], {step: 0.1, value: 0, label: 'x2 initial'}),\n  step: Inputs.range([0.001, 0.04], {step: 0.001, value: 0.01, label: 'Step size'})\n})\n\n\n\n\n\n\n\nprefix = Inputs.text().classList[0];\n\n{\n  d3.selectAll(`.${prefix}`).style(\"font-size\", \"16px\");\n  var iterations = grad_descent(descent_params.x1,descent_params.x2,descent_params.step,20)\n  return Plot.plot({\n    aspectRatio: 1,\n    x: {tickSpacing: 50, label: \"x1 →\"},\n    y: {tickSpacing: 50, label: \"x2 →\"},\n    width: 600,\n    style: {\n      backgroundColor: 'rgba(0,0,0,0)'\n    },\n    marks: [\n      Plot.contour({\n        fill: (x1, x2) =&gt; Math.sqrt((x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2),\n        x1: minX,\n        y1: minX,\n        x2: maxX,\n        y2: maxX,\n        showlegend: false,\n        colorscale: 'RdBu',\n        ncontours: 30\n      }),\n      Plot.line(iterations,{marker: true})\n    ]\n  })\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSensitivity to initial point and step size",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Code Assistants</span>"
     ]
@@ -2200,13 +2200,693 @@
     ]
   },
   {
+    "objectID": "Courses/09_GPU-Caching-etc.html",
+    "href": "Courses/09_GPU-Caching-etc.html",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "",
+    "text": "11 GPU Computing",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#gpu",
+    "href": "Courses/09_GPU-Caching-etc.html#gpu",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.1 GPU ?",
+    "text": "11.1 GPU ?\nGPU = graphical process unit\n\n“(…) a specialized electronic circuit designed to rapidly manipulate and alter memory to accelerate the creation of images in a frame buffer intended for output to a display device. GPUs are used in embedded systems, mobile phones, personal computers, workstations, and game consoles.” (Wikipedia)\n\nOriginal purpose: image creation and manipulation for graphical rendering (video games, video edition, 3D conception, etc.)",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#gpu-for-computing",
+    "href": "Courses/09_GPU-Caching-etc.html#gpu-for-computing",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.2 GPU for computing ?",
+    "text": "11.2 GPU for computing ?\n\n“Modern GPUs are very efficient at manipulating computer graphics and image processing. Their highly parallel structure makes them more efficient than general-purpose central processing units (CPUs) for algorithms that process large blocks of data in parallel.” (Wikipedia)\n\nNowadays usage: more general massive computations based on matrix operations",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#von-neumann-architecture",
+    "href": "Courses/09_GPU-Caching-etc.html#von-neumann-architecture",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.3 Von Neumann architecture",
+    "text": "11.3 Von Neumann architecture\nBasic principle (present in most modern computing units) with three interconnected parts:\n\ncontrol unit: does most of the work, such as deciding what operation to do next, fetching the next instruction from memory, etc.\narithmetic/logic unit (ALU): implements operations such as addition, subtraction, multiplication, etc.\nmemory unit: stores the data processed by the chip, such as its inputs, outputs, and any intermediate data",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#von-neumann-architecture-schema",
+    "href": "Courses/09_GPU-Caching-etc.html#von-neumann-architecture-schema",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.4 Von Neumann architecture, schema",
+    "text": "11.4 Von Neumann architecture, schema\n\n\nYgor Serpa (TowardsDataScience)",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#gpu-architecture",
+    "href": "Courses/09_GPU-Caching-etc.html#gpu-architecture",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.5 GPU architecture",
+    "text": "11.5 GPU architecture\n\n\nYgor Serpa (TowardsDataScience)\n\nPrinciple: control units are large and expensive, while arithmetic units are more straightforward and cheaper\nDesign: a sub-processor = one control unity commanding several ALUs (= GPU cores) to operate on larger chunks of data\nLimitation: all ALUs (connected to the same control unity) must obey the same commands (i.e. do the same thing at the same moment)",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#gpu-trades-control-for-arithmetic-power",
+    "href": "Courses/09_GPU-Caching-etc.html#gpu-trades-control-for-arithmetic-power",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.6 GPU trades “control” for “arithmetic power”",
+    "text": "11.6 GPU trades “control” for “arithmetic power”\n\nALU blocks (= gpu sub-processors) not as versatile as CPU cores but can operate over large amounts of data in batches\nCentral control unit syncs all the sub-processors (each one can do a different task) but the same set of ALUs cannot do different things in parallel (e.g. if statements costly for GPUs)\n\nExample: each block of 16 ALUs is limited to processing the same instruction over 16 pairs of operands",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#latency-vs-throughput",
+    "href": "Courses/09_GPU-Caching-etc.html#latency-vs-throughput",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.7 Latency vs Throughput",
+    "text": "11.7 Latency vs Throughput\n\nLatency: how long does it take to finish a given task\nThroughput: how many times can you complete the task within a period\n\nCPU cores optimized for latency: to finish a task as fast as possible.\n\\rightarrow scales with more complex operations but not with larger data\nGPU cores optimized for throughput: individually slower, but they operate on bulks of data at once.\n\\rightarrow scales with larger data but not with more complex operations",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#latency-vs-throughput-an-analogy-i",
+    "href": "Courses/09_GPU-Caching-etc.html#latency-vs-throughput-an-analogy-i",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.8 Latency vs Throughput: an analogy (I)",
+    "text": "11.8 Latency vs Throughput: an analogy (I)\nTravelling by road:\n\nlatency: use a sport car (faster but can only take 2-5 persons)\nthroughput: use a bus (slower but can take up to 80 persons)\n\nTotal time to transport 5 persons over 100km (latency):\n\n1 trip with a 80-seat bus at 50km/h: 2hours\n1 trip with a 5-seat car at 200km/h: 0.5hours\n\nTotal time to transport 160 persons over 100km (throughput):\n\n2 round trips with a 80-seat bus at 50km/h: 8hours\n32 round trips with a 5-seat car at 200km/h: 32hours",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#latency-vs-throughput-an-analogy-ii",
+    "href": "Courses/09_GPU-Caching-etc.html#latency-vs-throughput-an-analogy-ii",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.9 Latency vs Throughput: an analogy (II)",
+    "text": "11.9 Latency vs Throughput: an analogy (II)\nFastest way to learn?\n\n\nLatency: private teacher or small classroom\nThroughput: big classroom or online course\n\n\n\n\n\nYgor Serpa (TowardsDataScience)\n\n\\rightarrow none is arguably better than the others, all work and fill a specific need",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-hardware-side",
+    "href": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-hardware-side",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.10 CPU vs GPU: hardware side",
+    "text": "11.10 CPU vs GPU: hardware side\n\nUnits: B = Byte (memory), W = Watts (power), Hz = Hertz (frequency)\n\n\nType\nNb of cores\nMemory (cache1)\nMemory (device)\nPower per core\nClock rate2\n\n\n\n\nCPU\n10\\times\n10\\times - 100\\times KB\n10\\times - 100\\times GB3\n10\\times W\n3 - 5 GHz\n\n\nGPU\n1000\\times\n100\\times B\n10\\times GB4\n0.01\\times - 0.1\\times W\n0.5 - 1 GHz",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-concept-side",
+    "href": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-concept-side",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.11 CPU vs GPU: concept side",
+    "text": "11.11 CPU vs GPU: concept side\n\n\n\nCPU\nGPU\n\n\n\n\nTask parallelism\nData parallelism\n\n\nA few “heavyweight” cores\nMany “ligthweight” cores\n\n\nHigh memory size\nHigh memory throughput\n\n\nMany diverse instruction sets\nA few highly optimized instruction sets\n\n\nSoftware thread management\nHardware thread management\n\n\n\n\nMantas Levinas (CherryServers)",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#gpu-dedicated-chip",
+    "href": "Courses/09_GPU-Caching-etc.html#gpu-dedicated-chip",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.12 GPU = dedicated chip",
+    "text": "11.12 GPU = dedicated chip\n\n\nCPU directly mounted on the motherboard\n&lt;5\\times 5 cm dimension5\n \n\nGPU is a HUGE chip (\\sim 30\\times 10 cm)\nmounted through PCI-express connection\n\n\n\n\nWikipedia",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-comparison-an-example",
+    "href": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-comparison-an-example",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.13 CPU vs GPU comparison: an example",
+    "text": "11.13 CPU vs GPU comparison: an example\n\n\nYgor Serpa (TowardsDataScience)",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-comparison-an-example-cpu",
+    "href": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-comparison-an-example-cpu",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.14 CPU vs GPU comparison: an example, CPU",
+    "text": "11.14 CPU vs GPU comparison: an example, CPU\nAMD Ryzen Threadripper 2990X processor: 32cores (each capable of running two independent threads), 3 GHz up to 4.2 GHz (boost) clock rate, 2 instructions per clock cycle, each thread processes 8 floating-point values at the same time",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-comparison-an-example-gpu",
+    "href": "Courses/09_GPU-Caching-etc.html#cpu-vs-gpu-comparison-an-example-gpu",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.15 CPU vs GPU comparison: an example, GPU",
+    "text": "11.15 CPU vs GPU comparison: an example, GPU\nNvidia RTX 2080 TI GPU: 4352 ALUs, 1.35 GHz up to 1.545 GHz (boost) clock rate, 2 operations per clock cycle, one floating point operation per ALU",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#performance-illustration",
+    "href": "Courses/09_GPU-Caching-etc.html#performance-illustration",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.16 Performance illustration",
+    "text": "11.16 Performance illustration\nThroughput:\nMaximum theoretical number of floating-point operations they can handle per second (FLOPS)\n\nCPU (Ryzen): (4.2 \\times 10^9) \\times 2 \\times (8 \\times 64) = 4309.8 \\times 10^9 FLOPS \\approx 4.3 TFLOPS\nGPU (2080 TI): (1.545 \\times 10^9) \\times 2 \\times 4352 = 13447.68 \\times 10^9 FLOPS \\approx 13.4 TFLOPS\n\nLatency: the CPU clocks at 4.2 GHz, while the GPU clocks at \\sim 1.5 GHz, nearly three times slower\n\\rightarrow one is not better than the other, they serve different purposes",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#from-3d-image-processing-for-games-to-general-purpose-computing",
+    "href": "Courses/09_GPU-Caching-etc.html#from-3d-image-processing-for-games-to-general-purpose-computing",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.17 From 3D image processing (for games) to general-purpose computing",
+    "text": "11.17 From 3D image processing (for games) to general-purpose computing\nimage processing = large matrix operations\n\\rightarrow why not using GPU for general matrix operations?\nExample: deep-learning = combination of linear transformation (=matrix product) and simple non-linear operations\nGeneral-Purpose Graphics Processing Units (GPGPU): computations on GPU not dedicated to image processing",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#hardware",
+    "href": "Courses/09_GPU-Caching-etc.html#hardware",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.18 Hardware",
+    "text": "11.18 Hardware\n\nNvidia (with CUDA drivers) \nAMD (with AMD drivers or openCL)",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#software-python",
+    "href": "Courses/09_GPU-Caching-etc.html#software-python",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.19 Software (Python)",
+    "text": "11.19 Software (Python)\n\ndeep learning oriented: tensorflow, PyTorch, keras \nmore general purpose computing: see numba, cupy, RAPIDS (cuDF, cuML, etc.), keops, and more",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#software-r",
+    "href": "Courses/09_GPU-Caching-etc.html#software-r",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.20 Software (R)",
+    "text": "11.20 Software (R)\nSee this page6\nExample with gpuR:\nORDER = 1024\nA = matrix(rnorm(ORDER^2), nrow=ORDER)\nB = matrix(rnorm(ORDER^2), nrow=ORDER)\ngpuA = gpuMatrix(A, type=\"double\")\ngpuB = gpuMatrix(B, type=\"double\")\nC = A %*% B\ngpuC = gpuA %*% gpuB\nall(C == gpuC[])\n[1] TRUE",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#in-practice",
+    "href": "Courses/09_GPU-Caching-etc.html#in-practice",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "11.21 In practice",
+    "text": "11.21 In practice\nSee the dedicated notebook “GPU computing with Numba (introduction)” in the Applications list.",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cpu-cache",
+    "href": "Courses/09_GPU-Caching-etc.html#cpu-cache",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "12.1 CPU cache ?",
+    "text": "12.1 CPU cache ?\nCache = on-board memory unit for CPU cores\n\n\nYgor Serpa (TowardsDataScience)",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#example-of-architecture",
+    "href": "Courses/09_GPU-Caching-etc.html#example-of-architecture",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "12.2 Example of architecture",
+    "text": "12.2 Example of architecture\n\n\nCredit: Wikipedia (AMD Bulldozer server)",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cache-memory-size",
+    "href": "Courses/09_GPU-Caching-etc.html#cache-memory-size",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "12.3 Cache memory size",
+    "text": "12.3 Cache memory size\n\n\nVery small\n\nL1 Cache = 10\\times KB (per core) \nL2 Cache = 100\\times KB (per core) \nL3 Cache = 1000\\times KB (shared per CPU)\n\n\nExample:\n\n\n\n\nWikipedia (K8 core in the AMD Athlon 64 CPU)",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cache-access-time-latency",
+    "href": "Courses/09_GPU-Caching-etc.html#cache-access-time-latency",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "12.4 Cache access time (latency)",
+    "text": "12.4 Cache access time (latency)\n\n\nStackoverflow",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cpu-cache-miss",
+    "href": "Courses/09_GPU-Caching-etc.html#cpu-cache-miss",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "12.5 CPU cache miss",
+    "text": "12.5 CPU cache miss\n\ndata transferred from memory to cache by blocks of contiguous data\nto be efficient: necessary to use contiguous data in computations\n\n\n\nData analysis workflows with R and Python course",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#in-practice-1",
+    "href": "Courses/09_GPU-Caching-etc.html#in-practice-1",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "12.6 In practice",
+    "text": "12.6 In practice\nSee the dedicated notebook “CPU Cache and its impact on computations” in the Applications list.",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#cluster",
+    "href": "Courses/09_GPU-Caching-etc.html#cluster",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "13.1 Cluster",
+    "text": "13.1 Cluster\n\na front-end server: user interface to submit computations, accessible from the internet (e.g. by ssh connection or through a web interface)\nmany computing servers (also called computing nodes or workers) that run the computations\none or more storage servers: to store the data and results\n\n\n\nWikipedia",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#usage",
+    "href": "Courses/09_GPU-Caching-etc.html#usage",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "13.2 Usage",
+    "text": "13.2 Usage\n\nsingle-node multi-core computations (multi-threading or multi-processing) \nmulti-node computations (distributed computations) \nGPU computing \ncombinations of two or more",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#illustration",
+    "href": "Courses/09_GPU-Caching-etc.html#illustration",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "13.3 Illustration",
+    "text": "13.3 Illustration\nMUSE cluster at MESO@LR computing center in Montpellier\n\n\nmeso@LR",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#resource-management",
+    "href": "Courses/09_GPU-Caching-etc.html#resource-management",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "13.4 Resource management",
+    "text": "13.4 Resource management\nHow to share the computing resources (cores, memory, full nodes) between user?\n\\rightarrow a resource management system (also called a scheduler) to assign resources to users depending on their request\nFunctions:\n\nallocating exclusive and/or non-exclusive access to resources (computer nodes) to users for some duration of time so they can perform work \nproviding a framework for starting, executing, and monitoring work, typically a parallel job \narbitrating contention for resources by managing a queue of pending jobs",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#an-example",
+    "href": "Courses/09_GPU-Caching-etc.html#an-example",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "13.5 An example",
+    "text": "13.5 An example\nSLURM = a job scheduler for clusters and supercomputers\nJob submission:\n\nIn-session command submission (e.g. requesting 16 cores with 32GB of RAM memory and a RTX 2080 TI GPU, on a single node, during 3 days):\n\nsrun -N 1 -c 16 --mem=32G --gpus=rtx2080:1 -t 3-0 my_command\n\nScript submission to be run off-session (e.g. requesting 3 full nodes during 96hours):\n\nsbatch -N 3 -t 96:0:0 my_script.sh",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/09_GPU-Caching-etc.html#footnotes",
+    "href": "Courses/09_GPU-Caching-etc.html#footnotes",
+    "title": "10  GPU computing, CPU cache, Computing cluster",
+    "section": "",
+    "text": "per core↩︎\ncycles per second (one operation = 1\\times - 10\\times cycles↩︎\nRAM = host memory↩︎\nGPU on-board memory↩︎\nsize fixed for decades↩︎\ncorresponding to CRAN task view on high performance computing↩︎",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>GPU computing, CPU cache, Computing cluster</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html",
+    "href": "Courses/10_WebGPU-First-App.html",
+    "title": "11  Your First WebGPU App",
+    "section": "",
+    "text": "12 Introduction",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#what-is-webgpu",
+    "href": "Courses/10_WebGPU-First-App.html#what-is-webgpu",
+    "title": "11  Your First WebGPU App",
+    "section": "12.1 What is WebGPU?",
+    "text": "12.1 What is WebGPU?\n\n\n\n\nModern, cross-platform GPU API for the web\nSuccessor to WebGL; maps to Metal, Vulkan, Direct3D 12\nTwo main capabilities:\n\nRendering: draw 2D/3D graphics\nCompute: massively parallel general-purpose workloads\n\n\n\n\n\n\n\n\n\nPosition WebGPU vs WebGL (modern API mapping to Metal/Vulkan/D3D12). Emphasize compute shaders and how the web finally gains first-class GPGPU.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#what-youll-build",
+    "href": "Courses/10_WebGPU-First-App.html#what-youll-build",
+    "title": "11  Your First WebGPU App",
+    "section": "12.2 What you’ll build",
+    "text": "12.2 What you’ll build\n\nMini pipeline to render a square, the building block for a Game of Life simulation\nLearn the primitives: device, canvas context, buffers, shaders, pipeline, draw\n\n\nSet expectations: we start with a single square, then scale to an instanced grid and outline the compute step.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#requirements",
+    "href": "Courses/10_WebGPU-First-App.html#requirements",
+    "title": "11  Your First WebGPU App",
+    "section": "12.3 Requirements",
+    "text": "12.3 Requirements\n\nChrome 113+ (or a browser with WebGPU enabled)\nBasic HTML/JS\n\nLinks: https://gpuweb.github.io/gpuweb/ • https://codelabs.developers.google.com/your-first-webgpu-app",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#minimal-html-page",
+    "href": "Courses/10_WebGPU-First-App.html#minimal-html-page",
+    "title": "11  Your First WebGPU App",
+    "section": "13.1 Minimal HTML page",
+    "text": "13.1 Minimal HTML page\n&lt;!doctype html&gt;\n\n&lt;html&gt;\n  &lt;head&gt;\n    &lt;meta charset=\"utf-8\"&gt;\n    &lt;title&gt;WebGPU Life&lt;/title&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;canvas width=\"512\" height=\"512\"&gt;&lt;/canvas&gt;\n    &lt;script type=\"module\"&gt;\n      const canvas = document.querySelector(\"canvas\"); \n1      // Your WebGPU code will begin here!\n \n    &lt;/script&gt;\n  &lt;/body&gt;\n&lt;/html&gt;\n\n1\n\nThis is where we will add our WebGPU code in the next steps.\n\n\n\nBasic HTML5 page with a canvas and a script module. We will fill in the script.\n\n&lt;canvas id=\"gfx\" width=\"512\" height=\"512\"&gt;&lt;/canvas&gt;\n&lt;script type=\"module\"&gt;\nif (!navigator.gpu) {\n  throw new Error(\"WebGPU not supported on this browser.\");\n}\n\n1const adapter = await navigator.gpu.requestAdapter();\nif (!adapter) {\n  throw new Error(\"No appropriate GPUAdapter found.\");\n}\n\n1\n\nRequest a GPU adapter (the physical GPU).\n\n\n\nKey contracts: navigator.gpu, adapter-&gt;device, canvas.getContext(“webgpu”), getPreferredCanvasFormat(). Mention single device driving multiple canvases.\n\n&lt;canvas id=\"gfx\" width=\"512\" height=\"512\"&gt;&lt;/canvas&gt;\n&lt;script type=\"module\"&gt;\nif (!navigator.gpu) {\n  throw new Error(\"WebGPU not supported on this browser.\");\n}\n\n1const adapter = await navigator.gpu.requestAdapter();\nif (!adapter) {\n  throw new Error(\"No appropriate GPUAdapter found.\");\n}\n2const device = await adapter.requestDevice();\n\n1\n\nRequest a GPU adapter (the physical GPU).\n\n2\n\nRequest a logical device from the adapter.\n\n\n\nKey contracts: navigator.gpu, adapter-&gt;device, canvas.getContext(“webgpu”), getPreferredCanvasFormat(). Mention single device driving multiple canvases.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#check-support-and-prepare-canvas",
+    "href": "Courses/10_WebGPU-First-App.html#check-support-and-prepare-canvas",
+    "title": "11  Your First WebGPU App",
+    "section": "13.2 Check support and prepare canvas",
+    "text": "13.2 Check support and prepare canvas\n&lt;canvas id=\"gfx\" width=\"512\" height=\"512\"&gt;&lt;/canvas&gt;\n&lt;script type=\"module\"&gt;\nif (!navigator.gpu) {\n  throw new Error(\"WebGPU not supported on this browser.\");\n}\n\n1const adapter = await navigator.gpu.requestAdapter();\nif (!adapter) {\n  throw new Error(\"No appropriate GPUAdapter found.\");\n}\n2const device = await adapter.requestDevice();\n\n3const canvas = document.getElementById(\"gfx\");\nconst context = canvas.getContext(\"webgpu\");\nconst canvasFormat = navigator.gpu.getPreferredCanvasFormat();\ncontext.configure({ device, format: canvasFormat });\n\n1\n\nRequest a GPU adapter (the physical GPU).\n\n2\n\nRequest a logical device from the adapter.\n\n3\n\nGet the WebGPU context from the canvas and configure it with the device and preferred format.\n\n\n\nKey contracts: navigator.gpu, adapter-&gt;device, canvas.getContext(“webgpu”), getPreferredCanvasFormat(). Mention single device driving multiple canvases.\n\nconst encoder = device.createCommandEncoder(); &lt;!-- &lt;1&gt; --&gt;\n\nCreate a command encoder to record GPU commands.\n\n\nIn order to do that—or pretty much anything else in WebGPU—you need to provide some commands to the GPU instructing it what to do.\nTo do this, have the device create a GPUCommandEncoder, which provides an interface for recording GPU commands.\n\nconst encoder = device.createCommandEncoder(); &lt;!-- &lt;1&gt; --&gt;\nconst pass = encoder.beginRenderPass({ &lt;!-- &lt;2&gt; --&gt;\n  colorAttachments: [{\n    view: context.getCurrentTexture().createView(),\n    loadOp: \"clear\",\n    storeOp: \"store\",\n%  }],\n});\n\nCreate a command encoder to record GPU commands.\nBegin a render pass with a color attachment that clears the canvas to dark blue.\n\n\n\nRender passes in WebGPU execute all drawing commands.\nEach pass starts with beginRenderPass(), specifying output textures.\nFor this app, a single color attachment is used: context.getCurrentTexture().\nThe attachment matches the canvas size and format.\nThe colorAttachment requires a GPUTextureView (not GPUTexture); use createView() to get it.\nloadOp: “clear” clears the texture at the start of the render pass.\nstoreOp: “store” saves the results after the render pass ends.\nStarting the render pass with loadOp: “clear” is enough to clear the canvas, even if no drawing commands are issued.\n\n\nconst encoder = device.createCommandEncoder(); &lt;!-- &lt;1&gt; --&gt;\nconst pass = encoder.beginRenderPass({ &lt;!-- &lt;2&gt; --&gt;\n  colorAttachments: [{\n    view: context.getCurrentTexture().createView(),\n    loadOp: \"clear\",\n    storeOp: \"store\",\n  }],\n});\npass.end(); &lt;!-- &lt;3&gt; --&gt;\n\nCreate a command encoder to record GPU commands.\nBegin a render pass with a color attachment that clears the canvas to dark blue.\nEnd the render pass.\n\n\n\nThese calls only record commands; the GPU does nothing yet.\nCommands are stored in a command encoder for later execution.\nYou must finish recording and submit the command buffer to actually run them.\n\n\nconst encoder = device.createCommandEncoder(); &lt;!-- &lt;1&gt; --&gt;\nconst pass = encoder.beginRenderPass({ &lt;!-- &lt;2&gt; --&gt;\n  colorAttachments: [{\n    view: context.getCurrentTexture().createView(),\n    loadOp: \"clear\",\n    storeOp: \"store\",\n  }],\n});\npass.end(); &lt;!-- &lt;3&gt; --&gt;\nconst commandBuffer = encoder.finish(); &lt;!-- &lt;4&gt; --&gt;\n\nCreate a command encoder to record GPU commands.\nBegin a render pass with a color attachment that clears the canvas to dark blue.\nEnd the render pass.\nFinish recording commands and get a command buffer.\n\n\n\nThese calls only record commands; the GPU does nothing yet.\nCall finish() on the encoder to create a GPUCommandBuffer.\nThe command buffer is an opaque handle to the recorded commands.\n\n\nconst encoder = device.createCommandEncoder();\nconst pass = encoder.beginRenderPass({\n  colorAttachments: [{\n    view: context.getCurrentTexture().createView(),\n    loadOp: \"clear\",\n    storeOp: \"store\",\n  }],\n});\npass.end();\nconst commandBuffer = encoder.finish(); &lt;!-- &lt;4&gt; --&gt;\ndevice.queue.submit([commandBuffer]); &lt;!-- &lt;5&gt; --&gt;\n\nCreate a command encoder to record GPU commands.\nBegin a render pass with a color attachment that clears the canvas to dark blue.\nEnd the render pass.\nFinish recording commands and get a command buffer.\nSubmit the command buffer to the GPU queue for execution.\n\n\n\nSubmit the command buffer to the GPU using device.queue.submit().\nThe queue executes GPU commands in order and synchronizes them.\nsubmit() accepts an array of command buffers; here, only one is used.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#clear-the-canvas",
+    "href": "Courses/10_WebGPU-First-App.html#clear-the-canvas",
+    "title": "11  Your First WebGPU App",
+    "section": "13.3 Clear the canvas",
+    "text": "13.3 Clear the canvas\nconst encoder = device.createCommandEncoder(); &lt;!-- &lt;1&gt; --&gt;\nconst pass = encoder.beginRenderPass({ &lt;!-- &lt;2&gt; --&gt;\n  colorAttachments: [{\n    view: context.getCurrentTexture().createView(),\n    loadOp: \"clear\",\n    storeOp: \"store\",\n  }],\n});\npass.end(); &lt;!-- &lt;3&gt; --&gt;\n// Finish the command buffer and immediately submit it.\ndevice.queue.submit([cencoder.finish()]); &lt;!-- &lt;4&gt; --&gt;\n\nCreate a command encoder to record GPU commands.\nBegin a render pass with a color attachment that clears the canvas to dark blue.\nEnd the render pass.\nSubmit the command buffer to the GPU queue for execution.\n\n\n\nCommand buffers are single-use; after submission, they cannot be reused.\nTo issue more GPU commands, create and submit a new command buffer.\nCommon practice is to create and submit the command buffer in one step, as shown in the sample code.\n\n\nAdd a color to the clear operation\n\nCode\nrenderToCanvas({ width: 512, height: 512 })\n\n\n\n\nconst pass = encoder.beginRenderPass({\n  colorAttachments: [{\n    view: context.getCurrentTexture().createView(),\n    loadOp: \"clear\",\n    storeOp: \"store\",\n  }],\n});",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#clear-the-canvas---result",
+    "href": "Courses/10_WebGPU-First-App.html#clear-the-canvas---result",
+    "title": "11  Your First WebGPU App",
+    "section": "13.4 Clear the canvas - Result",
+    "text": "13.4 Clear the canvas - Result\nAdd a color to the clear operation\n\nCode\nrenderToCanvas({\n  width: 512,\n  height: 512,\n  clearColor: [0.02, 0.06, 0.15, 1.0]\n})\n\n\n\n\nconst pass = encoder.beginRenderPass({\n  colorAttachments: [{\n    view: context.getCurrentTexture().createView(),\n    loadOp: \"clear\",\n    storeOp: \"store\",\n1    clearValue: { r: 0.02, g: 0.06, b: 0.15, a: 1 },\n  }],\n});\n\n1\n\nDark blue RGBA clear color.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#coordinate-system",
+    "href": "Courses/10_WebGPU-First-App.html#coordinate-system",
+    "title": "11  Your First WebGPU App",
+    "section": "14.1 Coordinate system",
+    "text": "14.1 Coordinate system\n\n\n\n\n🟦 GPUs mainly draw triangles (primitives: points, lines, triangles)\n📐 Vertices define triangle corners in X, Y (and Z for 3D) coordinates\n🗺️ WebGPU uses “clip space”: X/Y range from -1 (left/bottom) to +1 (right/top), center is (0,0)\n🧮 Vertex shaders transform vertices to clip space and apply effects\n🎨 Fragment shaders decide pixel colors for each triangle\n🖼️ Final result is shown on screen as a texture\n🕹️ You control the math and effects via shaders!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n🟩 Game of Life grid: visualize cells as colored squares (active) or empty (inactive)\n🟦 Each square needs 4 corner points (coordinates in normalized device space)\n🧮 Use TypedArrays (e.g., Float32Array) to store vertex positions for the GPU\n💡 TypedArrays ensure correct memory layout for GPU APIs like WebGPU\n📌 Place the vertex array declaration near the top, after context.configure()",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#define-vertices-two-triangles-one-square",
+    "href": "Courses/10_WebGPU-First-App.html#define-vertices-two-triangles-one-square",
+    "title": "11  Your First WebGPU App",
+    "section": "14.2 Define vertices (two triangles = one square)",
+    "text": "14.2 Define vertices (two triangles = one square)\n\n\n\n//   X,    Y\nconst vertices = new Float32Array([\n  -0.8, -0.8,  // tri1\n   0.8, -0.8,\n   0.8,  0.8,\n  -0.8, -0.8,  // tri2\n   0.8,  0.8,\n  -0.8,  0.8,\n]);\n\n\n\n\n\n\nNote\n\n\n\n\n🧩 Index Buffers let you reuse vertex data by specifying which vertices form triangles.\n✏️ Avoids duplicating vertex coordinates—just “connect the dots” using indices.\n🚦 Useful for complex shapes, but skipped here for simplicity.\n📚 Recommended for advanced geometry in real-world apps.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGPU draws triangles; duplicate two corners to make two triangles for one quad. Clip space coordinates [-1,1].\n\n1const vertexBuffer = device.createBuffer({\n  label: \"Cell vertices\",\n  size: vertices.byteLength,\n  usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,\n});\ndevice.queue.writeBuffer(vertexBuffer, 0, vertices);\n\n1\n\nGPU buffer in device-visible memory\n\n\n\n\n🖥️ GPU can’t use JavaScript arrays directly for drawing.\n📦 Use GPUBuffer objects to store data in GPU memory.\n🚀 Buffers are optimized for fast GPU access and flagged for specific uses.\n🧮 Think of GPUBuffer as a GPU-visible TypedArray.\n🛠️ Create a buffer with device.createBuffer() after defining your vertex array.\n\n\n1const vertexBuffer = device.createBuffer({\n  label: \"Cell vertices\",\n2  size: vertices.byteLength,\n  usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,\n});\ndevice.queue.writeBuffer(vertexBuffer, 0, vertices);\n\n1\n\nGPU buffer in device-visible memory\n\n2\n\nExact byte size from TypedArray.byteLength\n\n\n\n\nAssign a descriptive label to every WebGPU object for easier debugging.\nSpecify the buffer size in bytes; use TypedArray.byteLength for accuracy.\nFor vertex buffers, size equals number of floats × 4 (bytes per float).\nLabels appear in error messages, helping identify issues quickly.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#create-a-vertex-buffer",
+    "href": "Courses/10_WebGPU-First-App.html#create-a-vertex-buffer",
+    "title": "11  Your First WebGPU App",
+    "section": "14.3 Create a vertex buffer",
+    "text": "14.3 Create a vertex buffer\n1const vertexBuffer = device.createBuffer({\n  label: \"Cell vertices\",\n2  size: vertices.byteLength,\n  usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,\n});\n3device.queue.writeBuffer(vertexBuffer, 0, vertices);\n\n1\n\nGPU buffer in device-visible memory\n\n2\n\nExact byte size from TypedArray.byteLength\n\n3\n\nUpload vertex data from CPU to GPU\n\n\n\n\nUse GPUBufferUsage flags to specify buffer purpose (e.g., VERTEX, COPY_DST).\nGPUBuffer objects are opaque and mostly immutable (size and usage can’t change).\nBuffer memory is zero-initialized on creation.\nUpdate buffer contents using device.queue.writeBuffer() with a TypedArray.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#byte-sized-maths",
+    "href": "Courses/10_WebGPU-First-App.html#byte-sized-maths",
+    "title": "11  Your First WebGPU App",
+    "section": "14.4 Byte-sized maths",
+    "text": "14.4 Byte-sized maths\n\nFloat32Array: 4 bytes per float\nvertices.length = 12 (6 vertices × 2 components)\nvertices.byteLength = 48 (12 × 4 bytes)\n\n\n\n\n\n\n\nImportant\n\n\n\nGet comfortable with this kind of byte-size math. Working with a GPU requires a fair amount of it!\n\n\nconst vertexBufferLayout = {\n1  arrayStride: 2 * 4, // 2 float32 per vertex\n  attributes: [{\n    shaderLocation: 0,\n    offset: 0,\n    format: \"float32x2\",\n  }],\n};\n\n1\n\nStride in bytes between successive vertices\n\n\n\n\nDefine vertex layout using GPUVertexBufferLayout.\narrayStride specifies the byte distance between vertices (2 floats × 4 bytes = 8 bytes).\nEach vertex consists of two 32-bit floats (x, y).\nThis layout tells WebGPU how to interpret buffer data for the vertex shader.\n\n\nconst vertexBufferLayout = {\n1  arrayStride: 2 * 4, // 2 float32 per vertex\n  attributes: [{\n2    shaderLocation: 0,\n    offset: 0,\n    format: \"float32x2\",\n  }],\n};\n\n1\n\nStride in bytes between successive vertices\n\n2\n\nMatches @location(0) in the vertex shader\n\n\n\n\nshaderLocation links a buffer attribute to a vertex shader input.\nMust be a unique number (0-15) for each attribute.\nDefines how vertex data maps to shader variables.\nValues are set now, but used when creating the pipeline.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#describe-vertex-layout",
+    "href": "Courses/10_WebGPU-First-App.html#describe-vertex-layout",
+    "title": "11  Your First WebGPU App",
+    "section": "14.5 Describe vertex layout",
+    "text": "14.5 Describe vertex layout\nconst vertexBufferLayout = {\n1  arrayStride: 2 * 4, // 2 float32 per vertex\n  attributes: [{\n2    shaderLocation: 0,\n    offset: 0,\n3    format: \"float32x2\",\n  }],\n};\n\n1\n\nStride in bytes between successive vertices\n\n2\n\nMatches @location(0) in the vertex shader\n\n3\n\nTwo float32 values per vertex (x,y)\n\n\n\n\nThe attributes array defines how each piece of vertex data is mapped for the GPU.\nEach attribute specifies its format (e.g., “float32x2” for two 32-bit floats).\nThe offset indicates where in the vertex structure the attribute starts (important for multiple attributes).\nThis example uses a single attribute for position; more complex cases may include color, normals, etc.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#vertex-shader",
+    "href": "Courses/10_WebGPU-First-App.html#vertex-shader",
+    "title": "11  Your First WebGPU App",
+    "section": "15.1 Vertex shader",
+    "text": "15.1 Vertex shader\nconst cellShaderModule = device.createShaderModule({\n  code: /* wgsl */ `\n    @vertex\n1    fn vertexMain(@location(0) pos: vec2f) -&gt;\n3      @builtin(position) vec4f {\n2      return vec4f(pos, 0, 1);\n    }\n  `,\n});\n\n1\n\nMark it with the @builtin(position) attribute. A \\Rightarrow symbol is used to indicate that this is what the function returns.\n\n2\n\nReturn the center of clip space (0,0) with W=1\n\n3\n\nAccept vertex position from buffer at @location(0)",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#fragment-shader",
+    "href": "Courses/10_WebGPU-First-App.html#fragment-shader",
+    "title": "11  Your First WebGPU App",
+    "section": "15.2 Fragment shader",
+    "text": "15.2 Fragment shader\nconst cellShaderModule = device.createShaderModule({\n  code: /* wgsl */ `\n    @vertex\n    fn vertexMain(@location(0) pos: vec2f) -&gt; @builtin(position) vec4f {\n      return vec4f(pos, 0.0, 1.0);\n    }\n\n    @fragment\n1    fn fragmentMain() -&gt; @location(0) vec4f {\n2      return vec4f(1.0, 0.0, 0.0, 1.0);\n    }\n  `,\n});\n\n1\n\nOutput color to colorAttachment 0\n\n2\n\nSolid red\n\n\n\n\n\n\n\n\nNote\n\n\n\nYou can split your vertex and fragment shaders into separate shader modules.\n\\Rightarrow useful if you want to reuse a vertex shader with multiple fragment shaders.\n\n\n\n\nFragment shaders run for every pixel inside drawn triangles, after vertex shaders.\nThey output a color (vec4f: red, green, blue, alpha) for each pixel.\nThe @fragment attribute marks a WGSL fragment shader function.\nThe returned color uses @location(0) to target the first color attachment.\nFragment shaders are highly parallel and flexible in their inputs/outputs.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#create-pipeline",
+    "href": "Courses/10_WebGPU-First-App.html#create-pipeline",
+    "title": "11  Your First WebGPU App",
+    "section": "16.1 Create pipeline",
+    "text": "16.1 Create pipeline\nconst cellPipeline = device.createRenderPipeline({\n  label: \"ellell pipeline\",\n1  layout: \"auto\",\n  vertex: { module: cellShaderModule, entryPoint: \"vertexMain\",\n            buffers: [vertexBufferLayout] },\n  fragment: { module: cellShaderModule, entryPoint: \"fragmentMain\",\n2              targets: [{ format: canvasFormat }] },\n  primitive: { topology: \"triangle-list\" },\n});\n\n1\n\nLet WebGPU infer bind group layout from shaders (no uniforms yet)\n\n2\n\nMatch the canvas texture format\n\n\n\n\n\n\n\n\nNote\n\n\n\n\nThe render pipeline object centralizes configuration, ensuring only valid combinations are used.\nValidation occurs once at creation, making subsequent draw calls faster.\nBundling options reduces the number of JavaScript calls needed for rendering.\nImproves efficiency and performance compared to WebGL, which validates settings on every draw.\n\n\n\n\n\nShader modules must be used within a GPURenderPipeline to render.\nThe pipeline specifies shaders, vertex buffer layout, geometry type, and more.\nMost pipeline options are optional; only a few are needed to start.\nUse “auto” for layout if you have no uniforms or extra inputs.\nVertex stage requires the shader module, entry point, and buffer layout.\nFragment stage requires the shader module, entry point, and target formats.\nTarget formats must match the canvas/context format.\nThis setup covers the basics for rendering with WebGPU.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#draw-the-square",
+    "href": "Courses/10_WebGPU-First-App.html#draw-the-square",
+    "title": "11  Your First WebGPU App",
+    "section": "16.2 Draw the square",
+    "text": "16.2 Draw the square\n// After encoder.beginRenderPass()\n\npass.setPipeline(cellPipeline);\npass.setVertexBuffer(0, vertexBuffer);\npass.draw(vertices.length / 2); // 6 vertices\n\n// before pass.end()\n\n\nsetPipeline() selects the GPU pipeline (shaders, vertex layout, state).\nsetVertexBuffer() binds the vertex buffer to the pipeline (index 0).\ndraw() issues the draw call, rendering the specified number of vertices.\nCalculating the vertex count from the array makes the code flexible for other shapes.\n\n\n\nCELL_CLEAR_COLOR = [0.02, 0.06, 0.15, 1.0]\n\ncellVertices = new Float32Array([\n  -0.8, -0.8,\n   0.8, -0.8,\n   0.8,  0.8,\n  -0.8, -0.8,\n   0.8,  0.8,\n  -0.8,  0.8,\n])\n\ncreateCellVertexBuffer = () =&gt; {\n  const buffer = device.createBuffer({\n    label: \"Cell vertices\",\n    size: cellVertices.byteLength,\n    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,\n  });\n  device.queue.writeBuffer(buffer, 0, cellVertices);\n  return buffer;\n}\n\ncellVertexBufferLayout = ({\n  arrayStride: (2 * Float32Array.BYTES_PER_ELEMENT),\n  attributes: [{\n    shaderLocation: 0,\n    offset: 0,\n    format: \"float32x2\",\n  }]\n})\n\ncreateCellPipeline = (shaderModule) =&gt; device.createRenderPipeline({\n  label: \"Cell pipeline\",\n  layout: \"auto\",\n  vertex: { module: shaderModule, entryPoint: \"vertexMain\", buffers: [cellVertexBufferLayout] },\n  fragment: { module: shaderModule, entryPoint: \"fragmentMain\", targets: [{ format: presentationFormat }] },\n  primitive: { topology: \"triangle-list\" },\n})",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#the-square",
+    "href": "Courses/10_WebGPU-First-App.html#the-square",
+    "title": "11  Your First WebGPU App",
+    "section": "16.3 The square",
+    "text": "16.3 The square\n\nvertexBuffer = createCellVertexBuffer();\n\n\n\n\n\n\n\n{\n  return renderToCanvas({\n    width: 512,\n    height: 512,\n    clearColor: CELL_CLEAR_COLOR,\n    render: withBindings({\n      pipeline: pipeline_square,\n      vertex: [{ slot: 0, buffer: vertexBuffer }],\n      draw: { vertexCount: cellVertices.length / 2 }\n    })\n  });\n}\n\n\n\n\n\n\n\npipeline_square = {\n\n  const cellShaderModule = device.createShaderModule({\n    code: /* wgsl */ `\n      @vertex\n      fn vertexMain(@location(0) pos: vec2f) -&gt; @builtin(position) vec4f {\n        return vec4f(pos, 0.0, 1.0);\n      }\n\n      @fragment\n      fn fragmentMain() -&gt; @location(0) vec4f {\n        return vec4f(1.0, 0.0, 0.0, 1.0);\n      }\n    `,\n  });\n\n  return createCellPipeline(cellShaderModule);\n}",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#define-the-grid",
+    "href": "Courses/10_WebGPU-First-App.html#define-the-grid",
+    "title": "11  Your First WebGPU App",
+    "section": "17.1 Define the grid",
+    "text": "17.1 Define the grid\n\n\nChoose GRID_SIZE (power-of-two is convenient); treat grid as square\nGoal: draw GRID_SIZE × GRID_SIZE quads efficiently via instancing\nPass common parameters via a small uniform buffer\n\n\nconst GRID_SIZE = 32;\nconst cell = 1.8 / GRID_SIZE; // leave a small gap between cells\n\n\nTo render a grid, you need to know its dimensions (width and height); for simplicity, use a square grid with a power-of-two size.\nStart with a small grid (e.g., 4x4) for easier math and demonstration; you can scale up later.\nRendering many squares requires making each cell smaller and drawing many instances.\nYou could manually define all square vertices, but this uses more memory and is less efficient.\nA more GPU-friendly approach is to use instancing, letting the GPU efficiently draw multiple squares with minimal data.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#uniform-buffer-grid",
+    "href": "Courses/10_WebGPU-First-App.html#uniform-buffer-grid",
+    "title": "11  Your First WebGPU App",
+    "section": "17.2 Uniform buffer (grid)",
+    "text": "17.2 Uniform buffer (grid)\n// Create a uniform buffer that describes the grid.\nconst uniformArray = new Float32Array([GRID_SIZE, GRID_SIZE]);\nconst uniformBuffer = device.createBuffer({\n  label: \"Grid Uniforms\",\n  size: uniformArray.byteLength,\n  usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,\n});\ndevice.queue.writeBuffer(uniformBuffer, 0, uniformArray);\n\nUniform buffers must be 16-byte aligned\nGrid as two u32s\nCell size as two f32s\n\n\n\nCommunicate grid size to the shader using uniforms instead of hard-coding.\nUniforms provide values that are constant for all shader invocations (e.g., grid size, time).\nUniforms are stored in GPUBuffer objects with GPUBufferUsage.UNIFORM.\nUsing uniforms allows dynamic changes without recreating shaders or pipelines.\nData types for uniforms can be float or integer, depending on shader needs.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#access-uniforms-in-a-shader",
+    "href": "Courses/10_WebGPU-First-App.html#access-uniforms-in-a-shader",
+    "title": "11  Your First WebGPU App",
+    "section": "17.3 Access uniforms in a shader",
+    "text": "17.3 Access uniforms in a shader\n// At the top of the `code` string in the createShaderModule() call\n1@group(0) @binding(0) var&lt;uniform&gt; grid: vec2f;\n\n@vertex\nfn vertexMain(@location(0) pos: vec2f) -&gt;\n  @builtin(position) vec4f {\n2  return vec4f(pos / grid, 0, 1);\n}\n\n// ...fragmentMain is unchanged \n\n1\n\nDeclare a uniform variable (vec2f for two floats)\n\n2\n\nUse it to scale vertex positions\n\n\n\n\nA uniform called grid (a 2D float vector) is defined in the shader and matches data in the uniform buffer.\nThe uniform is bound at @group(0) and @binding(0) in the shader.\nThe shader divides the vertex position by the grid vector, performing component-wise division.\nThis operation is common in GPU shaders for rendering and compute tasks.\nUsing a grid size of 4 makes the rendered square one-fourth its original size, allowing four squares per row or column.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#bind-group",
+    "href": "Courses/10_WebGPU-First-App.html#bind-group",
+    "title": "11  Your First WebGPU App",
+    "section": "17.4 Bind group",
+    "text": "17.4 Bind group\nconst bindGroup = device.createBindGroup({\n  label: \"Cell renderer bind group\",\n  layout: cellPipeline.getBindGroupLayout(0),\n  entries: [{\n    binding: 0,\n    resource: { buffer: uniformBuffer }\n  }],\n});\n\n\nDeclaring a uniform in the shader does not automatically connect it to a buffer; you must create a bind group.\nA bind group is a collection of GPU resources (buffers, textures, etc.) made accessible to shaders.\nCreate a bind group using a layout that describes the resource types; with layout: “auto”, you can get it from the pipeline.\nEach bind group entry specifies a binding index (matching @binding in the shader) and the resource to bind.\nBind groups are immutable handles; you can update buffer contents, but not the resources the group points to.",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#bind-the-group",
+    "href": "Courses/10_WebGPU-First-App.html#bind-the-group",
+    "title": "11  Your First WebGPU App",
+    "section": "17.5 Bind the group",
+    "text": "17.5 Bind the group\npass.setPipeline(cellPipeline);\npass.setVertexBuffer(0, vertexBuffer);\n\npass.setBindGroup(0, bindGroup);\n\npass.draw(vertices.length / 2);",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#binded-result",
+    "href": "Courses/10_WebGPU-First-App.html#binded-result",
+    "title": "11  Your First WebGPU App",
+    "section": "17.6 Binded result",
+    "text": "17.6 Binded result\n\nfunction createUniformBuffer(GRID_SIZE) {\n  const uniformArray = new Float32Array([GRID_SIZE, GRID_SIZE]);\n  const buffer = device.createBuffer({\n    label: \"Grid Uniforms\",\n    size: uniformArray.byteLength,\n    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,\n  });\n  device.queue.writeBuffer(buffer, 0, uniformArray);\n  return buffer;\n}\n\n\n\n\n\n\n\nrenderGrid = (pipeline, GRID_SIZE, instanceCount) =&gt; {\n  const uniformBuffer = createUniformBuffer(GRID_SIZE);\n\n  const bindGroup = device.createBindGroup({\n    label: \"Cell renderer bind group\",\n    layout: pipeline.getBindGroupLayout(0),\n    entries: [{ binding: 0, resource: { buffer: uniformBuffer } }],\n  });\n\n  return renderToCanvas({\n    width: 512,\n    height: 512,\n    clearColor: CELL_CLEAR_COLOR,\n    render: withBindings({\n      pipeline: pipeline,\n      bindGroups: [bindGroup],\n      vertex: [{ slot: 0, buffer: vertexBuffer }],\n      draw: { vertexCount: cellVertices.length / 2, instanceCount: instanceCount }\n    })\n  });\n}\n\n\n\n\n\n\n\npipeline_grid1 = {\n\n  const cellShaderModule = device.createShaderModule({\n    code: /* wgsl */ `\n      @group(0) @binding(0) var&lt;uniform&gt; grid: vec2f;\n\n      @vertex\n      fn vertexMain(@location(0) pos: vec2f) -&gt; @builtin(position) vec4f {\n        return vec4f(pos / grid, 0.0, 1.0);\n      }\n\n      @fragment\n      fn fragmentMain() -&gt; @location(0) vec4f {\n        return vec4f(1.0, 0.0, 0.0, 1.0);\n      }\n    `,\n  });\n\n  return createCellPipeline(cellShaderModule);\n}\n\nrenderGrid(pipeline_grid1, 4);",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#draw-a-grid-instancing-1",
+    "href": "Courses/10_WebGPU-First-App.html#draw-a-grid-instancing-1",
+    "title": "11  Your First WebGPU App",
+    "section": "17.7 Draw a grid (instancing)",
+    "text": "17.7 Draw a grid (instancing)\n\npipeline_grid2 = {\n  const cellShaderModule = device.createShaderModule({\n    code: /* wgsl */ `\n      @group(0) @binding(0) var&lt;uniform&gt; grid: vec2f;\n\n      @vertex\n      fn vertexMain(@location(0) pos: vec2f,\n                    @builtin(instance_index) instance: u32) -&gt;\n        @builtin(position) vec4f {\n\n        let i = f32(instance);\n        // Compute the cell coordinate from the instance_index\n        let cell = vec2f(i % grid.x, floor(i / grid.x));\n\n        let cellOffset = cell / grid * 2;\n        let gridPos = (pos + 1) / grid - 1 + cellOffset;\n\n        return vec4f(gridPos, 0, 1);\n      }\n\n      @fragment\n      fn fragmentMain() -&gt; @location(0) vec4f {\n        return vec4f(1.0, 0.0, 0.0, 1.0);\n      }\n    `,\n  });\n\n  return createCellPipeline(cellShaderModule);\n}\n\nrenderGrid(pipeline_grid2, 32, 32*32);",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#color-the-grid",
+    "href": "Courses/10_WebGPU-First-App.html#color-the-grid",
+    "title": "11  Your First WebGPU App",
+    "section": "17.8 Color the grid",
+    "text": "17.8 Color the grid\n\npipeline_grid3 = {\n  const cellShaderModule = device.createShaderModule({\n    code: /* wgsl */ `\n      struct VertexInput {\n        @location(0) pos: vec2f,\n        @builtin(instance_index) instance: u32,\n      };\n\n      struct VertexOutput {\n        @builtin(position) pos: vec4f,\n        @location(0) cell: vec2f, // New line!\n      };\n\n      @group(0) @binding(0) var&lt;uniform&gt; grid: vec2f;\n\n      @vertex\n      fn vertexMain(input: VertexInput) -&gt; VertexOutput  {\n        let i = f32(input.instance);\n        let cell = vec2f(i % grid.x, floor(i / grid.x));\n        let cellOffset = cell / grid * 2;\n        let gridPos = (input.pos + 1) / grid - 1 + cellOffset;\n        \n        var output: VertexOutput;\n        output.pos = vec4f(gridPos, 0, 1);\n        output.cell = cell; // New line!\n        return output;\n      }\n\n      @fragment\n      fn fragmentMain(input: VertexOutput) -&gt; @location(0) vec4f {\n        let c = input.cell / grid;\n        return vec4f(c, 1-c.x, 1);\n      }\n    `,\n  });\n\n  return createCellPipeline(cellShaderModule);\n}\n\nrenderGrid(pipeline_grid3, 32, 32*32);",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#cell-states-storage-buffer",
+    "href": "Courses/10_WebGPU-First-App.html#cell-states-storage-buffer",
+    "title": "11  Your First WebGPU App",
+    "section": "17.9 Cell states (storage buffer)",
+    "text": "17.9 Cell states (storage buffer)\n\npipeline_storage = {\n  const cellShaderModule = device.createShaderModule({\n    code: /* wgsl */ `\n      struct VertexInput {\n        @location(0) pos: vec2f,\n        @builtin(instance_index) instance: u32,\n      };\n\n      struct VertexOutput {\n        @builtin(position) pos: vec4f,\n        @location(0) cell: vec2f, // New line!\n      };\n\n      @group(0) @binding(0) var&lt;uniform&gt; grid: vec2f;\n      @group(0) @binding(1) var&lt;storage&gt; cellState: array&lt;u32&gt;; // New!          \n    \n      @vertex\n      fn vertexMain(@location(0) pos: vec2f,\n                    @builtin(instance_index) instance: u32) -&gt; VertexOutput {\n        let i = f32(instance);\n        let cell = vec2f(i % grid.x, floor(i / grid.x));\n        let state = f32(cellState[instance]); // New line!\n\n        let cellOffset = cell / grid * 2;\n        // New: Scale the position by the cell's active state.\n        let gridPos = (pos*state+1) / grid - 1 + cellOffset;\n\n        var output: VertexOutput;\n        output.pos = vec4f(gridPos, 0, 1);\n        output.cell = cell;\n        return output;\n      }\n\n      @fragment\n      fn fragmentMain(input: VertexOutput) -&gt; @location(0) vec4f {\n        let c = input.cell / grid;\n        return vec4f(c, 1-c.x, 1);\n      }\n    `,\n  });\n\n  return createCellPipeline(cellShaderModule);\n}\n\n\n\n\n\n\n\n{\n  const GRID_SIZE = 32;\n  const uniformBuffer = createUniformBuffer(GRID_SIZE);\n\n  // Create an array representing the active state of each cell.\n  const cellStateArray = new Uint32Array(GRID_SIZE * GRID_SIZE);\n\n  // Create a storage buffer to hold the cell state.\n  const cellStateStorage = device.createBuffer({\n    label: \"Cell State\",\n    size: cellStateArray.byteLength,\n    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,\n  });\n\n  // Mark every third cell of the grid as active.\n  for (let i = 0; i &lt; cellStateArray.length; i += 3) {\n    cellStateArray[i] = 1;\n  }\n  device.queue.writeBuffer(cellStateStorage, 0, cellStateArray);\n\n  const bindGroup = device.createBindGroup({\n    label: \"Cell renderer bind group\",\n    layout: pipeline_storage.getBindGroupLayout(0),\n    entries: [{\n      binding: 0,\n      resource: { buffer: uniformBuffer }\n    },\n    // New entry!\n    {\n      binding: 1,\n      resource: { buffer: cellStateStorage }\n    }],\n  });\n\n  return renderToCanvas({\n    width: 512,\n    height: 512,\n    clearColor: CELL_CLEAR_COLOR,\n    render: withBindings({\n      pipeline: pipeline_storage,\n      bindGroups: [bindGroup],\n      vertex: [{ slot: 0, buffer: vertexBuffer }],\n      draw: { vertexCount: cellVertices.length / 2, instanceCount: GRID_SIZE*GRID_SIZE }\n    })\n  });\n\n}",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#pingpong-buffers",
+    "href": "Courses/10_WebGPU-First-App.html#pingpong-buffers",
+    "title": "11  Your First WebGPU App",
+    "section": "17.10 Pingpong buffers",
+    "text": "17.10 Pingpong buffers\n\n{\n  const GRID_SIZE = 32;\n  const uniformBuffer = createUniformBuffer(GRID_SIZE);\n\n  // Create an array representing the active state of each cell.\n  const cellStateArray = new Uint32Array(GRID_SIZE * GRID_SIZE);\n\n  // Create two storage buffers to hold the cell state.\n  const cellStateStorage = [\n    device.createBuffer({\n      label: \"Cell State A\",\n      size: cellStateArray.byteLength,\n      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,\n    }),\n    device.createBuffer({\n      label: \"Cell State B\",\n      size: cellStateArray.byteLength,\n      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,\n    })\n  ];\n\n  // Mark every third cell of the first grid as active.\n  for (let i = 0; i &lt; cellStateArray.length; i+=3) {\n    cellStateArray[i] = 1;\n  }\n  device.queue.writeBuffer(cellStateStorage[0], 0, cellStateArray);\n\n  // Mark every other cell of the second grid as active.\n  for (let i = 0; i &lt; cellStateArray.length; i++) {\n    cellStateArray[i] = i % 2;\n  }\n  device.queue.writeBuffer(cellStateStorage[1], 0, cellStateArray);\n\n  const bindGroups = [\n    device.createBindGroup({\n      label: \"Cell renderer bind group A\",\n      layout: pipeline_storage.getBindGroupLayout(0),\n      entries: [{\n        binding: 0,\n        resource: { buffer: uniformBuffer }\n      }, {\n        binding: 1,\n        resource: { buffer: cellStateStorage[0] }\n      }],\n    }),\n    device.createBindGroup({\n      label: \"Cell renderer bind group B\",\n      layout: pipeline_storage.getBindGroupLayout(0),\n      entries: [{\n        binding: 0,\n        resource: { buffer: uniformBuffer }\n      }, {\n        binding: 1,\n        resource: { buffer: cellStateStorage[1] }\n      }],\n    })\n  ];\n\n  const canvas = createCanvas(512, 512);\n  const ctx = setupContext(canvas, device, presentationFormat);\n\n  const UPDATE_INTERVAL = 200; // Update every 200ms (5 times/sec)\n  let step = 0; // Track how many simulation steps have been run\n\n  // Move all of our rendering code into a function\n  function updateGrid() {\n    step++; // Increment the step count\n    \n    // Start a render pass \n    const { encoder, pass } = beginPass(device, ctx, CELL_CLEAR_COLOR);\n\n    // Draw the grid.\n    pass.setPipeline(pipeline_storage);\n    pass.setBindGroup(0, bindGroups[step % 2]); // Updated!\n    pass.setVertexBuffer(0, vertexBuffer);\n    pass.draw(cellVertices.length / 2, GRID_SIZE * GRID_SIZE);\n\n    // End the render pass and submit the command buffer\n    pass.end();\n    device.queue.submit([encoder.finish()]);\n  }\n\n  // Schedule updateGrid() to run repeatedly\n  setInterval(updateGrid, UPDATE_INTERVAL);\n\n  return canvas;\n}",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#run-the-simulation",
+    "href": "Courses/10_WebGPU-First-App.html#run-the-simulation",
+    "title": "11  Your First WebGPU App",
+    "section": "17.11 Run the simulation",
+    "text": "17.11 Run the simulation\n\n{\n\n  const cellShaderModule = device.createShaderModule({\n    code: /* wgsl */ `\n      struct VertexInput {\n        @location(0) pos: vec2f,\n        @builtin(instance_index) instance: u32,\n      };\n\n      struct VertexOutput {\n        @builtin(position) pos: vec4f,\n        @location(0) cell: vec2f, // New line!\n      };\n\n      @group(0) @binding(0) var&lt;uniform&gt; grid: vec2f;\n      @group(0) @binding(1) var&lt;storage&gt; cellState: array&lt;u32&gt;; // New!          \n    \n      @vertex\n      fn vertexMain(@location(0) pos: vec2f,\n                    @builtin(instance_index) instance: u32) -&gt; VertexOutput {\n        let i = f32(instance);\n        let cell = vec2f(i % grid.x, floor(i / grid.x));\n        let state = f32(cellState[instance]); // New line!\n\n        let cellOffset = cell / grid * 2;\n        // New: Scale the position by the cell's active state.\n        let gridPos = (pos*state+1) / grid - 1 + cellOffset;\n\n        var output: VertexOutput;\n        output.pos = vec4f(gridPos, 0, 1);\n        output.cell = cell;\n        return output;\n      }\n\n      @fragment\n      fn fragmentMain(input: VertexOutput) -&gt; @location(0) vec4f {\n        let c = input.cell / grid;\n        return vec4f(c, 1-c.x, 1);\n      }\n    `,\n  });\n\n\n  // Create the compute shader that will process the simulation.\n  const WORKGROUP_SIZE = 8;\n  const simulationShaderModule = device.createShaderModule({\n    label: \"Game of Life simulation shader\",\n    code: `\n      @group(0) @binding(0) var&lt;uniform&gt; grid: vec2f;\n\n      @group(0) @binding(1) var&lt;storage&gt; cellStateIn: array&lt;u32&gt;;\n      @group(0) @binding(2) var&lt;storage, read_write&gt; cellStateOut: array&lt;u32&gt;;\n        \n      fn cellIndex(cell: vec2u) -&gt; u32 {\n        return cell.y * u32(grid.x) + cell.x;\n      }\n\n      @compute @workgroup_size(${WORKGROUP_SIZE}, ${WORKGROUP_SIZE})\n      fn computeMain(@builtin(global_invocation_id) cell: vec3u) {\n        // New lines. Flip the cell state every step.\n        if (cellStateIn[cellIndex(cell.xy)] == 1) {\n          cellStateOut[cellIndex(cell.xy)] = 0;\n        } else {\n          cellStateOut[cellIndex(cell.xy)] = 1;\n        }\n      }\n    `\n  });\n\n  const GRID_SIZE = 32;\n  const uniformBuffer = createUniformBuffer(GRID_SIZE);\n\n  // Create an array representing the active state of each cell.\n  const cellStateArray = new Uint32Array(GRID_SIZE * GRID_SIZE);\n\n  // Create two storage buffers to hold the cell state.\n  const cellStateStorage = [\n    device.createBuffer({\n      label: \"Cell State A\",\n      size: cellStateArray.byteLength,\n      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,\n    }),\n    device.createBuffer({\n      label: \"Cell State B\",\n      size: cellStateArray.byteLength,\n      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,\n    })\n  ];\n\n  // Mark every third cell of the first grid as active.\n  for (let i = 0; i &lt; cellStateArray.length; i+=3) {\n    cellStateArray[i] = 1;\n  }\n  device.queue.writeBuffer(cellStateStorage[0], 0, cellStateArray);\n\n  // Mark every other cell of the second grid as active.\n  for (let i = 0; i &lt; cellStateArray.length; i++) {\n    cellStateArray[i] = i % 2;\n  }\n  device.queue.writeBuffer(cellStateStorage[1], 0, cellStateArray);\n\n\n  // Create the bind group layout and pipeline layout.\n  const bindGroupLayout = device.createBindGroupLayout({\n    label: \"Cell Bind Group Layout\",\n    entries: [{\n      binding: 0,\n      // Fragment stage included because the `grid` uniform is also read in fragmentMain.\n      visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT | GPUShaderStage.COMPUTE,\n      buffer: {} // Grid uniform buffer\n    }, {\n      binding: 1,\n      visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,\n      buffer: { type: \"read-only-storage\"} // Cell state input buffer\n    }, {\n      binding: 2,\n      visibility: GPUShaderStage.COMPUTE,\n      buffer: { type: \"storage\"} // Cell state output buffer\n    }]\n  });\n\n  // Create a bind group to pass the grid uniforms into the pipeline\n  const bindGroups = [\n    device.createBindGroup({\n      label: \"Cell renderer bind group A\",\n      layout: bindGroupLayout, // Updated Line\n      entries: [{\n        binding: 0,\n        resource: { buffer: uniformBuffer }\n      }, {\n        binding: 1,\n        resource: { buffer: cellStateStorage[0] }\n      }, {\n        binding: 2, // New Entry\n        resource: { buffer: cellStateStorage[1] }\n      }],\n    }),\n    device.createBindGroup({\n      label: \"Cell renderer bind group B\",\n      layout: bindGroupLayout, // Updated Line\n\n      entries: [{\n        binding: 0,\n        resource: { buffer: uniformBuffer }\n      }, {\n        binding: 1,\n        resource: { buffer: cellStateStorage[1] }\n      }, {\n        binding: 2, // New Entry\n        resource: { buffer: cellStateStorage[0] }\n      }],\n    }),\n  ];\n\n  const pipelineLayout = device.createPipelineLayout({\n    label: \"Cell Pipeline Layout\",\n    bindGroupLayouts: [ bindGroupLayout ],\n  });\n\n  const cellPipeline = device.createRenderPipeline({\n    label: \"Cell pipeline\",\n    layout: pipelineLayout,\n    vertex: {\n      module: cellShaderModule,\n      entryPoint: \"vertexMain\",\n      buffers: [cellVertexBufferLayout]\n    },\n    fragment: {\n      module: cellShaderModule,\n      entryPoint: \"fragmentMain\",\n      targets: [{ format: presentationFormat }]\n    }\n  });\n\n  // Create a compute pipeline that updates the game state.\n  const simulationPipeline = device.createComputePipeline({\n    label: \"Simulation pipeline\",\n    layout: pipelineLayout,\n    compute: {\n      module: simulationShaderModule,\n      entryPoint: \"computeMain\",\n    }\n  });\n\n  const canvas = createCanvas(512, 512);\n  const ctx = setupContext(canvas, device, presentationFormat);\n\n  const UPDATE_INTERVAL = 200; // Update every 200ms (5 times/sec)\n  let step = 0; // Track how many simulation steps have been run\n\n  // Move all of our rendering code into a function\n  function updateGrid() {\n    \n    // Start a render pass \n    const encoder = device.createCommandEncoder();\n\n    const computePass = encoder.beginComputePass();\n\n    computePass.setPipeline(simulationPipeline);\n    computePass.setBindGroup(0, bindGroups[step % 2]);\n\n    // New lines\n    const workgroupCount = Math.ceil(GRID_SIZE / WORKGROUP_SIZE);\n    computePass.dispatchWorkgroups(workgroupCount, workgroupCount);\n\n    computePass.end();\n\n    step++; // Increment the step count\n\n    const view = ctx.getCurrentTexture().createView();\n\n    const pass = encoder.beginRenderPass({\n      colorAttachments: [{\n        view: view,\n        loadOp: \"clear\",\n        storeOp: \"store\",\n        clearValue: { r: 0.02, g: 0.06, b: 0.15, a: 1 },\n      }],\n    });\n\n\n    // Draw the grid.\n    pass.setPipeline(cellPipeline);\n    pass.setBindGroup(0, bindGroups[step % 2]); // Updated!\n    pass.setVertexBuffer(0, vertexBuffer);\n    pass.draw(cellVertices.length / 2, GRID_SIZE * GRID_SIZE);\n\n    // End the render pass and submit the command buffer\n    pass.end();\n    device.queue.submit([encoder.finish()]);\n  }\n\n  // Schedule updateGrid() to run repeatedly\n  setInterval(updateGrid, UPDATE_INTERVAL);\n\n  return canvas;\n\n}",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/10_WebGPU-First-App.html#run-the-simulation-final",
+    "href": "Courses/10_WebGPU-First-App.html#run-the-simulation-final",
+    "title": "11  Your First WebGPU App",
+    "section": "17.12 Run the simulation (final)",
+    "text": "17.12 Run the simulation (final)\n\n{\n\n  const cellShaderModule = device.createShaderModule({\n    code: /* wgsl */ `\n      struct VertexInput {\n        @location(0) pos: vec2f,\n        @builtin(instance_index) instance: u32,\n      };\n\n      struct VertexOutput {\n        @builtin(position) pos: vec4f,\n        @location(0) cell: vec2f, // New line!\n      };\n\n      @group(0) @binding(0) var&lt;uniform&gt; grid: vec2f;\n      @group(0) @binding(1) var&lt;storage&gt; cellState: array&lt;u32&gt;; // New!          \n    \n      @vertex\n      fn vertexMain(@location(0) pos: vec2f,\n                    @builtin(instance_index) instance: u32) -&gt; VertexOutput {\n        let i = f32(instance);\n        let cell = vec2f(i % grid.x, floor(i / grid.x));\n        let state = f32(cellState[instance]); // New line!\n\n        let cellOffset = cell / grid * 2;\n        // New: Scale the position by the cell's active state.\n        let gridPos = (pos*state+1) / grid - 1 + cellOffset;\n\n        var output: VertexOutput;\n        output.pos = vec4f(gridPos, 0, 1);\n        output.cell = cell;\n        return output;\n      }\n\n      @fragment\n      fn fragmentMain(input: VertexOutput) -&gt; @location(0) vec4f {\n        let c = input.cell / grid;\n        return vec4f(c, 1-c.x, 1);\n      }\n    `,\n  });\n\n\n  // Create the compute shader that will process the simulation.\n  const WORKGROUP_SIZE = 8;\n  const simulationShaderModule = device.createShaderModule({\n    label: \"Life simulation shader\",\n    code: `\n      @group(0) @binding(0) var&lt;uniform&gt; grid: vec2f;\n\n      @group(0) @binding(1) var&lt;storage&gt; cellStateIn: array&lt;u32&gt;;\n      @group(0) @binding(2) var&lt;storage, read_write&gt; cellStateOut: array&lt;u32&gt;;\n\n      fn cellIndex(cell: vec2u) -&gt; u32 {\n        return (cell.y % u32(grid.y)) * u32(grid.x) +\n                (cell.x % u32(grid.x));\n      }\n\n      fn cellActive(x: u32, y: u32) -&gt; u32 {\n        return cellStateIn[cellIndex(vec2(x, y))];\n      }\n\n      @compute @workgroup_size(${WORKGROUP_SIZE}, ${WORKGROUP_SIZE})\n      fn computeMain(@builtin(global_invocation_id) cell: vec3u) {\n        // Determine how many active neighbors this cell has.\n        let activeNeighbors = cellActive(cell.x+1, cell.y+1) +\n                              cellActive(cell.x+1, cell.y) +\n                              cellActive(cell.x+1, cell.y-1) +\n                              cellActive(cell.x, cell.y-1) +\n                              cellActive(cell.x-1, cell.y-1) +\n                              cellActive(cell.x-1, cell.y) +\n                              cellActive(cell.x-1, cell.y+1) +\n                              cellActive(cell.x, cell.y+1);\n\n        let i = cellIndex(cell.xy);\n\n        // Conway's game of life rules:\n        switch activeNeighbors {\n          case 2: {\n            cellStateOut[i] = cellStateIn[i];\n          }\n          case 3: {\n            cellStateOut[i] = 1;\n          }\n          default: {\n            cellStateOut[i] = 0;\n          }\n        }\n      }\n    `\n  });\n  const GRID_SIZE = 32;\n  const uniformBuffer = createUniformBuffer(GRID_SIZE);\n\n  // Create an array representing the active state of each cell.\n  const cellStateArray = new Uint32Array(GRID_SIZE * GRID_SIZE);\n\n  // Create two storage buffers to hold the cell state.\n  const cellStateStorage = [\n    device.createBuffer({\n      label: \"Cell State A\",\n      size: cellStateArray.byteLength,\n      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,\n    }),\n    device.createBuffer({\n      label: \"Cell State B\",\n      size: cellStateArray.byteLength,\n      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,\n    })\n  ];\n\n  // Set each cell to a random state, then copy the JavaScript array \n  // into the storage buffer.\n  for (let i = 0; i &lt; cellStateArray.length; ++i) {\n    cellStateArray[i] = Math.random() &gt; 0.6 ? 1 : 0;\n  }\n  device.queue.writeBuffer(cellStateStorage[0], 0, cellStateArray);\n\n  // Mark every other cell of the second grid as active.\n  for (let i = 0; i &lt; cellStateArray.length; i++) {\n    cellStateArray[i] = i % 2;\n  }\n  device.queue.writeBuffer(cellStateStorage[1], 0, cellStateArray);\n\n\n  // Create the bind group layout and pipeline layout.\n  const bindGroupLayout = device.createBindGroupLayout({\n    label: \"Cell Bind Group Layout\",\n    entries: [{\n      binding: 0,\n      // Fragment stage included because the `grid` uniform is also read in fragmentMain.\n      visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT | GPUShaderStage.COMPUTE,\n      buffer: {} // Grid uniform buffer\n    }, {\n      binding: 1,\n      visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,\n      buffer: { type: \"read-only-storage\"} // Cell state input buffer\n    }, {\n      binding: 2,\n      visibility: GPUShaderStage.COMPUTE,\n      buffer: { type: \"storage\"} // Cell state output buffer\n    }]\n  });\n\n  // Create a bind group to pass the grid uniforms into the pipeline\n  const bindGroups = [\n    device.createBindGroup({\n      label: \"Cell renderer bind group A\",\n      layout: bindGroupLayout, // Updated Line\n      entries: [{\n        binding: 0,\n        resource: { buffer: uniformBuffer }\n      }, {\n        binding: 1,\n        resource: { buffer: cellStateStorage[0] }\n      }, {\n        binding: 2, // New Entry\n        resource: { buffer: cellStateStorage[1] }\n      }],\n    }),\n    device.createBindGroup({\n      label: \"Cell renderer bind group B\",\n      layout: bindGroupLayout, // Updated Line\n\n      entries: [{\n        binding: 0,\n        resource: { buffer: uniformBuffer }\n      }, {\n        binding: 1,\n        resource: { buffer: cellStateStorage[1] }\n      }, {\n        binding: 2, // New Entry\n        resource: { buffer: cellStateStorage[0] }\n      }],\n    }),\n  ];\n\n  const pipelineLayout = device.createPipelineLayout({\n    label: \"Cell Pipeline Layout\",\n    bindGroupLayouts: [ bindGroupLayout ],\n  });\n\n  const cellPipeline = device.createRenderPipeline({\n    label: \"Cell pipeline\",\n    layout: pipelineLayout,\n    vertex: {\n      module: cellShaderModule,\n      entryPoint: \"vertexMain\",\n      buffers: [cellVertexBufferLayout]\n    },\n    fragment: {\n      module: cellShaderModule,\n      entryPoint: \"fragmentMain\",\n      targets: [{ format: presentationFormat }]\n    }\n  });\n\n  // Create a compute pipeline that updates the game state.\n  const simulationPipeline = device.createComputePipeline({\n    label: \"Simulation pipeline\",\n    layout: pipelineLayout,\n    compute: {\n      module: simulationShaderModule,\n      entryPoint: \"computeMain\",\n    }\n  });\n\n  const canvas = createCanvas(512, 512);\n  const ctx = setupContext(canvas, device, presentationFormat);\n\n  const UPDATE_INTERVAL = 200; // Update every 200ms (5 times/sec)\n  let step = 0; // Track how many simulation steps have been run\n\n  // Move all of our rendering code into a function\n  function updateGrid() {\n    \n    // Start a render pass \n    const encoder = device.createCommandEncoder();\n\n    const computePass = encoder.beginComputePass();\n\n    computePass.setPipeline(simulationPipeline);\n    computePass.setBindGroup(0, bindGroups[step % 2]);\n\n    // New lines\n    const workgroupCount = Math.ceil(GRID_SIZE / WORKGROUP_SIZE);\n    computePass.dispatchWorkgroups(workgroupCount, workgroupCount);\n\n    computePass.end();\n\n    step++; // Increment the step count\n\n    const view = ctx.getCurrentTexture().createView();\n\n    const pass = encoder.beginRenderPass({\n      colorAttachments: [{\n        view: view,\n        loadOp: \"clear\",\n        storeOp: \"store\",\n        clearValue: { r: 0.02, g: 0.06, b: 0.15, a: 1 },\n      }],\n    });\n\n\n    // Draw the grid.\n    pass.setPipeline(cellPipeline);\n    pass.setBindGroup(0, bindGroups[step % 2]); // Updated!\n    pass.setVertexBuffer(0, vertexBuffer);\n    pass.draw(cellVertices.length / 2, GRID_SIZE * GRID_SIZE);\n\n    // End the render pass and submit the command buffer\n    pass.end();\n    device.queue.submit([encoder.finish()]);\n  }\n\n  // Schedule updateGrid() to run repeatedly\n  setInterval(updateGrid, UPDATE_INTERVAL);\n\n  return canvas;\n\n}",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Your First WebGPU App</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/11_WebGPU-matmul.html",
+    "href": "Courses/11_WebGPU-matmul.html",
+    "title": "12  Exploring WebGPU Matmul Kernels (OJS)",
+    "section": "",
+    "text": "12.1 Introduction\nWe’ll build up a few compute shaders in WGSL and compare their throughput:\nYou can tweak M, K, N and the kernel, then measure latency and GFLOP/s. This runs entirely in the browser using WebGPU; make sure your browser/device supports it.",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Exploring WebGPU Matmul Kernels (OJS)</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/11_WebGPU-matmul.html#introduction",
+    "href": "Courses/11_WebGPU-matmul.html#introduction",
+    "title": "12  Exploring WebGPU Matmul Kernels (OJS)",
+    "section": "",
+    "text": "Naive 1D kernel (one thread per output element)\n1D with many threads per workgroup\n2D workgroups (8×8)\nTiled/unrolled kernels (1×4 and 4×4 per thread)",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Exploring WebGPU Matmul Kernels (OJS)</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/11_WebGPU-matmul.html#webgpu-setup",
+    "href": "Courses/11_WebGPU-matmul.html#webgpu-setup",
+    "title": "12  Exploring WebGPU Matmul Kernels (OJS)",
+    "section": "12.2 WebGPU setup",
+    "text": "12.2 WebGPU setup\n\n// Import Plotly for advanced plotting\nPlotly = require(\"https://cdn.plot.ly/plotly-latest.min.js\")\n\n\n\n\n\n\n\ngpu = navigator.gpu\n\n\n\n\n\n\n\nadapter = gpu && (await navigator.gpu.requestAdapter())\n\n\n\n\n\n\n\n// Try to request a device with higher limits for large matrices\ndevice = adapter && (await adapter.requestDevice({\n  requiredFeatures: adapter.features.has(\"timestamp-query\") ? [\"timestamp-query\"] : [],\n  requiredLimits: {\n    maxStorageBufferBindingSize: Math.min(adapter.limits.maxStorageBufferBindingSize, 2 * 1024 * 1024 * 1024), // 2GB or adapter max\n    maxBufferSize: Math.min(adapter.limits.maxBufferSize, 2 * 1024 * 1024 * 1024), // 2GB or adapter max\n    maxStorageBuffersPerShaderStage: Math.max(adapter.limits.maxStorageBuffersPerShaderStage, 8),\n    maxComputeWorkgroupStorageSize: Math.max(adapter.limits.maxComputeWorkgroupStorageSize, 32768)\n\n  }\n}))\n\n\n\n\n\n\n\nqueue = device && device.queue\n\n\n\n\n\n\n\nwebgpu_ok = !!device\n\n\n\n\n\n\n\n// A small status banner\nhtml`&lt;div class=\"callout ${webgpu_ok ? 'callout-note' : 'callout-warning'}\"&gt;&lt;strong&gt;WebGPU&lt;/strong&gt;: ${webgpu_ok ? 'OK — device acquired' : 'Not available — try Chrome/Edge/Arc, enable WebGPU, or use a recent macOS'}&lt;/div&gt;`\n\n\n\n\n\n\n\n12.2.1 Helpers (buffers, shader, run)\n\n\nCode\n// Create a GPU buffer and optionally initialize with data\nfunction createBuffer(device, dataOrSize, usage) {\n  if (typeof dataOrSize === 'number') {\n    const n = dataOrSize\n    const size = Number.isFinite(n) && n &gt; 0 ? ((Math.ceil(n / 4) * 4) &gt;&gt;&gt; 0) : 0\n    if (!Number.isFinite(size) || size &lt;= 0) {\n      throw new Error(`Invalid buffer size: ${n}`)\n    }\n    return device.createBuffer({ size, usage })\n  }\n  const data = dataOrSize\n  const [byteLength, size] = [data.byteLength, ((data.byteLength + 3) & ~3)] // 4-byte align\n  const buffer = device.createBuffer({ size, usage, mappedAtCreation: true })\n  new Uint8Array(buffer.getMappedRange()).set(new Uint8Array(data.buffer, data.byteOffset, data.byteLength))\n  buffer.unmap()\n  return buffer\n}\n\n\n\n\n\n\n\n\n\nCode\n// Compile a WGSL compute pipeline\nfunction makePipeline(device, wgsl) {\n  const module = device.createShaderModule({ code: wgsl })\n  const pipeline = device.createComputePipeline({\n    layout: 'auto',\n    compute: { module, entryPoint: 'main' }\n  })\n  return pipeline\n}\n\n\n\n\n\n\n\n\n// Uniform struct needs 16-byte size; pad after M,K,N\nfunction makeDimsUniform(device, M, K, N) {\n  const u32 = new Uint32Array([M, K, N, 0]) // pad\n  return createBuffer(device, u32, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST)\n}\n\n\n\n\n\n\n\n\nCode\n// CPU reference (for small sizes) to optionally check correctness\nfunction cpuMatmul(A, B, M, K, N) {\n  const C = new Float32Array(M * N)\n  for (let i = 0; i &lt; M; i++) {\n    for (let j = 0; j &lt; N; j++) {\n      let s = 0\n      for (let k = 0; k &lt; K; k++) s += A[i*K + k] * B[k*N + j]\n      C[i*N + j] = s\n    }\n  }\n  return C\n}\n\n\n\n\n\n\n\n\n\n12.2.2 WGSL kernels\nBelow are WGSL strings (paraphrased from the ideas in the article). All kernels expect the same bindings:\n\n@group(0) @binding(0) uniform Dimensions { M,K,N,pad }\n@group(0) @binding(1) storage read A (row-major M×K)\n@group(0) @binding(2) storage read B (row-major K×N)\n@group(0) @binding(3) storage read_write C (row-major M×N)\n\n\n\nCode\nwgsl_naive_1d = /* wgsl */ `\nstruct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };\n@group(0) @binding(0) var&lt;uniform&gt; dims: Dimensions;\n@group(0) @binding(1) var&lt;storage, read&gt; A: array&lt;f32&gt;;\n@group(0) @binding(2) var&lt;storage, read&gt; B: array&lt;f32&gt;;\n@group(0) @binding(3) var&lt;storage, read_write&gt; C: array&lt;f32&gt;;\n\n@compute @workgroup_size(1)\nfn main(@builtin(global_invocation_id) gid: vec3&lt;u32&gt;) {\n  // Handle multi-dimensional dispatch properly\n  let idx = gid.x + gid.y * 65535u + gid.z * 65535u * 65535u;\n  let M = dims.M; let K = dims.K; let N = dims.N;\n  if (idx &gt;= M * N) { return; }\n  let row = idx / N;\n  let col = idx % N;\n  var sum: f32 = 0.0;\n  for (var kk: u32 = 0u; kk &lt; K; kk = kk + 1u) {\n    sum = sum + A[row * K + kk] * B[kk * N + col];\n  }\n  C[row * N + col] = sum;\n}\n`\n\n\n\n\n\n\n\n\n\nCode\nwgsl_1d_many_threads = /* wgsl */ `\nstruct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };\n@group(0) @binding(0) var&lt;uniform&gt; dims: Dimensions;\n@group(0) @binding(1) var&lt;storage, read&gt; A: array&lt;f32&gt;;\n@group(0) @binding(2) var&lt;storage, read&gt; B: array&lt;f32&gt;;\n@group(0) @binding(3) var&lt;storage, read_write&gt; C: array&lt;f32&gt;;\n\n@compute @workgroup_size(256)\nfn main(@builtin(global_invocation_id) gid: vec3&lt;u32&gt;) {\n  // Handle multi-dimensional dispatch properly  \n  let idx = gid.x + gid.y * 65535u + gid.z * 65535u * 65535u;\n  let M = dims.M; let K = dims.K; let N = dims.N;\n  if (idx &gt;= M * N) { return; }\n  let row = idx / N;\n  let col = idx % N;\n  var sum: f32 = 0.0;\n  for (var kk: u32 = 0u; kk &lt; K; kk = kk + 1u) {\n    sum = sum + A[row * K + kk] * B[kk * N + col];\n  }\n  C[row * N + col] = sum;\n}\n`\n\n\n\n\n\n\n\n\n\nCode\nwgsl_2d_8x8 = /* wgsl */ `\nstruct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };\n@group(0) @binding(0) var&lt;uniform&gt; dims: Dimensions;\n@group(0) @binding(1) var&lt;storage, read&gt; A: array&lt;f32&gt;;\n@group(0) @binding(2) var&lt;storage, read&gt; B: array&lt;f32&gt;;\n@group(0) @binding(3) var&lt;storage, read_write&gt; C: array&lt;f32&gt;;\n\n@compute @workgroup_size(8, 8)\nfn main(@builtin(global_invocation_id) gid: vec3&lt;u32&gt;) {\n  // Note: swap to favor coalesced access as discussed in the article\n  let row = gid.y; // M\n  let col = gid.x; // N\n  let M = dims.M; let K = dims.K; let N = dims.N;\n  if (row &gt;= M || col &gt;= N) { return; }\n  var sum: f32 = 0.0;\n  for (var kk: u32 = 0u; kk &lt; K; kk = kk + 1u) {\n    sum = sum + A[row * K + kk] * B[kk * N + col];\n  }\n  C[row * N + col] = sum;\n}\n`\n\n\n\n\n\n\n\n\n\nCode\nwgsl_tile_1x4 = /* wgsl */ `\nconst BLOCKSIZE: u32 = 16u; // 16x16 threads per workgroup\nconst TILE_N: u32 = 4u;     // 4 columns per thread\nstruct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };\n@group(0) @binding(0) var&lt;uniform&gt; dims: Dimensions;\n@group(0) @binding(1) var&lt;storage, read&gt; A: array&lt;f32&gt;;\n@group(0) @binding(2) var&lt;storage, read&gt; B: array&lt;f32&gt;;\n@group(0) @binding(3) var&lt;storage, read_write&gt; C: array&lt;f32&gt;;\n\n@compute @workgroup_size(BLOCKSIZE, BLOCKSIZE)\nfn main(@builtin(global_invocation_id) gid: vec3&lt;u32&gt;) {\n  let M = dims.M; let K = dims.K; let N = dims.N;\n  let row = gid.y;\n  let col0 = gid.x * TILE_N;\n  if (row &gt;= M || col0 &gt;= N) { return; }\n\n  var s0: f32 = 0.0;\n  var s1: f32 = 0.0;\n  var s2: f32 = 0.0;\n  var s3: f32 = 0.0;\n  for (var kk: u32 = 0u; kk &lt; K; kk = kk + 1u) {\n    let a = A[row * K + kk];\n    let base = kk * N + col0;\n    s0 = s0 + a * B[base + 0u];\n    s1 = s1 + a * B[base + 1u];\n    s2 = s2 + a * B[base + 2u];\n    s3 = s3 + a * B[base + 3u];\n  }\n  C[row * N + col0 + 0u] = s0;\n  if (col0 + 1u &lt; N) { C[row * N + col0 + 1u] = s1; }\n  if (col0 + 2u &lt; N) { C[row * N + col0 + 2u] = s2; }\n  if (col0 + 3u &lt; N) { C[row * N + col0 + 3u] = s3; }\n}\n`\n\n\n\n\n\n\n\n\n\nCode\nwgsl_tile_4x4 = /* wgsl */ `\nconst BLOCKSIZE: u32 = 16u;\nconst TILE_M: u32 = 4u; // 4 rows per thread\nconst TILE_N: u32 = 4u; // 4 cols per thread\nstruct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };\n@group(0) @binding(0) var&lt;uniform&gt; dims: Dimensions;\n@group(0) @binding(1) var&lt;storage, read&gt; A: array&lt;f32&gt;;\n@group(0) @binding(2) var&lt;storage, read&gt; B: array&lt;f32&gt;;\n@group(0) @binding(3) var&lt;storage, read_write&gt; C: array&lt;f32&gt;;\n\n@compute @workgroup_size(BLOCKSIZE, BLOCKSIZE)\nfn main(@builtin(global_invocation_id) gid: vec3&lt;u32&gt;) {\n  let M = dims.M; let K = dims.K; let N = dims.N;\n  let row0 = gid.y * TILE_M;\n  let col0 = gid.x * TILE_N;\n  if (row0 &gt;= M || col0 &gt;= N) { return; }\n\n  var s: array&lt;array&lt;f32, TILE_N&gt;, TILE_M&gt;;\n  // initialize\n  for (var ii: u32 = 0u; ii &lt; TILE_M; ii = ii + 1u) {\n    for (var jj: u32 = 0u; jj &lt; TILE_N; jj = jj + 1u) {\n      s[ii][jj] = 0.0;\n    }\n  }\n\n  // unrolled accumulation over K stays as a loop (K unknown at compile time)\n  for (var kk: u32 = 0u; kk &lt; K; kk = kk + 1u) {\n    for (var ii: u32 = 0u; ii &lt; TILE_M; ii = ii + 1u) {\n      let a = A[(row0 + ii) * K + kk];\n      let bbase = kk * N + col0;\n      for (var jj: u32 = 0u; jj &lt; TILE_N; jj = jj + 1u) {\n        s[ii][jj] = s[ii][jj] + a * B[bbase + jj];\n      }\n    }\n  }\n\n  for (var ii: u32 = 0u; ii &lt; TILE_M; ii = ii + 1u) {\n    let r = row0 + ii;\n    if (r &lt; M) {\n      for (var jj: u32 = 0u; jj &lt; TILE_N; jj = jj + 1u) {\n        let c = col0 + jj;\n        if (c &lt; N) { C[r * N + c] = s[ii][jj]; }\n      }\n    }\n  }\n}\n`\n\n\n\n\n\n\n\n\n\n12.2.3 Kernel registry and dispatch math\n\nkernels = [\n  { \n    key: 'naive1d', \n    label: 'Naive 1D (wg_size=1)', \n    wgsl: wgsl_naive_1d, \n    dispatch: ({M,N}) =&gt; {\n      const total = M*N\n      // Respect 65535 limit per dimension, use 2D dispatch if needed\n      if (total &lt;= 65535) return [total, 1, 1]\n      const x = Math.min(65535, Math.ceil(Math.sqrt(total)))\n      const y = Math.ceil(total / x)\n      return [x, Math.min(65535, y), Math.max(1, Math.ceil(y / 65535))]\n    }, \n    limits: { recommendMaxMN: 512 } \n  },\n  { \n    key: 'oneD256', \n    label: '1D many threads (256)', \n    wgsl: wgsl_1d_many_threads, \n    dispatch: ({M,N}) =&gt; {\n      const total = Math.ceil((M*N)/256)\n      if (total &lt;= 65535) return [total, 1, 1]\n      const x = Math.min(65535, Math.ceil(Math.sqrt(total)))\n      const y = Math.ceil(total / x)\n      return [x, Math.min(65535, y), Math.max(1, Math.ceil(y / 65535))]\n    }, \n    limits: { recommendMaxMN: 1024*1024 } \n  },\n  { key: 'twoD8x8', label: '2D 8×8', wgsl: wgsl_2d_8x8, dispatch: ({M,N}) =&gt; [Math.ceil(N/8), Math.ceil(M/8), 1], limits: { recommendMaxMN: 4096*4096 } },\n  { key: 'tile1x4', label: 'Tiled 1×4 (16×16 wg)', wgsl: wgsl_tile_1x4, dispatch: ({M,N}) =&gt; [Math.ceil(N/(16*4)), Math.ceil(M/16), 1], limits: { recommendMaxMN: 4096*4096 } },\n  { key: 'tile4x4', label: 'Tiled 4×4 (16×16 wg)', wgsl: wgsl_tile_4x4, dispatch: ({M,N}) =&gt; [Math.ceil(N/(16*4)), Math.ceil(M/(16*4)), 1], limits: { recommendMaxMN: 4096*4096 } }\n]\n\nnormalizeKernelKey = value =&gt; {\n  if (typeof value === 'string') return value\n  if (value && typeof value === 'object') {\n    if (typeof value.value === 'string') return value.value\n    if (typeof value.key === 'string') return value.key\n  }\n  return kernels[0]?.key ?? 'naive1d'\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n// Non-reactive input controls (mutable)\nmutable m_value = 512\n\n\n\n\n\n\n\nmutable k_value = 512\n\n\n\n\n\n\n\nmutable n_value = 512\n\n\n\n\n\n\n\nmutable kernel_value = 'naive1d'\n\n\n\n\n\n\n\nmutable verify_value = false\n\n\n\n\n\n\n\nmax_dim = 16384\n\nm_input = {\n  const input = Inputs.range([64, max_dim], {value: mutable m_value, step: 16, label: 'M (rows of A/C)'})\n  input.addEventListener('input', () =&gt; mutable m_value = input.value)\n  return input\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nk_input = {\n  const input = Inputs.range([64, max_dim], {value: mutable k_value, step: 16, label: 'K (cols of A / rows of B)'})\n  input.addEventListener('input', () =&gt; mutable k_value = input.value)\n  return input\n}\n\n\n\n\n\n\n\nn_input = {\n  const input = Inputs.range([64, max_dim], {value: mutable n_value, step: 16, label: 'N (cols of B/C)'})\n  input.addEventListener('input', () =&gt; mutable n_value = input.value)\n  return input\n}\n\n\n\n\n\n\n\nkernel_input = {\n  const input = Inputs.select(\n    kernels,\n    {\n      label: 'Kernel',\n      format: d =&gt; d.label,\n      value: mutable kernel_value,\n      reduce: d =&gt; d.key\n    }\n  )\n  input.addEventListener('input', () =&gt; mutable kernel_value = input.value)\n  return input\n}\n\n\n\n\n\n\n\nverify_input = {\n  const input = Inputs.toggle({label: 'Verify (CPU check if small)', value: mutable verify_value})\n  input.addEventListener('input', () =&gt; mutable verify_value = input.value)\n  return input\n}\n\n\n\n\n\n\n\n// Group all inputs visually\nhtml`&lt;div&gt;\n  ${m_input}\n  ${k_input}\n  ${n_input}\n  ${kernel_input}\n  ${verify_input}\n&lt;/div&gt;`\n\n\n\n\n\n\n\n// Control buttons\nhtml`&lt;div style=\"display: flex; gap: 0.5rem; margin-top: 1rem;\"&gt;\n  ${viewof run}\n  ${viewof sweep}\n  ${viewof download_results}\n  ${viewof clear_results}\n&lt;/div&gt;`\n\n\n\n\n\n\n\n// Internal cache to store history without creating reactive self-dependencies\nresults_history_cache = (() =&gt; {\n  const data = []\n  return {\n    get value() {\n      return data.slice()\n    },\n    push(item) {\n      data.push(item)\n      return data.slice()\n    },\n    clear() {\n      data.length = 0\n      return data.slice()\n    }\n  }\n})()\n\n\n\n\n\n\n\n// Mutable array to store all results\nmutable results_history = []\n\n\n\n\n\n\n\n// Only the submit button triggers computation - increment on each click\nviewof run = Inputs.button('Run matmul', { reduce: v =&gt; (v ?? 0) + 1 })\n\n\n\n\n\n\n\n// Sweep button for running all kernels with power-of-2 dimensions\nviewof sweep = Inputs.button('Sweep all kernels', { reduce: v =&gt; (v ?? 0) + 1 })\n\n\n\n\n\n\n\n// Download results button\nviewof download_results = Inputs.button('Download CSV', { reduce: v =&gt; (v ?? 0) + 1 })\n\n\n\n\n\n\n\n// Clear results button\nviewof clear_results = Inputs.button('Clear results', { reduce: v =&gt; (v ?? 0) + 1 })\n\n\n\n\n\n\n\n// Handle clear button clicks\nclear_handler = {\n  if (clear_results &gt; 0) {\n    const emptied = results_history_cache.clear()\n    mutable results_history = emptied\n  }\n  return clear_results\n}\n\n\n\n\n\n\n\n// Handle download button clicks\ndownload_handler = {\n  if (download_results &gt; 0) {\n    const history = results_history || []\n    if (history.length === 0) {\n      alert('No results to download. Run some tests first.')\n      return\n    }\n    \n    // Convert results to CSV format\n    const csvData = history.map(result =&gt; ({\n      'Run': result.runNumber ?? '',\n      'Kernel': result.kernel ?? '',\n      'M': result.M ?? '',\n      'K': result.K ?? '',\n      'N': result.N ?? '',\n      'Memory_MB': result.totalMB ? result.totalMB.toFixed(1) : '',\n      'Dispatch_X': result.dx ?? '',\n      'Dispatch_Y': result.dy ?? '',\n      'Dispatch_Z': result.dz ?? '',\n      'GPU_Time_ms': result.ms ? result.ms.toFixed(2) : '',\n      'Total_Time_ms': result.totalMs ? result.totalMs.toFixed(2) : '',\n      'GPU_Throughput_GFLOPS': result.gflops ? result.gflops.toFixed(2) : '',\n      'CPU_Time_ms': result.cpuTime ? result.cpuTime.toFixed(2) : '',\n      'CPU_Throughput_GFLOPS': result.cpuGflops ? result.cpuGflops.toFixed(2) : '',\n      'GPU_Speedup': (result.cpuTime && result.ms && result.ms &gt; 0) ? (result.cpuTime / result.ms).toFixed(1) : '',\n      'Max_Error_vs_CPU': result.check?.maxAbs ? result.check.maxAbs.toExponential(2) : ''\n    }))\n    \n    // Convert to CSV string\n    const headers = Object.keys(csvData[0])\n    const csvContent = [\n      headers.join(','),\n      ...csvData.map(row =&gt; headers.map(header =&gt; row[header]).join(','))\n    ].join('\\n')\n    \n    // Create and trigger download\n    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })\n    const link = document.createElement('a')\n    const url = URL.createObjectURL(blob)\n    link.setAttribute('href', url)\n    link.setAttribute('download', `webgpu-matmul-results-${new Date().toISOString().split('T')[0]}.csv`)\n    link.style.visibility = 'hidden'\n    document.body.appendChild(link)\n    link.click()\n    document.body.removeChild(link)\n    URL.revokeObjectURL(url)\n  }\n  return download_results\n}\n\n\n\n\n\n\n\n// Sweep runner - runs all kernels with power-of-2 dimensions\nsweep_results = {\n  if (!sweep) return null\n  \n  if (!webgpu_ok || !device) {\n    const error = 'WebGPU not available'\n    mutable compute_status = { state: 'error', message: error, error }\n    mutable status_trigger = mutable status_trigger + 1\n    return { error }\n  }\n\n  const dimensions = [512, 1024, 2048, 4096, 8192]\n  const allKernels = kernels.map(k =&gt; k.key)\n  const totalRuns = dimensions.length * allKernels.length\n  let completedRuns = 0\n  \n  mutable compute_status = {\n    state: 'running',\n    message: `Running sweep: 0/${totalRuns} completed`,\n    spinner: true\n  }\n  mutable status_trigger = mutable status_trigger + 1\n  \n  // Yield to browser for status update\n  await new Promise(requestAnimationFrame)\n  \n  try {\n    for (const kernelKey of allKernels) {\n      for (const dim of dimensions) {\n        const dims = { M: dim, K: dim, N: dim }\n        const totalMB = (dim * dim + dim * dim + dim * dim) * 4 / 1024 / 1024\n        \n        // Update status for current run\n        const kernelInfo = kernels.find(k =&gt; k.key === kernelKey)\n        const kernelLabel = kernelInfo?.label ?? kernelKey\n        \n        mutable compute_status = {\n          state: 'running',\n          message: `Running sweep: ${completedRuns}/${totalRuns} - ${kernelLabel} ${dim}×${dim}×${dim}`,\n          spinner: true\n        }\n        mutable status_trigger = mutable status_trigger + 1\n        \n        // Yield to browser for status update\n        await new Promise(requestAnimationFrame)\n        \n        const result = await runMatmul(dims, kernelKey, false) // Don't verify during sweep\n        \n        if (result && !result.error) {\n          const enriched = { \n            ...result, \n            totalMB,\n            runNumber: Date.now() + completedRuns // Use timestamp + counter for unique IDs\n          }\n          \n          // Append to history\n          const updatedHistory = results_history_cache.push(enriched)\n          mutable results_history = updatedHistory\n        }\n        \n        completedRuns++\n      }\n    }\n    \n    mutable compute_status = {\n      state: 'done',\n      message: `Sweep completed: ${completedRuns}/${totalRuns} runs finished`,\n      spinner: false\n    }\n    mutable status_trigger = mutable status_trigger + 1\n    \n    return { completed: completedRuns, total: totalRuns }\n  } catch (e) {\n    const error = e.message || e.toString()\n    mutable compute_status = { \n      state: 'error', \n      message: `Sweep failed: ${error} (completed ${completedRuns}/${totalRuns})`, \n      error \n    }\n    mutable status_trigger = mutable status_trigger + 1\n    return { error, completed: completedRuns, total: totalRuns }\n  }\n}\n\n\n\n\n\n\n\n\n12.2.4 Runner\n\n// Create typed arrays and buffers, dispatch, read back C if needed, and time it\nasync function runMatmul({M,K,N}, kernelKey, verify, onStatus = null) {\n  if (!device) return { error: 'No WebGPU device' }\n\n  const totalStart = performance.now()\n\n  const notify = (message, spinning = true) =&gt; {\n    if (onStatus) onStatus({ message, spinning })\n  }\n\n  notify('1/9 Initializing computation...')\n  await new Promise(requestAnimationFrame)\n\n  const key = (typeof kernelKey === 'string')\n    ? kernelKey\n    : (kernelKey && typeof kernelKey === 'object' && ('value' in kernelKey || 'key' in kernelKey))\n      ? (kernelKey.value ?? kernelKey.key)\n      : (kernelKey ?? 'twoD8x8')\n  const ker = kernels.find(k =&gt; k.key === key)\n  if (!ker) return { error: 'Unknown kernel' }\n\n  M = Math.max(1, Math.floor(+M || 0))\n  K = Math.max(1, Math.floor(+K || 0))\n  N = Math.max(1, Math.floor(+N || 0))\n\n  notify('2/9 Creating input matrices...')\n  await new Promise(requestAnimationFrame)\n\n  const elemA = M*K, elemB = K*N, elemC = M*N\n  const A = new Float32Array(elemA)\n  const B = new Float32Array(elemB)\n  for (let i = 0; i &lt; elemA; i++) A[i] = (Math.sin(i * 17.13) + 1) * 0.5\n  for (let i = 0; i &lt; elemB; i++) B[i] = (Math.cos(i * 9.97) + 1) * 0.5\n\n  notify('3/9 Creating GPU buffers...')\n  await new Promise(requestAnimationFrame)\n\n  const aBuf = createBuffer(device, A, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST)\n  const bBuf = createBuffer(device, B, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST)\n  const bytesC = elemC * 4\n  const sizeBytesC = Math.ceil(bytesC / 4) * 4\n  const cBuf = createBuffer(device, sizeBytesC, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST)\n  const uBuf = makeDimsUniform(device, M, K, N)\n\n  notify('4/9 Setting up GPU pipeline...')\n  await new Promise(requestAnimationFrame)\n\n  const pipeline = makePipeline(device, ker.wgsl)\n  const bind = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [\n    { binding: 0, resource: { buffer: uBuf } },\n    { binding: 1, resource: { buffer: aBuf } },\n    { binding: 2, resource: { buffer: bBuf } },\n    { binding: 3, resource: { buffer: cBuf } },\n  ]})\n\n  const encoder = device.createCommandEncoder()\n  const pass = encoder.beginComputePass()\n  pass.setPipeline(pipeline)\n  pass.setBindGroup(0, bind)\n  const [dx, dy, dz] = ker.dispatch({ M, N })\n  pass.dispatchWorkgroups(dx, dy, dz)\n  pass.end()\n\n  notify('5/9 Submitting GPU work...')\n  await new Promise(requestAnimationFrame)\n\n  const gpuStart = performance.now()\n  device.queue.submit([encoder.finish()])\n\n  notify('6/9 GPU computing...')\n  await device.queue.onSubmittedWorkDone()\n  const gpuEnd = performance.now()\n  const gpuMs = gpuEnd - gpuStart\n\n  notify('7/9 Reading back results...')\n  await new Promise(requestAnimationFrame)\n\n  const readBuf = createBuffer(device, sizeBytesC, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ)\n  const enc2 = device.createCommandEncoder()\n  enc2.copyBufferToBuffer(cBuf, 0, readBuf, 0, sizeBytesC)\n  device.queue.submit([enc2.finish()])\n  await readBuf.mapAsync(GPUMapMode.READ)\n  const C = new Float32Array(readBuf.getMappedRange().slice(0))\n  readBuf.unmap()\n\n  let check = null\n  let cpuTime = null\n  if (verify && M * K &lt;= 1024 * 1024 && K * N &lt;= 1024 * 1024) {\n    notify('8/9 CPU verification...')\n    await new Promise(requestAnimationFrame)\n\n    const cpuStart = performance.now()\n    const ref = cpuMatmul(A, B, M, K, N)\n    const cpuEnd = performance.now()\n    cpuTime = cpuEnd - cpuStart\n\n    let maxAbs = 0\n    for (let i = 0; i &lt; elemC; i++) maxAbs = Math.max(maxAbs, Math.abs(ref[i] - C[i]))\n    check = { maxAbs, cpuTime }\n  } else if (verify) {\n    notify('8/9 Skipping CPU verification (too large)...')\n    await new Promise(requestAnimationFrame)\n  } else {\n    notify('8/9 CPU verification disabled')\n    await new Promise(requestAnimationFrame)\n  }\n\n  const totalEnd = performance.now()\n  const totalMs = totalEnd - totalStart\n\n  notify('9/9 Complete!', false)\n\n  const flops = 2 * M * K * N\n  const gflops = flops / (gpuMs / 1000) / 1e9\n  const cpuGflops = cpuTime ? flops / (cpuTime / 1000) / 1e9 : null\n\n  return {\n    ms: gpuMs,\n    totalMs,\n    gflops,\n    M,\n    K,\n    N,\n    kernel: ker.label,\n    kernelKey: ker.key,\n    dx,\n    dy,\n    dz,\n    check,\n    cpuTime,\n    cpuGflops\n  }\n}\n\n\n\n\n\n\n\n// Wrap runMatmul to surface exceptions as error objects so UI can display them\nasync function runMatmulSafe(dims, kernel, verify) {\n  try {\n    return await runMatmul(dims, kernel, verify)\n  } catch (e) {\n    return { error: (e && e.message) ? e.message : String(e) }\n  }\n}\n\n\n\n\n\n\n\nmutable compute_status = ({\n  state: 'idle',\n  message: 'Idle — ready'\n})\n\n\n\n\n\n\n\nmutable status_trigger = 0\n\n\n\n\n\n\n\ncompute_status_value = {\n  status_trigger; // Force dependency on trigger\n  return mutable compute_status;\n}\n\n\n\n\n\n\n\n// WebGPU Matrix Multiplication Runner - only executes on button click\nresults = {\n  if (!run) {\n    mutable compute_status = { state: 'idle', message: 'Idle — ready' }\n    mutable status_trigger = mutable status_trigger + 1\n    return null\n  }\n\n  // Capture current values at button click time\n  const currentDims = {\n    M: Math.max(1, Math.floor(Number(mutable m_value) || 0)),\n    K: Math.max(1, Math.floor(Number(mutable k_value) || 0)),\n    N: Math.max(1, Math.floor(Number(mutable n_value) || 0))\n  }\n  const currentKernelValue = mutable kernel_value\n  const currentKernel = normalizeKernelKey(currentKernelValue)\n  const currentVerify = !!mutable verify_value\n\n  const kernelInfo = kernels.find(k =&gt; k.key === currentKernel)\n  const kernelLabel = kernelInfo?.label ?? String(currentKernel)\n  \n  if (!webgpu_ok) {\n    const error = 'WebGPU not available'\n    mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }\n    mutable status_trigger = mutable status_trigger + 1\n    return { error }\n  }\n  \n  if (!device) {\n    const error = 'No WebGPU device'\n    mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }\n    mutable status_trigger = mutable status_trigger + 1\n    return { error }\n  }\n\n  mutable compute_status = {\n    state: 'running',\n    message: `Running ${kernelLabel} — ${currentDims.M}×${currentDims.K}×${currentDims.N}`,\n    spinner: true,\n    kernelLabel,\n    dims: currentDims\n  }\n  mutable status_trigger = mutable status_trigger + 1\n\n  // Yield to the browser so the status panel can refresh before the GPU work finishes.\n  await new Promise(requestAnimationFrame)\n  \n  try {\n    const { M, K, N } = currentDims\n    const totalMB = (M * K + K * N + M * N) * 4 / 1024 / 1024\n    \n    // Status callback to update phase / spinner state\n    const updateStatus = (statusUpdate) =&gt; {\n      const { message, spinning = true } = (typeof statusUpdate === 'string')\n        ? { message: statusUpdate, spinning: true }\n        : statusUpdate || {}\n      mutable compute_status = {\n        state: 'running',\n        message: `${kernelLabel} — ${message}`,\n        spinner: !!spinning,\n        kernelLabel,\n        dims: currentDims\n      }\n      mutable status_trigger = mutable status_trigger + 1\n    }\n    \n  // Call the computation with captured values and status callback\n    const result = await runMatmul(currentDims, currentKernel, currentVerify, updateStatus)\n    \n    if (!result) {\n      const error = 'runMatmul returned null/undefined'\n      mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }\n      mutable status_trigger = mutable status_trigger + 1\n      return { error }\n    }\n    \n    if (result.error) {\n      const error = result.error\n      mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }\n      mutable status_trigger = mutable status_trigger + 1\n      return { error }\n    }\n    \n    // Add metadata for display and append to history\n    const enriched = { \n      ...result, \n      totalMB, \n      runNumber: run \n    }\n\n  // Append to history via cache to avoid self-dependency loops\n  const updatedHistory = results_history_cache.push(enriched)\n  mutable results_history = updatedHistory\n\n    mutable compute_status = {\n      state: 'done',\n      message: `Completed ${kernelLabel} in ${enriched.ms.toFixed(2)} ms GPU (${enriched.totalMs.toFixed(2)} ms total)`,\n      kernelLabel,\n      dims: currentDims,\n      gpuTimeMs: enriched.ms,\n      totalTimeMs: enriched.totalMs,\n      gpuGflops: enriched.gflops,\n      spinner: false\n    }\n    mutable status_trigger = mutable status_trigger + 1\n\n    return enriched\n  } catch (e) {\n    const error = e.message || e.toString()\n    mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }\n    mutable status_trigger = mutable status_trigger + 1\n    return { error }\n  }\n}\n\n\n\n\n\n\n\nstatus_panel = {\n  const status = compute_status_value || { state: 'idle', message: 'Idle — ready' }\n  const container = html`&lt;div class=\"callout status-panel\"&gt;&lt;/div&gt;`\n  container.classList.add(status.state === 'error' ? 'callout-warning' : 'callout-note')\n\n  if (status.state === 'running' && status.spinner) {\n    if (!document.getElementById('status-spinner-style')) {\n      const style = document.createElement('style')\n      style.id = 'status-spinner-style'\n      style.textContent = `\n        .status-spinner {\n          width: 1.25rem;\n          height: 1.25rem;\n          border: 2px solid rgba(0,0,0,0.1);\n          border-top-color: rgba(0,0,0,0.6);\n          border-radius: 9999px;\n          animation: status-spin 0.8s linear infinite;\n          margin-bottom: 0.5rem;\n        }\n        @keyframes status-spin {\n          to { transform: rotate(360deg); }\n        }\n      `\n      document.head.append(style)\n    }\n    const spinner = document.createElement('div')\n    spinner.className = 'status-spinner'\n    container.append(spinner)\n  }\n\n  const heading = document.createElement('div')\n  heading.style.fontWeight = '600'\n  heading.textContent = status.message ?? 'Idle — ready'\n  container.append(heading)\n\n  if (status.state === 'done' && Number.isFinite(status.gpuGflops)) {\n    const detail = document.createElement('div')\n    detail.textContent = `${status.kernelLabel ?? ''} — ${status.gpuGflops.toFixed(2)} GFLOP/s`\n    container.append(detail)\n  } else if (status.state === 'error' && status.error) {\n    const detail = document.createElement('div')\n    detail.textContent = status.error\n    container.append(detail)\n  } else if (status.dims) {\n    const dims = status.dims\n    const detail = document.createElement('div')\n    detail.textContent = `Dims: ${dims.M}×${dims.K}×${dims.N}`\n    container.append(detail)\n  }\n\n  return container\n}\n\n\n\n\n\n\n\nhtml`${status_panel}`\n\n\n\n\n\n\n\n// Display results - shows all results in history\nresults_table = {\n  clear_handler; // React to clear button\n  \n  const history = results_history || []\n  // console.log('[results_table] history length:', history.length, history)\n  \n  if (history.length === 0) {\n    return html`&lt;em&gt;Click Run matmul to execute the selected kernel. Results will be added to the table below.&lt;/em&gt;`\n  }\n  \n  // Convert all results to table rows\n  const tableRows = history.map(result =&gt; {\n    const tableRow = {\n      runNumber: result.runNumber,\n      kernel: result.kernel,\n      shape: { M: result.M, K: result.K, N: result.N },\n      memoryMB: result.totalMB,\n      dispatch: [result.dx, result.dy, result.dz],\n      gpuTimeMs: result.ms,\n      totalTimeMs: result.totalMs,\n      gpuGflops: result.gflops,\n      cpuTimeMs: result.cpuTime,\n      cpuGflops: result.cpuGflops,\n      speedup: (Number.isFinite(result.cpuTime) && Number.isFinite(result.ms) && result.ms &gt; 0)\n        ? result.cpuTime / result.ms\n        : null,\n      maxAbs: result.check?.maxAbs ?? null\n    }\n\n    const dash = '—'\n    return {\n      'Run': `#${tableRow.runNumber}`,\n      'Kernel': tableRow.kernel,\n      'Shape': `(${tableRow.shape.M}×${tableRow.shape.K}) · (${tableRow.shape.K}×${tableRow.shape.N}) → (${tableRow.shape.M}×${tableRow.shape.N})`,\n      'Memory': Number.isFinite(tableRow.memoryMB) ? `${tableRow.memoryMB.toFixed(1)} MB` : dash,\n      'Dispatch': `[${tableRow.dispatch[0]}, ${tableRow.dispatch[1]}, ${tableRow.dispatch[2]}]`,\n      'GPU Time': Number.isFinite(tableRow.gpuTimeMs) ? `${tableRow.gpuTimeMs.toFixed(2)} ms` : dash,\n      'Total Time': Number.isFinite(tableRow.totalTimeMs) ? `${tableRow.totalTimeMs.toFixed(2)} ms` : dash,\n      'GPU Throughput': Number.isFinite(tableRow.gpuGflops) ? `${tableRow.gpuGflops.toFixed(2)} GFLOP/s` : dash,\n      'CPU Time': Number.isFinite(tableRow.cpuTimeMs) ? `${tableRow.cpuTimeMs.toFixed(2)} ms` : dash,\n      'CPU Throughput': Number.isFinite(tableRow.cpuGflops) ? `${tableRow.cpuGflops.toFixed(2)} GFLOP/s` : dash,\n      'GPU Speedup': Number.isFinite(tableRow.speedup) ? `${tableRow.speedup.toFixed(1)}×` : dash,\n      'Max |Δ| vs CPU': Number.isFinite(tableRow.maxAbs) ? tableRow.maxAbs.toExponential(2) : dash\n    }\n  })\n\n  return Inputs.table(tableRows, {\n    sort: \"Run\",\n    reverse: true // Show newest results first\n  })\n}\n\n\n\n\n\n\n\nhtml`${results_table}`\n\n\n\n\n\n\n\nresults_plot_data = {\n  clear_handler;\n  const history = results_history || []\n  return history.map((entry, index) =&gt; ({\n    runNumber: entry.runNumber ?? (index + 1),\n    kernel: entry.kernel,\n    kernelKey: entry.kernelKey ?? entry.kernel,\n    totalMs: entry.totalMs ?? entry.ms ?? null,\n    gpuMs: entry.ms ?? null,\n    gpuGflops: entry.gflops ?? null,\n    cpuGflops: entry.cpuGflops ?? null,\n    memoryMB: entry.totalMB ?? null,\n    dims: entry.dims ?? { M: entry.M, K: entry.K, N: entry.N }\n  }))\n}\n\n\n\n\n\n\n\nplot_kernel_colors = {\n  const palette = [\n    \"#1f77b4\",\n    \"#ff7f0e\",\n    \"#2ca02c\",\n    \"#d62728\",\n    \"#9467bd\",\n    \"#8c564b\",\n    \"#e377c2\",\n    \"#7f7f7f\",\n    \"#bcbd22\",\n    \"#17becf\"\n  ]\n  const domain = kernels.map(k =&gt; k.label)\n  const range = domain.map((_, i) =&gt; palette[i % palette.length])\n  return { domain, range }\n}\n\n\n\n\n\n\n\nresults_plots = {\n  clear_handler;\n  const data = results_plot_data ?? []\n  if (!data.length) {\n    return html`&lt;em&gt;Run matmul to populate timing and throughput charts.&lt;/em&gt;`\n  }\n\n  const { domain, range } = plot_kernel_colors\n\n  const throughputData = data.filter(d =&gt; Number.isFinite(d.gpuGflops))\n  const totalTimeData = data.filter(d =&gt; Number.isFinite(d.totalMs))\n\n  if (!throughputData.length && !totalTimeData.length) {\n    return html`&lt;em&gt;No results with throughput or total time available yet.&lt;/em&gt;`\n  }\n\n  // Calculate dynamic ticks based on data range\n  const memoryData = data.filter(d =&gt; Number.isFinite(d.memoryMB))\n  let dynamicTicks = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]\n  \n  if (memoryData.length &gt; 0) {\n    const minMemory = Math.min(...memoryData.map(d =&gt; d.memoryMB))\n    const maxMemory = Math.max(...memoryData.map(d =&gt; d.memoryMB))\n    \n    // If there's only one unique value or very close range, show fewer ticks\n    if (memoryData.length === 1 || (maxMemory / minMemory) &lt; 2) {\n      // Find the closest tick to the actual value\n      const targetMemory = memoryData[0].memoryMB\n      const closestTick = dynamicTicks.reduce((prev, curr) =&gt; \n        Math.abs(curr - targetMemory) &lt; Math.abs(prev - targetMemory) ? curr : prev\n      )\n      dynamicTicks = [closestTick]\n    } else {\n      // Filter ticks to only show relevant range\n      dynamicTicks = dynamicTicks.filter(tick =&gt; tick &gt;= minMemory * 0.5 && tick &lt;= maxMemory * 2)\n    }\n  }\n\n  // Prepare Plotly data\n  const traces = []\n  \n  // Create color mapping for kernels\n  const colorMap = {}\n  domain.forEach((kernel, i) =&gt; {\n    colorMap[kernel] = range[i]\n  })\n\n  // Group data by kernel for throughput traces\n  const kernelGroups = {}\n  throughputData.forEach(d =&gt; {\n    if (!kernelGroups[d.kernel]) {\n      kernelGroups[d.kernel] = { throughput: [], time: [] }\n    }\n    kernelGroups[d.kernel].throughput.push(d)\n  })\n\n  // Group time data by kernel\n  totalTimeData.forEach(d =&gt; {\n    if (!kernelGroups[d.kernel]) {\n      kernelGroups[d.kernel] = { throughput: [], time: [] }\n    }\n    kernelGroups[d.kernel].time.push(d)\n  })\n\n  // Create throughput traces (solid lines)\n  Object.entries(kernelGroups).forEach(([kernel, kernelData]) =&gt; {\n    if (kernelData.throughput.length &gt; 0) {\n      const sortedData = kernelData.throughput.sort((a, b) =&gt; a.memoryMB - b.memoryMB)\n      traces.push({\n        x: sortedData.map(d =&gt; d.memoryMB),\n        y: sortedData.map(d =&gt; d.gpuGflops),\n        mode: 'lines+markers',\n        type: 'scatter',\n        name: kernel,\n        line: { color: colorMap[kernel], width: 2 },\n        marker: { color: colorMap[kernel], size: 6 },\n        hovertemplate: sortedData.map(d =&gt; {\n          const dims = d.dims || { M: '?', K: '?', N: '?' }\n          return `&lt;b&gt;${d.kernel}&lt;/b&gt;&lt;br&gt;` +\n                 `Run: #${d.runNumber}&lt;br&gt;` +\n                 `Dims: ${dims.M}×${dims.K}×${dims.N}&lt;br&gt;` +\n                 `Memory: ${d.memoryMB.toFixed(1)} MB&lt;br&gt;` +\n                 `GPU Throughput: ${d.gpuGflops.toFixed(2)} GFLOP/s&lt;extra&gt;&lt;/extra&gt;`\n        }),\n        yaxis: 'y1'\n      })\n    }\n  })\n\n  // Calculate scaling for secondary y-axis\n  const baseThroughputMax = throughputData.reduce((acc, d) =&gt; Math.max(acc, d.gpuGflops), 0)\n  const baseTimeMax = totalTimeData.reduce((acc, d) =&gt; Math.max(acc, d.totalMs), 0)\n  const yMax = Math.max(baseThroughputMax, 1)\n  const timeScaleFactor = baseTimeMax &gt; 0 ? yMax / baseTimeMax : 1\n\n  // Create time traces (dashed lines) on secondary y-axis\n  Object.entries(kernelGroups).forEach(([kernel, kernelData]) =&gt; {\n    if (kernelData.time.length &gt; 0) {\n      const sortedData = kernelData.time.sort((a, b) =&gt; a.memoryMB - b.memoryMB)\n      traces.push({\n        x: sortedData.map(d =&gt; d.memoryMB),\n        y: sortedData.map(d =&gt; d.totalMs),\n        mode: 'lines+markers',\n        type: 'scatter',\n        name: `${kernel} (time)`,\n        line: { color: colorMap[kernel], width: 2, dash: 'dash' },\n        marker: { \n          color: 'white', \n          size: 8, \n          line: { color: colorMap[kernel], width: 2 },\n          symbol: 'cross'\n        },\n        hovertemplate: sortedData.map(d =&gt; {\n          const dims = d.dims || { M: '?', K: '?', N: '?' }\n          return `&lt;b&gt;${d.kernel}&lt;/b&gt;&lt;br&gt;` +\n                 `Run: #${d.runNumber}&lt;br&gt;` +\n                 `Dims: ${dims.M}×${dims.K}×${dims.N}&lt;br&gt;` +\n                 `Memory: ${d.memoryMB.toFixed(1)} MB&lt;br&gt;` +\n                 `Total Time: ${d.totalMs.toFixed(2)} ms&lt;extra&gt;&lt;/extra&gt;`\n        }),\n        yaxis: 'y2',\n        showlegend: false\n      })\n    }\n  })\n\n  // Add dummy traces for series style legend\n  traces.push({\n    x: [null],\n    y: [null],\n    mode: 'lines+markers',\n    type: 'scatter',\n    name: '— Throughput (GFLOP/s)',\n    line: { color: '#666', width: 2 },\n    marker: { color: '#666', size: 6 },\n    showlegend: true,\n    yaxis: 'y1'\n  })\n  \n  traces.push({\n    x: [null],\n    y: [null],\n    mode: 'lines+markers',\n    type: 'scatter',\n    name: '- - Time (ms)',\n    line: { color: '#666', width: 2, dash: 'dash' },\n    marker: { \n      color: 'white', \n      size: 8, \n      line: { color: '#666', width: 2 },\n      symbol: 'cross'\n    },\n    showlegend: true,\n    yaxis: 'y2'\n  })\n\n  // Create the plot container\n  const container = html`&lt;div style=\"width: 100%; height: 450px;\"&gt;&lt;/div&gt;`\n  \n  // Plotly layout\n  const layout = {\n    title: {\n      text: 'WebGPU Matrix Multiplication Performance',\n      // x: 0.5,\n      // y: 1.5,\n      // xanchor: 'center',\n      font: { size: 16 }\n    },\n    xaxis: {\n      type: 'log',\n      title: 'Memory (MB)',\n      tickvals: dynamicTicks,\n      ticktext: dynamicTicks.map(d =&gt; d &gt;= 1 ? `${d.toFixed(0)}` : `${d.toFixed(1)}`)\n    },\n    yaxis: {\n      title: 'GPU Throughput (GFLOP/s)',\n      side: 'left'\n    },\n    yaxis2: {\n      title: 'Total Time (ms)',\n      side: 'right',\n      overlaying: 'y'\n    },\n    legend: {\n      x: 1.3,\n      y: 0.8,\n      xanchor: 'left',\n      yanchor: 'top',\n      bgcolor: 'rgba(255,255,255,0.8)',\n      bordercolor: '#ddd',\n      borderwidth: 1,\n      font: { size: 11 }\n    },\n    margin: { l: 80, r: 150, t: 80, b: 80 },\n    hovermode: 'closest'\n  }\n\n  // Create the plot\n  Plotly.newPlot(container, traces, layout, {\n    responsive: true,\n    displayModeBar: false,\n    modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d']\n  })\n\n  return container\n}\n\n\n\n\n\n\n\nhtml`${results_plots}`",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Exploring WebGPU Matmul Kernels (OJS)</span>"
+    ]
+  },
+  {
+    "objectID": "Courses/11_WebGPU-matmul.html#notes-and-tips",
+    "href": "Courses/11_WebGPU-matmul.html#notes-and-tips",
+    "title": "12  Exploring WebGPU Matmul Kernels (OJS)",
+    "section": "12.3 Notes and tips",
+    "text": "12.3 Notes and tips\n\nThis page uses Observable JS cells; code runs reactively in the browser.\nPerformance varies a lot across browsers/GPUs. Numbers shown include submission/synchronization overhead; GPU timestamp queries can refine timing when supported.\nThe kernels here don’t use workgroup-shared memory or subgroups; those can yield further gains on some hardware.\nCredit: Kernel ideas and the optimization path are inspired by Zach Nussbaum’s article referenced above and by Simon Böhm’s CUDA matmul write-up.",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Exploring WebGPU Matmul Kernels (OJS)</span>"
+    ]
+  },
+  {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "10  Summary",
+    "title": "13  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever.",
     "crumbs": [
-      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Summary</span>"
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Summary</span>"
     ]
   },
   {
@@ -2290,7 +2970,7 @@
     "href": "applications.html",
     "title": "Appendix B — Applications",
     "section": "",
-    "text": "Original (In Percent Format)\nOnline Html (Corrected)\nNotebook (Corrected)\n\n\n\n\nPrompt engineering exercises\nSolution\nNotebook\n\n\nAI Agent\nSolution\nNotebook\n\n\nNumpy Workout\nSolution\nNotebook\n\n\nDecorators Tutorial\nSolution\nNotebook\n\n\nA tutorial on Python generators\nSolution\nNotebook\n\n\nMultiprocessing in Python 3\nSolution\nNotebook\n\n\nScaling App with multiprocessing\n\n\n\n\nAn asyncio application\n\n\n\n\nIPC and Locking\n\n\n\n\nLocking with multiprocessing.Value\n\n\n\n\nDistributed models examples\n\n\n\n\nDask delayed App\n\n\n\n\nNumba Introduction\nSolution\nNotebook\n\n\nNumba first steps\n\n\n\n\n\nNo matching items",
+    "text": "Original (In Percent Format)\nOnline Html (Corrected)\nNotebook (Corrected)\n\n\n\n\nPrompt engineering exercises\nSolution\nNotebook\n\n\nAI Agent\nSolution\nNotebook\n\n\nNumpy Workout\nSolution\nNotebook\n\n\nDecorators Tutorial\nSolution\nNotebook\n\n\nA tutorial on Python generators\nSolution\nNotebook\n\n\nMultiprocessing in Python 3\nSolution\nNotebook\n\n\nScaling App with multiprocessing\nSolution\nNotebook\n\n\nAn asyncio application\nSolution\nNotebook\n\n\nIPC and Locking\nSolution\nNotebook\n\n\nLocking with multiprocessing.Value\nSolution\nNotebook\n\n\nDistributed models examples\nSolution\nNotebook\n\n\nDask delayed App\nSolution\nNotebook\n\n\nNumba Introduction\nSolution\nNotebook\n\n\nNumba first steps\nSolution\nNotebook\n\n\n\nNo matching items",
     "crumbs": [
       "Appendices",
       "<span class='chapter-number'>B</span>  <span class='chapter-title'>Applications</span>"
@@ -2301,7 +2981,7 @@
     "href": "slides.html",
     "title": "Appendix C — Slides in reveal.js",
     "section": "",
-    "text": "Code Assistants\nNumpy Workout\nIntroduction to parallel computing\nAsynchronous Programming with Python\nIPC and locking\nDistributed Computing models\nDask and Ray\nDask delayed\nHardware Vectorization with SIMD\n\nNo matching items",
+    "text": "Code Assistants\nNumpy Workout\nIntroduction to parallel computing\nAsynchronous Programming with Python\nIPC and locking\nDistributed Computing models\nDask and Ray\nDask delayed\nHardware Vectorization with SIMD\nGPU computing, CPU cache, Computing cluster\nYour First WebGPU App\n\nNo matching items",
     "crumbs": [
       "Appendices",
       "<span class='chapter-number'>C</span>  <span class='chapter-title'>Slides in reveal.js</span>"

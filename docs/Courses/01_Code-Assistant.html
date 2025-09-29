@@ -98,8 +98,8 @@ div.csl-indent {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-ce4a70ea6339eb1d769f2074d78edf30.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-9da23aa6082cb3b1220f94005998b921.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5bf65cff8e2448cf29ae73a4ede46762.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-490d64d59165ea7969eaa97e1a43b317.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -444,8 +444,26 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../Courses/09_GPU-Caching-etc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">GPU computing, CPU cache, Computing cluster</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/10_WebGPU-First-App.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Your First WebGPU App</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Courses/11_WebGPU-matmul.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Exploring WebGPU Matmul Kernels (OJS)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -1050,11 +1068,14 @@ x_9 &amp; = &amp; x_{8}/x_3.
 <p>Example with a non-convex function</p>
 <p><span class="math inline">f(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2</span></p>
 <div class="columns">
-<div class="column">
+<div id="fig-gradient-descent" class="column quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-gradient-descent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.1
+</figcaption>
+<div aria-describedby="fig-gradient-descent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1" data-startfrom="368" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 367;"><span id="cb1-368"><a href="#cb1-368" aria-hidden="true" tabindex="-1"></a>Plotly <span class="op">=</span> <span class="pp">require</span>(<span class="st">"plotly.js@2.35.2/dist/plotly.min.js"</span>)<span class="op">;</span></span>
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="368" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 367;"><span id="cb1-368"><a href="#cb1-368" aria-hidden="true" tabindex="-1"></a>Plotly <span class="op">=</span> <span class="pp">require</span>(<span class="st">"plotly.js@2.35.2/dist/plotly.min.js"</span>)<span class="op">;</span></span>
 <span id="cb1-369"><a href="#cb1-369" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-370"><a href="#cb1-370" aria-hidden="true" tabindex="-1"></a>minX <span class="op">=</span> <span class="op">-</span><span class="dv">5</span><span class="op">;</span></span>
 <span id="cb1-371"><a href="#cb1-371" aria-hidden="true" tabindex="-1"></a>maxX <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
@@ -1098,7 +1119,6 @@ x_9 &amp; = &amp; x_{8}/x_3.
 <span id="cb1-409"><a href="#cb1-409" aria-hidden="true" tabindex="-1"></a>  Plotly<span class="op">.</span><span class="fu">newPlot</span>(div<span class="op">,</span> data<span class="op">,</span> layout<span class="op">,</span>{<span class="dt">displayModeBar</span><span class="op">:</span> <span class="kw">false</span>})<span class="op">;</span></span>
 <span id="cb1-410"><a href="#cb1-410" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> div<span class="op">;</span></span>
 <span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-1-1" data-nodetype="declaration">
@@ -1135,92 +1155,89 @@ x_9 &amp; = &amp; x_{8}/x_3.
 </div>
 </div>
 </div>
+</div>
+</figure>
 </div><div class="column">
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2" data-startfrom="418" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 417;"><span id="cb2-418"><a href="#cb2-418" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">grad_descent</span>(x1<span class="op">,</span>x2<span class="op">,</span>step<span class="op">,</span>max_iter) {</span>
-<span id="cb2-419"><a href="#cb2-419" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> grad <span class="op">=</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2)<span class="op">;</span></span>
-<span id="cb2-420"><a href="#cb2-420" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> iterations <span class="op">=</span> [[x1<span class="op">,</span> x2]]<span class="op">;</span></span>
-<span id="cb2-421"><a href="#cb2-421" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2) {</span>
-<span id="cb2-422"><a href="#cb2-422" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> df_x1 <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (<span class="op">-</span><span class="dv">7</span> <span class="op">+</span> x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> x1 <span class="op">*</span> (<span class="op">-</span><span class="dv">11</span> <span class="op">+</span> x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2))<span class="op">;</span></span>
-<span id="cb2-423"><a href="#cb2-423" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> df_x2 <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (<span class="op">-</span><span class="dv">11</span> <span class="op">+</span> x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> x2 <span class="op">*</span> (<span class="op">-</span><span class="dv">7</span> <span class="op">+</span> x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span>))<span class="op">;</span></span>
-<span id="cb2-424"><a href="#cb2-424" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [df_x1<span class="op">,</span> df_x2]<span class="op">;</span></span>
-<span id="cb2-425"><a href="#cb2-425" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-426"><a href="#cb2-426" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb2-427"><a href="#cb2-427" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (count <span class="op">&lt;</span> max_iter) {</span>
-<span id="cb2-428"><a href="#cb2-428" aria-hidden="true" tabindex="-1"></a>    x1 <span class="op">-=</span> step <span class="op">*</span> grad[<span class="dv">0</span>]<span class="op">;</span></span>
-<span id="cb2-429"><a href="#cb2-429" aria-hidden="true" tabindex="-1"></a>    x2 <span class="op">-=</span> step <span class="op">*</span> grad[<span class="dv">1</span>]<span class="op">;</span></span>
-<span id="cb2-430"><a href="#cb2-430" aria-hidden="true" tabindex="-1"></a>    grad <span class="op">=</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2)<span class="op">;</span></span>
-<span id="cb2-431"><a href="#cb2-431" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="pp">isFinite</span>(x1) <span class="op">&amp;&amp;</span> <span class="pp">isFinite</span>(x2) <span class="op">&amp;&amp;</span></span>
-<span id="cb2-432"><a href="#cb2-432" aria-hidden="true" tabindex="-1"></a>      (minX <span class="op">&lt;</span> x1) <span class="op">&amp;&amp;</span> (x1 <span class="op">&lt;</span> maxX) <span class="op">&amp;&amp;</span></span>
-<span id="cb2-433"><a href="#cb2-433" aria-hidden="true" tabindex="-1"></a>      (minX <span class="op">&lt;</span> x2) <span class="op">&amp;&amp;</span> (x2 <span class="op">&lt;</span> maxX))</span>
-<span id="cb2-434"><a href="#cb2-434" aria-hidden="true" tabindex="-1"></a>        iterations<span class="op">.</span><span class="fu">push</span>([x1<span class="op">,</span> x2])<span class="op">;</span></span>
-<span id="cb2-435"><a href="#cb2-435" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> iterations<span class="op">.</span><span class="fu">push</span>(iterations[count])</span>
-<span id="cb2-436"><a href="#cb2-436" aria-hidden="true" tabindex="-1"></a>    count <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb2-437"><a href="#cb2-437" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-438"><a href="#cb2-438" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> iterations<span class="op">;</span></span>
-<span id="cb2-439"><a href="#cb2-439" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-440"><a href="#cb2-440" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-441"><a href="#cb2-441" aria-hidden="true" tabindex="-1"></a>viewof descent_params <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">form</span>({</span>
-<span id="cb2-442"><a href="#cb2-442" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x1</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'x1 initial'</span>})<span class="op">,</span></span>
-<span id="cb2-443"><a href="#cb2-443" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x2</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'x2 initial'</span>})<span class="op">,</span></span>
-<span id="cb2-444"><a href="#cb2-444" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="fl">0.001</span><span class="op">,</span> <span class="fl">0.04</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.001</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'Step size'</span>})</span>
-<span id="cb2-445"><a href="#cb2-445" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb2-446"><a href="#cb2-446" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-447"><a href="#cb2-447" aria-hidden="true" tabindex="-1"></a>prefix <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>()<span class="op">.</span><span class="at">classList</span>[<span class="dv">0</span>]<span class="op">;</span></span>
-<span id="cb2-448"><a href="#cb2-448" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-449"><a href="#cb2-449" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb2-450"><a href="#cb2-450" aria-hidden="true" tabindex="-1"></a>  d3<span class="op">.</span><span class="fu">selectAll</span>(<span class="vs">`.</span><span class="sc">${</span>prefix<span class="sc">}</span><span class="vs">`</span>)<span class="op">.</span><span class="fu">style</span>(<span class="st">"font-size"</span><span class="op">,</span> <span class="st">"16px"</span>)<span class="op">;</span></span>
-<span id="cb2-451"><a href="#cb2-451" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> iterations <span class="op">=</span> <span class="fu">grad_descent</span>(descent_params<span class="op">.</span><span class="at">x1</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">x2</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">step</span><span class="op">,</span><span class="dv">20</span>)</span>
-<span id="cb2-452"><a href="#cb2-452" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb2-453"><a href="#cb2-453" aria-hidden="true" tabindex="-1"></a>    <span class="dt">aspectRatio</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
-<span id="cb2-454"><a href="#cb2-454" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x1 →"</span>}<span class="op">,</span></span>
-<span id="cb2-455"><a href="#cb2-455" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x2 →"</span>}<span class="op">,</span></span>
-<span id="cb2-456"><a href="#cb2-456" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">600</span><span class="op">,</span></span>
-<span id="cb2-457"><a href="#cb2-457" aria-hidden="true" tabindex="-1"></a>    <span class="dt">style</span><span class="op">:</span> {</span>
-<span id="cb2-458"><a href="#cb2-458" aria-hidden="true" tabindex="-1"></a>      <span class="dt">backgroundColor</span><span class="op">:</span> <span class="st">'rgba(0,0,0,0)'</span></span>
-<span id="cb2-459"><a href="#cb2-459" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
-<span id="cb2-460"><a href="#cb2-460" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb2-461"><a href="#cb2-461" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">contour</span>({</span>
-<span id="cb2-462"><a href="#cb2-462" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> (x1<span class="op">,</span> x2) <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span>((x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span>)<span class="op">,</span></span>
-<span id="cb2-463"><a href="#cb2-463" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> minX<span class="op">,</span></span>
-<span id="cb2-464"><a href="#cb2-464" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y1</span><span class="op">:</span> minX<span class="op">,</span></span>
-<span id="cb2-465"><a href="#cb2-465" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x2</span><span class="op">:</span> maxX<span class="op">,</span></span>
-<span id="cb2-466"><a href="#cb2-466" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y2</span><span class="op">:</span> maxX<span class="op">,</span></span>
-<span id="cb2-467"><a href="#cb2-467" aria-hidden="true" tabindex="-1"></a>        <span class="dt">showlegend</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb2-468"><a href="#cb2-468" aria-hidden="true" tabindex="-1"></a>        <span class="dt">colorscale</span><span class="op">:</span> <span class="st">'RdBu'</span><span class="op">,</span></span>
-<span id="cb2-469"><a href="#cb2-469" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ncontours</span><span class="op">:</span> <span class="dv">30</span></span>
-<span id="cb2-470"><a href="#cb2-470" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
-<span id="cb2-471"><a href="#cb2-471" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(iterations<span class="op">,</span>{<span class="dt">marker</span><span class="op">:</span> <span class="kw">true</span>})</span>
-<span id="cb2-472"><a href="#cb2-472" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb2-473"><a href="#cb2-473" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb2-474"><a href="#cb2-474" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="417" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 416;"><span id="cb2-417"><a href="#cb2-417" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">grad_descent</span>(x1<span class="op">,</span>x2<span class="op">,</span>step<span class="op">,</span>max_iter) {</span>
+<span id="cb2-418"><a href="#cb2-418" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> grad <span class="op">=</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2)<span class="op">;</span></span>
+<span id="cb2-419"><a href="#cb2-419" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> iterations <span class="op">=</span> [[x1<span class="op">,</span> x2]]<span class="op">;</span></span>
+<span id="cb2-420"><a href="#cb2-420" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2) {</span>
+<span id="cb2-421"><a href="#cb2-421" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> df_x1 <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (<span class="op">-</span><span class="dv">7</span> <span class="op">+</span> x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> x1 <span class="op">*</span> (<span class="op">-</span><span class="dv">11</span> <span class="op">+</span> x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2))<span class="op">;</span></span>
+<span id="cb2-422"><a href="#cb2-422" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> df_x2 <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (<span class="op">-</span><span class="dv">11</span> <span class="op">+</span> x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> x2 <span class="op">*</span> (<span class="op">-</span><span class="dv">7</span> <span class="op">+</span> x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span>))<span class="op">;</span></span>
+<span id="cb2-423"><a href="#cb2-423" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [df_x1<span class="op">,</span> df_x2]<span class="op">;</span></span>
+<span id="cb2-424"><a href="#cb2-424" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-425"><a href="#cb2-425" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb2-426"><a href="#cb2-426" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (count <span class="op">&lt;</span> max_iter) {</span>
+<span id="cb2-427"><a href="#cb2-427" aria-hidden="true" tabindex="-1"></a>    x1 <span class="op">-=</span> step <span class="op">*</span> grad[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb2-428"><a href="#cb2-428" aria-hidden="true" tabindex="-1"></a>    x2 <span class="op">-=</span> step <span class="op">*</span> grad[<span class="dv">1</span>]<span class="op">;</span></span>
+<span id="cb2-429"><a href="#cb2-429" aria-hidden="true" tabindex="-1"></a>    grad <span class="op">=</span> <span class="fu">f_grad</span>(x1<span class="op">,</span> x2)<span class="op">;</span></span>
+<span id="cb2-430"><a href="#cb2-430" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="pp">isFinite</span>(x1) <span class="op">&amp;&amp;</span> <span class="pp">isFinite</span>(x2) <span class="op">&amp;&amp;</span></span>
+<span id="cb2-431"><a href="#cb2-431" aria-hidden="true" tabindex="-1"></a>      (minX <span class="op">&lt;</span> x1) <span class="op">&amp;&amp;</span> (x1 <span class="op">&lt;</span> maxX) <span class="op">&amp;&amp;</span></span>
+<span id="cb2-432"><a href="#cb2-432" aria-hidden="true" tabindex="-1"></a>      (minX <span class="op">&lt;</span> x2) <span class="op">&amp;&amp;</span> (x2 <span class="op">&lt;</span> maxX))</span>
+<span id="cb2-433"><a href="#cb2-433" aria-hidden="true" tabindex="-1"></a>        iterations<span class="op">.</span><span class="fu">push</span>([x1<span class="op">,</span> x2])<span class="op">;</span></span>
+<span id="cb2-434"><a href="#cb2-434" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> iterations<span class="op">.</span><span class="fu">push</span>(iterations[count])</span>
+<span id="cb2-435"><a href="#cb2-435" aria-hidden="true" tabindex="-1"></a>    count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb2-436"><a href="#cb2-436" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-437"><a href="#cb2-437" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> iterations<span class="op">;</span></span>
+<span id="cb2-438"><a href="#cb2-438" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell card bg-light p-2 g-col-24 g-col-lg-7">
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="444" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 443;"><span id="cb3-444"><a href="#cb3-444" aria-hidden="true" tabindex="-1"></a>viewof descent_params <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">form</span>({</span>
+<span id="cb3-445"><a href="#cb3-445" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x1</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'x1 initial'</span>})<span class="op">,</span></span>
+<span id="cb3-446"><a href="#cb3-446" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x2</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([minX<span class="op">,</span> maxX]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'x2 initial'</span>})<span class="op">,</span></span>
+<span id="cb3-447"><a href="#cb3-447" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="fl">0.001</span><span class="op">,</span> <span class="fl">0.04</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.001</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">'Step size'</span>})</span>
+<span id="cb3-448"><a href="#cb3-448" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="454" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 453;"><span id="cb4-454"><a href="#cb4-454" aria-hidden="true" tabindex="-1"></a>prefix <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>()<span class="op">.</span><span class="at">classList</span>[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb4-455"><a href="#cb4-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-456"><a href="#cb4-456" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb4-457"><a href="#cb4-457" aria-hidden="true" tabindex="-1"></a>  d3<span class="op">.</span><span class="fu">selectAll</span>(<span class="vs">`.</span><span class="sc">${</span>prefix<span class="sc">}</span><span class="vs">`</span>)<span class="op">.</span><span class="fu">style</span>(<span class="st">"font-size"</span><span class="op">,</span> <span class="st">"16px"</span>)<span class="op">;</span></span>
+<span id="cb4-458"><a href="#cb4-458" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> iterations <span class="op">=</span> <span class="fu">grad_descent</span>(descent_params<span class="op">.</span><span class="at">x1</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">x2</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">step</span><span class="op">,</span><span class="dv">20</span>)</span>
+<span id="cb4-459"><a href="#cb4-459" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb4-460"><a href="#cb4-460" aria-hidden="true" tabindex="-1"></a>    <span class="dt">aspectRatio</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb4-461"><a href="#cb4-461" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x1 →"</span>}<span class="op">,</span></span>
+<span id="cb4-462"><a href="#cb4-462" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x2 →"</span>}<span class="op">,</span></span>
+<span id="cb4-463"><a href="#cb4-463" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">600</span><span class="op">,</span></span>
+<span id="cb4-464"><a href="#cb4-464" aria-hidden="true" tabindex="-1"></a>    <span class="dt">style</span><span class="op">:</span> {</span>
+<span id="cb4-465"><a href="#cb4-465" aria-hidden="true" tabindex="-1"></a>      <span class="dt">backgroundColor</span><span class="op">:</span> <span class="st">'rgba(0,0,0,0)'</span></span>
+<span id="cb4-466"><a href="#cb4-466" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb4-467"><a href="#cb4-467" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb4-468"><a href="#cb4-468" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">contour</span>({</span>
+<span id="cb4-469"><a href="#cb4-469" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> (x1<span class="op">,</span> x2) <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span>((x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span>)<span class="op">,</span></span>
+<span id="cb4-470"><a href="#cb4-470" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> minX<span class="op">,</span></span>
+<span id="cb4-471"><a href="#cb4-471" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y1</span><span class="op">:</span> minX<span class="op">,</span></span>
+<span id="cb4-472"><a href="#cb4-472" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x2</span><span class="op">:</span> maxX<span class="op">,</span></span>
+<span id="cb4-473"><a href="#cb4-473" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y2</span><span class="op">:</span> maxX<span class="op">,</span></span>
+<span id="cb4-474"><a href="#cb4-474" aria-hidden="true" tabindex="-1"></a>        <span class="dt">showlegend</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb4-475"><a href="#cb4-475" aria-hidden="true" tabindex="-1"></a>        <span class="dt">colorscale</span><span class="op">:</span> <span class="st">'RdBu'</span><span class="op">,</span></span>
+<span id="cb4-476"><a href="#cb4-476" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ncontours</span><span class="op">:</span> <span class="dv">30</span></span>
+<span id="cb4-477"><a href="#cb4-477" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb4-478"><a href="#cb4-478" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(iterations<span class="op">,</span>{<span class="dt">marker</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb4-479"><a href="#cb4-479" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb4-480"><a href="#cb4-480" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-481"><a href="#cb4-481" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
-<div id="ojs-cell-2-1" data-nodetype="declaration">
+<div id="ojs-cell-4-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
-<div id="ojs-cell-2-2" data-nodetype="declaration">
-
-</div>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-2-3" data-nodetype="declaration">
-
-</div>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-2-4" data-nodetype="expression">
+<div id="ojs-cell-4-2" data-nodetype="expression">
 
 </div>
 </div>
@@ -1722,44 +1739,44 @@ Note
 </ul></li>
 </ul>
 <p>Simple request with OpenAI API :</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI()</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>chat_response <span class="op">=</span> client.chat.completions.create(</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span> <span class="st">"gpt-4o"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    messages <span class="op">=</span> [</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        {</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: <span class="st">"What is the best French cheese?"</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        },</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chat_response.choices[<span class="dv">0</span>].message.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>chat_response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span> <span class="st">"gpt-4o"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    messages <span class="op">=</span> [</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: <span class="st">"What is the best French cheese?"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chat_response.choices[<span class="dv">0</span>].message.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Simple request with LangChain :</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain.chat_models <span class="im">import</span> init_chat_model</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain_core.messages <span class="im">import</span> HumanMessage, SystemMessage</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> init_chat_model(<span class="st">"gpt-4o-mini"</span>, model_provider<span class="op">=</span><span class="st">"openai"</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>messages <span class="op">=</span> [</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    SystemMessage(<span class="st">"Translate the following from English into Italian"</span>),</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    HumanMessage(<span class="st">"hi!"</span>),</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>model.invoke(messages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain.chat_models <span class="im">import</span> init_chat_model</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain_core.messages <span class="im">import</span> HumanMessage, SystemMessage</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> init_chat_model(<span class="st">"gpt-4o-mini"</span>, model_provider<span class="op">=</span><span class="st">"openai"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>messages <span class="op">=</span> [</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    SystemMessage(<span class="st">"Translate the following from English into Italian"</span>),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    HumanMessage(<span class="st">"hi!"</span>),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>model.invoke(messages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="mcp-server-example" class="level2" data-number="9.5">
 <h2 data-number="9.5" class="anchored" data-anchor-id="mcp-server-example"><span class="header-section-number">9.5</span> MCP Server example</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mcp.server.fastmcp <span class="im">import</span> FastMCP</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an MCP server</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>mcp <span class="op">=</span> FastMCP(<span class="st">"GetTime"</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>()</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_date() <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Returns the current date in YYYY-MM-DD format."""</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> datetime.today().strftime(<span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mcp.server.fastmcp <span class="im">import</span> FastMCP</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an MCP server</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>mcp <span class="op">=</span> FastMCP(<span class="st">"GetTime"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_date() <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Returns the current date in YYYY-MM-DD format."""</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> datetime.today().strftime(<span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 <section id="conclusion-and-take-home-messages" class="level1" data-number="10">
@@ -1846,7 +1863,7 @@ Vaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan 
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlBsb3RseSA9IHJlcXVpcmUoXCJwbG90bHkuanNAMi4zNS4yL2Rpc3QvcGxvdGx5Lm1pbi5qc1wiKTtcblxubWluWCA9IC01O1xubWF4WCA9IDU7XG5cbmYgPSAoW3gxLCB4Ml0pID0+ICh4MSoqMiArIHgyIC0gMTEpKioyICsgKHgxICsgeDIqKjIgLSA3KSoqMjtcblxue1xuICBjb25zdCBsaW5zcGFjZSA9IGQzLnNjYWxlTGluZWFyKCkuZG9tYWluKFswLCA0OV0pLnJhbmdlKFttaW5YLCBtYXhYXSk7XG4gIGNvbnN0IFgxID0gQXJyYXkuZnJvbSh7bGVuZ3RoOiA1MH0sIChfLCBpKSA9PiBsaW5zcGFjZShpKSk7XG4gIGNvbnN0IFgyID0gQXJyYXkuZnJvbSh7bGVuZ3RoOiA1MH0sIChfLCBpKSA9PiBsaW5zcGFjZShpKSk7XG5cbiAgLy8gRGVmaW5lIHlvdXIgZnVuY3Rpb24gZiBoZXJlXG4gIGNvbnN0IGYgPSAoW3gxLCB4Ml0pID0+ICh4MSoqMiArIHgyIC0gMTEpKioyICsgKHgxICsgeDIqKjIgLSA3KSoqMjtcblxuICBjb25zdCBaID0gWDEubWFwKCh4MSxpKSA9PiBYMi5tYXAoKHgyLGopID0+IGYoW3gxLHgyXSkpKTtcblxuICBjb25zdCBkYXRhID0gW3tcbiAgICB4OiBYMS5mbGF0KCksXG4gICAgeTogWDIuZmxhdCgpLFxuICAgIHo6IFosXG4gICAgdHlwZTogJ3N1cmZhY2UnXG4gIH1dO1xuXG4gIGNvbnN0IGxheW91dCA9IHtcbiAgICAvLyB0aXRsZTogJycsXG4gICAgYXV0b3NpemU6IGZhbHNlLFxuICAgIHdpZHRoOiA0MDAsXG4gICAgaGVpZ2h0OiA0MDAsXG4gICAgcGFwZXJfYmdjb2xvcjogXCJyZ2JhKDAsMCwwLDApXCIsXG4gICAgcGxvdF9iZ2NvbG9yOiBcInJnYmEoMCwwLDAsMClcIixcbiAgICB0ZW1wbGF0ZTogJ3Bsb3RseV9kYXJrJyxcbiAgICBtYXJnaW46IHtcbiAgICAgIGw6IDAsXG4gICAgICByOiAwLFxuICAgICAgYjogMCxcbiAgICAgIHQ6IDBcbiAgICB9XG4gIH07XG5cbiAgY29uc3QgZGl2ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG4gIFBsb3RseS5uZXdQbG90KGRpdiwgZGF0YSwgbGF5b3V0LHtkaXNwbGF5TW9kZUJhcjogZmFsc2V9KTtcbiAgcmV0dXJuIGRpdjtcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImZ1bmN0aW9uIGdyYWRfZGVzY2VudCh4MSx4MixzdGVwLG1heF9pdGVyKSB7XG4gIGxldCBncmFkID0gZl9ncmFkKHgxLCB4Mik7XG4gIGxldCBpdGVyYXRpb25zID0gW1t4MSwgeDJdXTtcbiAgZnVuY3Rpb24gZl9ncmFkKHgxLCB4Mikge1xuICAgIGxldCBkZl94MSA9IDIgKiAoLTcgKyB4MSArIHgyKioyICsgMiAqIHgxICogKC0xMSArIHgxKioyICsgeDIpKTtcbiAgICBsZXQgZGZfeDIgPSAyICogKC0xMSArIHgxKioyICsgeDIgKyAyICogeDIgKiAoLTcgKyB4MSArIHgyKioyKSk7XG4gICAgcmV0dXJuIFtkZl94MSwgZGZfeDJdO1xuICB9XG4gIHZhciBjb3VudCA9IDA7XG4gIHdoaWxlIChjb3VudCA8IG1heF9pdGVyKSB7XG4gICAgeDEgLT0gc3RlcCAqIGdyYWRbMF07XG4gICAgeDIgLT0gc3RlcCAqIGdyYWRbMV07XG4gICAgZ3JhZCA9IGZfZ3JhZCh4MSwgeDIpO1xuICAgIGlmIChpc0Zpbml0ZSh4MSkgJiYgaXNGaW5pdGUoeDIpICYmXG4gICAgICAobWluWCA8IHgxKSAmJiAoeDEgPCBtYXhYKSAmJlxuICAgICAgKG1pblggPCB4MikgJiYgKHgyIDwgbWF4WCkpXG4gICAgICAgIGl0ZXJhdGlvbnMucHVzaChbeDEsIHgyXSk7XG4gICAgZWxzZSBpdGVyYXRpb25zLnB1c2goaXRlcmF0aW9uc1tjb3VudF0pXG4gICAgY291bnQgKz0gMVxuICB9XG4gIHJldHVybiBpdGVyYXRpb25zO1xufVxuXG52aWV3b2YgZGVzY2VudF9wYXJhbXMgPSBJbnB1dHMuZm9ybSh7XG4gIHgxOiBJbnB1dHMucmFuZ2UoW21pblgsIG1heFhdLCB7c3RlcDogMC4xLCB2YWx1ZTogMCwgbGFiZWw6ICd4MSBpbml0aWFsJ30pLFxuICB4MjogSW5wdXRzLnJhbmdlKFttaW5YLCBtYXhYXSwge3N0ZXA6IDAuMSwgdmFsdWU6IDAsIGxhYmVsOiAneDIgaW5pdGlhbCd9KSxcbiAgc3RlcDogSW5wdXRzLnJhbmdlKFswLjAwMSwgMC4wNF0sIHtzdGVwOiAwLjAwMSwgdmFsdWU6IDAuMDEsIGxhYmVsOiAnU3RlcCBzaXplJ30pXG59KVxuXG5wcmVmaXggPSBJbnB1dHMudGV4dCgpLmNsYXNzTGlzdFswXTtcblxue1xuICBkMy5zZWxlY3RBbGwoYC4ke3ByZWZpeH1gKS5zdHlsZShcImZvbnQtc2l6ZVwiLCBcIjE2cHhcIik7XG4gIHZhciBpdGVyYXRpb25zID0gZ3JhZF9kZXNjZW50KGRlc2NlbnRfcGFyYW1zLngxLGRlc2NlbnRfcGFyYW1zLngyLGRlc2NlbnRfcGFyYW1zLnN0ZXAsMjApXG4gIHJldHVybiBQbG90LnBsb3Qoe1xuICAgIGFzcGVjdFJhdGlvOiAxLFxuICAgIHg6IHt0aWNrU3BhY2luZzogNTAsIGxhYmVsOiBcIngxIOKGklwifSxcbiAgICB5OiB7dGlja1NwYWNpbmc6IDUwLCBsYWJlbDogXCJ4MiDihpJcIn0sXG4gICAgd2lkdGg6IDYwMCxcbiAgICBzdHlsZToge1xuICAgICAgYmFja2dyb3VuZENvbG9yOiAncmdiYSgwLDAsMCwwKSdcbiAgICB9LFxuICAgIG1hcmtzOiBbXG4gICAgICBQbG90LmNvbnRvdXIoe1xuICAgICAgICBmaWxsOiAoeDEsIHgyKSA9PiBNYXRoLnNxcnQoKHgxKioyICsgeDIgLSAxMSkqKjIgKyAoeDEgKyB4MioqMiAtIDcpKioyKSxcbiAgICAgICAgeDE6IG1pblgsXG4gICAgICAgIHkxOiBtaW5YLFxuICAgICAgICB4MjogbWF4WCxcbiAgICAgICAgeTI6IG1heFgsXG4gICAgICAgIHNob3dsZWdlbmQ6IGZhbHNlLFxuICAgICAgICBjb2xvcnNjYWxlOiAnUmRCdScsXG4gICAgICAgIG5jb250b3VyczogMzBcbiAgICAgIH0pLFxuICAgICAgUGxvdC5saW5lKGl0ZXJhdGlvbnMse21hcmtlcjogdHJ1ZX0pXG4gICAgXVxuICB9KVxufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdkZXNjZW50X3BhcmFtcycpIn1dfQ==
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlBsb3RseSA9IHJlcXVpcmUoXCJwbG90bHkuanNAMi4zNS4yL2Rpc3QvcGxvdGx5Lm1pbi5qc1wiKTtcblxubWluWCA9IC01O1xubWF4WCA9IDU7XG5cbmYgPSAoW3gxLCB4Ml0pID0+ICh4MSoqMiArIHgyIC0gMTEpKioyICsgKHgxICsgeDIqKjIgLSA3KSoqMjtcblxue1xuICBjb25zdCBsaW5zcGFjZSA9IGQzLnNjYWxlTGluZWFyKCkuZG9tYWluKFswLCA0OV0pLnJhbmdlKFttaW5YLCBtYXhYXSk7XG4gIGNvbnN0IFgxID0gQXJyYXkuZnJvbSh7bGVuZ3RoOiA1MH0sIChfLCBpKSA9PiBsaW5zcGFjZShpKSk7XG4gIGNvbnN0IFgyID0gQXJyYXkuZnJvbSh7bGVuZ3RoOiA1MH0sIChfLCBpKSA9PiBsaW5zcGFjZShpKSk7XG5cbiAgLy8gRGVmaW5lIHlvdXIgZnVuY3Rpb24gZiBoZXJlXG4gIGNvbnN0IGYgPSAoW3gxLCB4Ml0pID0+ICh4MSoqMiArIHgyIC0gMTEpKioyICsgKHgxICsgeDIqKjIgLSA3KSoqMjtcblxuICBjb25zdCBaID0gWDEubWFwKCh4MSxpKSA9PiBYMi5tYXAoKHgyLGopID0+IGYoW3gxLHgyXSkpKTtcblxuICBjb25zdCBkYXRhID0gW3tcbiAgICB4OiBYMS5mbGF0KCksXG4gICAgeTogWDIuZmxhdCgpLFxuICAgIHo6IFosXG4gICAgdHlwZTogJ3N1cmZhY2UnXG4gIH1dO1xuXG4gIGNvbnN0IGxheW91dCA9IHtcbiAgICAvLyB0aXRsZTogJycsXG4gICAgYXV0b3NpemU6IGZhbHNlLFxuICAgIHdpZHRoOiA0MDAsXG4gICAgaGVpZ2h0OiA0MDAsXG4gICAgcGFwZXJfYmdjb2xvcjogXCJyZ2JhKDAsMCwwLDApXCIsXG4gICAgcGxvdF9iZ2NvbG9yOiBcInJnYmEoMCwwLDAsMClcIixcbiAgICB0ZW1wbGF0ZTogJ3Bsb3RseV9kYXJrJyxcbiAgICBtYXJnaW46IHtcbiAgICAgIGw6IDAsXG4gICAgICByOiAwLFxuICAgICAgYjogMCxcbiAgICAgIHQ6IDBcbiAgICB9XG4gIH07XG5cbiAgY29uc3QgZGl2ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG4gIFBsb3RseS5uZXdQbG90KGRpdiwgZGF0YSwgbGF5b3V0LHtkaXNwbGF5TW9kZUJhcjogZmFsc2V9KTtcbiAgcmV0dXJuIGRpdjtcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImZ1bmN0aW9uIGdyYWRfZGVzY2VudCh4MSx4MixzdGVwLG1heF9pdGVyKSB7XG4gIGxldCBncmFkID0gZl9ncmFkKHgxLCB4Mik7XG4gIGxldCBpdGVyYXRpb25zID0gW1t4MSwgeDJdXTtcbiAgZnVuY3Rpb24gZl9ncmFkKHgxLCB4Mikge1xuICAgIGxldCBkZl94MSA9IDIgKiAoLTcgKyB4MSArIHgyKioyICsgMiAqIHgxICogKC0xMSArIHgxKioyICsgeDIpKTtcbiAgICBsZXQgZGZfeDIgPSAyICogKC0xMSArIHgxKioyICsgeDIgKyAyICogeDIgKiAoLTcgKyB4MSArIHgyKioyKSk7XG4gICAgcmV0dXJuIFtkZl94MSwgZGZfeDJdO1xuICB9XG4gIHZhciBjb3VudCA9IDA7XG4gIHdoaWxlIChjb3VudCA8IG1heF9pdGVyKSB7XG4gICAgeDEgLT0gc3RlcCAqIGdyYWRbMF07XG4gICAgeDIgLT0gc3RlcCAqIGdyYWRbMV07XG4gICAgZ3JhZCA9IGZfZ3JhZCh4MSwgeDIpO1xuICAgIGlmIChpc0Zpbml0ZSh4MSkgJiYgaXNGaW5pdGUoeDIpICYmXG4gICAgICAobWluWCA8IHgxKSAmJiAoeDEgPCBtYXhYKSAmJlxuICAgICAgKG1pblggPCB4MikgJiYgKHgyIDwgbWF4WCkpXG4gICAgICAgIGl0ZXJhdGlvbnMucHVzaChbeDEsIHgyXSk7XG4gICAgZWxzZSBpdGVyYXRpb25zLnB1c2goaXRlcmF0aW9uc1tjb3VudF0pXG4gICAgY291bnQgKz0gMVxuICB9XG4gIHJldHVybiBpdGVyYXRpb25zO1xufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0zIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoidmlld29mIGRlc2NlbnRfcGFyYW1zID0gSW5wdXRzLmZvcm0oe1xuICB4MTogSW5wdXRzLnJhbmdlKFttaW5YLCBtYXhYXSwge3N0ZXA6IDAuMSwgdmFsdWU6IDAsIGxhYmVsOiAneDEgaW5pdGlhbCd9KSxcbiAgeDI6IElucHV0cy5yYW5nZShbbWluWCwgbWF4WF0sIHtzdGVwOiAwLjEsIHZhbHVlOiAwLCBsYWJlbDogJ3gyIGluaXRpYWwnfSksXG4gIHN0ZXA6IElucHV0cy5yYW5nZShbMC4wMDEsIDAuMDRdLCB7c3RlcDogMC4wMDEsIHZhbHVlOiAwLjAxLCBsYWJlbDogJ1N0ZXAgc2l6ZSd9KVxufSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6InByZWZpeCA9IElucHV0cy50ZXh0KCkuY2xhc3NMaXN0WzBdO1xuXG57XG4gIGQzLnNlbGVjdEFsbChgLiR7cHJlZml4fWApLnN0eWxlKFwiZm9udC1zaXplXCIsIFwiMTZweFwiKTtcbiAgdmFyIGl0ZXJhdGlvbnMgPSBncmFkX2Rlc2NlbnQoZGVzY2VudF9wYXJhbXMueDEsZGVzY2VudF9wYXJhbXMueDIsZGVzY2VudF9wYXJhbXMuc3RlcCwyMClcbiAgcmV0dXJuIFBsb3QucGxvdCh7XG4gICAgYXNwZWN0UmF0aW86IDEsXG4gICAgeDoge3RpY2tTcGFjaW5nOiA1MCwgbGFiZWw6IFwieDEg4oaSXCJ9LFxuICAgIHk6IHt0aWNrU3BhY2luZzogNTAsIGxhYmVsOiBcIngyIOKGklwifSxcbiAgICB3aWR0aDogNjAwLFxuICAgIHN0eWxlOiB7XG4gICAgICBiYWNrZ3JvdW5kQ29sb3I6ICdyZ2JhKDAsMCwwLDApJ1xuICAgIH0sXG4gICAgbWFya3M6IFtcbiAgICAgIFBsb3QuY29udG91cih7XG4gICAgICAgIGZpbGw6ICh4MSwgeDIpID0+IE1hdGguc3FydCgoeDEqKjIgKyB4MiAtIDExKSoqMiArICh4MSArIHgyKioyIC0gNykqKjIpLFxuICAgICAgICB4MTogbWluWCxcbiAgICAgICAgeTE6IG1pblgsXG4gICAgICAgIHgyOiBtYXhYLFxuICAgICAgICB5MjogbWF4WCxcbiAgICAgICAgc2hvd2xlZ2VuZDogZmFsc2UsXG4gICAgICAgIGNvbG9yc2NhbGU6ICdSZEJ1JyxcbiAgICAgICAgbmNvbnRvdXJzOiAzMFxuICAgICAgfSksXG4gICAgICBQbG90LmxpbmUoaXRlcmF0aW9ucyx7bWFya2VyOiB0cnVlfSlcbiAgICBdXG4gIH0pXG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ2Rlc2NlbnRfcGFyYW1zJykifV19
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }

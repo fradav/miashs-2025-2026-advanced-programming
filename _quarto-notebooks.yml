@@ -7,14 +7,14 @@ project:
     - Courses/Solutions/02_1_Decorators_tutorial-sol.qmd
     - Courses/Solutions/02_2_Generators_tutorial-sol.qmd
     - Courses/Solutions/02_3_MultiProcessing_tutorial-sol.qmd
-    - Courses/Solutions/02_4_Scaling.qmd
-    - Courses/Solutions/03_0_Asynchronous.qmd
-    - Courses/Solutions/04_0_IPC_and_Locking.qmd
-    - Courses/Solutions/04_1_IPC_and_Locking_cont.qmd
-    - Courses/Solutions/05_0_Distributed_models.qmd
-    - Courses/Solutions/05_1_Dask_delayed.qmd
+    - Courses/Solutions/02_4_Scaling-sol.qmd
+    - Courses/Solutions/03_0_Asynchronous-sol.qmd
+    - Courses/Solutions/04_0_IPC_and_Locking-sol.qmd
+    - Courses/Solutions/04_1_IPC_and_Locking_cont-sol.qmd
+    - Courses/Solutions/05_0_Distributed_models-sol.qmd
+    - Courses/Solutions/05_1_Dask_delayed-sol.qmd
     - Courses/Solutions/06_0_Numba_tutorial-sol.qmd
-    - Courses/Solutions/06_1_Numba.qmd
+    - Courses/Solutions/06_1_Numba-sol.qmd
   output-dir: docs-resources/Notebooks
   pre-render: project-scripts/prepare-notebooks.py
   post-render: project-scripts/convert.py

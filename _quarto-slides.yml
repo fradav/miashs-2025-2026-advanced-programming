@@ -9,6 +9,8 @@ project:
     - Courses/06_Dask-Ray.qmd
     - Courses/07_Dask-delayed.qmd
     - Courses/08_SIMD.qmd
+    - Courses/09_GPU-Caching-etc.qmd
+    - Courses/10_WebGPU-First-App.qmd
   pre-render: project-scripts/prepare-slides.py
   output-dir: docs-resources/Slides
   resources:

@@ -13,7 +13,9 @@ categories: [webgpu, wgsl, gpu, matmul, ojs]
 ---
 
 > This interactive page re-creates (in spirit) several matrix-multiply (matmul) kernels discussed by Zach Nussbaum in “Optimizing a WebGPU Matmul Kernel for 1TFLOP+ Performance” and lets you run them live with WebGPU + Observable JS. The write-up here is paraphrased; see the original article for the full narrative:
-> https://www.nuss-and-bolts.com/p/optimizing-a-webgpu-matmul-kernel
+> [https://www.nuss-and-bolts.com/p/optimizing-a-webgpu-matmul-kernel](https://www.nuss-and-bolts.com/p/optimizing-a-webgpu-matmul-kernel)
+
+## Introduction
 
 We’ll build up a few compute shaders in WGSL and compare their throughput:
 
@@ -69,6 +71,8 @@ html`<div class="callout ${webgpu_ok ? 'callout-note' : 'callout-warning'}"><str
 ### Helpers (buffers, shader, run)
 
 ```{ojs}
+//| echo: true
+//| code-fold: true
 // Create a GPU buffer and optionally initialize with data
 function createBuffer(device, dataOrSize, usage) {
   if (typeof dataOrSize === 'number') {
@@ -89,6 +93,8 @@ function createBuffer(device, dataOrSize, usage) {
 ```
 
 ```{ojs}
+//| echo: true
+//| code-fold: true
 // Compile a WGSL compute pipeline
 function makePipeline(device, wgsl) {
   const module = device.createShaderModule({ code: wgsl })
@@ -1281,7 +1287,7 @@ results_plots = {
   // Create the plot
   Plotly.newPlot(container, traces, layout, {
     responsive: true,
-    displayModeBar: true,
+    displayModeBar: false,
     modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d']
   })
 
