@@ -1,0 +1,705 @@
+---
+title: Designing parallel algorithms
+subtitle: A concrete example with matrix sum
+nocite: |
+  @robey2021parallel, @pelcat2010prototypage
+---
+# Designing parallel algorithms
+
+## Row/Column-wise matrix sum
+
+- Matrix $A = [a_{ij}]_{i=1:N}^{j=1:P}$ of dimension $N \times P$ 
+
+\tiny
+
+$$
+\begin{bmatrix}
+    \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+    \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+    \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & a_{ij} & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \\\
+    \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+    \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+  \end{bmatrix}_{N \times P}
+$$
+
+\normalsize
+
+- **Row-wise sum:** vector $C = [c_{i}]_{i=1:N}$ of size $N$ where $c_{i} = \sum_{j=1}^P a_{ij}$ 
+
+- **Column-wise sum:** vector $D = [d_{j}]_{j=1:P}$ of size $P$ where $d_{j} = \sum_{i=1}^N a_{ij}$
+
+## Row-wise sum
+
+$$
+\begin{bmatrix}
+    \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+    \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+    \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & a_{ij} & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \\\
+    \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+    \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+  \end{bmatrix}_{N \times P}\ \ \rightarrow \ \ \begin{bmatrix}
+    \vdots \\
+    \vdots \\
+    \sum_{j=1}^{P} a_{ij} \\
+    \vdots\\
+    \vdots\\
+  \end{bmatrix}_{N \times 1}
+$$
+
+## Column-wise sum
+
+$$
+\begin{array}{c}
+\begin{bmatrix}
+    \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+    \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \  & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+    \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & a_{ij} & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \\\
+    \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+    \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ & \ \ \ \cdot \ \ \ \\
+  \end{bmatrix}_{N \times P}\\
+  \downarrow \ \ \ \ \ \ \\
+\begin{bmatrix}
+   \ \dots \  & \dots & \sum_{i=1}^{N} a_{ij} & \dots & \ \dots \ \\
+  \end{bmatrix}_{1\times P}\\
+\end{array}
+$$
+
+
+## Row/Column-wise matrix sum algorithm
+
+:::: {.columns}
+::: {.column width="50%"}
+Row-wise sum:
+```python
+# input
+matA = np.array(...).reshape(N,P)
+# output
+vecD = np.zeros(N)
+# algorithm
+for i in range(N):
+  for j in range(P):
+    vecD[i] += matA[i,j]
+```
+:::
+::: {.column width="50%"}
+Column-wise sum:
+```python
+# input
+matA = np.array(...).reshape(N,P)
+# output
+vecD = np.zeros(P)
+# algorithm
+for j in range(P):
+  for i in range(N):
+    vecD[j] += matA[i,j]
+```
+:::
+::::
+
+
+**Exercise:** parallel algorithm?
+
+
+## Parallel row-wise matrix sum algorithm (1)
+
+:::: {.columns}
+::: {.column width="50%"}
+Solution 1?
+```python
+# input
+matA = np.array(...).reshape(N,P)
+# output
+vecD = np.zeros(N)
+# algorithm
+@parallel
+for i in range(N):
+  for j in range(P):
+    vecD[i] += matA[i,j]
+```
+:::
+::: {.column width="50%"}
+Solution 2?
+```python
+# input
+matA = np.array(...).reshape(N,P)
+# output
+vecD = np.zeros(P)
+# algorithm
+@parallel
+for j in range(P):
+  for i in range(N):
+    vecD[i] += matA[i,j]
+```
+:::
+::::
+
+**Exercise:** any concurrent access to memory by the parallel tasks ? in input (reading) ? in output (writing) ?
+
+## Concurrent access to memory
+
+Solution 1:
+
+- reading (input): no concurrent access 
+- writing (output): no concurrent access 
+
+Solution 2:
+
+- reading (input): no concurrent access 
+- writing (output): what happen if tasks $j_1$ and $j_2$ need to simultaneously update `vecD[i]`? 
+
+:::{.fragment}
+$\rightarrow$ need for *synchronization* (with a time cost)
+:::
+
+## Parallel row-wise matrix sum algorithm (2)
+
+:::: {.columns}
+::: {.column width="50%"}
+Solution 3?
+```python
+# input
+matA = np.array(...).reshape(N,P)
+# output
+vecD = np.zeros(P)
+# algorithm
+for j in range(P):
+  @parallel
+  for i in range(N):
+    vecD[i] += matA[i,j]
+```
+:::
+::: {.column width="50%"}
+Solution 4?
+```python
+# input
+matA = np.array(...).reshape(N,P)
+# output
+vecD = np.zeros(N)
+# algorithm
+for i in range(N):
+  @parallel
+  for j in range(P):
+    vecD[i] += matA[i,j]
+```
+(**Concurrent access** between tasks to update `vecD[i]`)
+:::
+::::
+
+**Any other issue ?**
+
+## Cost of parallel task management
+
+:::: {.columns}
+::: {.column width="50%"}
+```python
+@parallel
+for i in range(N):
+  for j in range(P):
+    ...
+```
+
+1 launch of $N$ parallel tasks running each $P$ operations 
+
+$\rightarrow$ $N$ "long" parallel tasks 
+
+Cost (in time) to launch parallel tasks $\sim O(N)$
+:::
+::: {.column width="50%"}
+```python
+for j in range(P):
+  @parallel
+  for i in range(N):
+    ...
+```
+$P$ launches of $N$ parallel tasks running each 1 operation 
+
+$\rightarrow$ $N \times P$ "short" parallel tasks 
+
+Cost (in time) to launch parallel tasks $\sim O(NP)$
+:::
+::::
+
+
+## Parallel column-wise matrix sum algorithm
+
+:::: {.columns}
+::: {.column width="50%"}
+Solution 1?
+```python
+# input
+matA = np.array(...).reshape(N,P)
+# output
+vecD = np.zeros(P)
+# algorithm
+@parallel
+for j in range(P):
+  for i in range(N):
+    vecD[j] += matA[i,j]
+```
+:::
+::: {.column width="50%"}
+Solution 2?
+```python
+# input
+matA = np.array(...).reshape(N,P)
+# output
+vecD = np.zeros(P)
+# algorithm
+@parallel
+for i in range(N):
+  for j in range(P):
+    vecD[j] += matA[i,j]
+```
+
+**Concurrent access** between tasks to update `vecD[j]`
+:::
+::::
+
+
+## Illustration: column/row-wise matrix sum algorithm 
+
+Parallel column-wise vs parallel row-wise matrix sum algorithms 
+
+:::: {.columns align="center"}
+::: {.column width="55%"}
+- Matrix $10000 \times 10000$ 
+
+- Objective: run $10000$ tasks 
+
+- Resources: 64 computing units 
+
+- Number of workers: 1, 2, 4, 8, 16, 32 
+
+
+**Exercise 1:** why the performance degradation?
+
+:::{.fragment}
+{$\rightarrow$ overhead for memory access} 
+:::
+
+**Exercise 2:** why the performance difference?
+
+:::{.fragment}
+{$\rightarrow$ impact of array storage order}
+:::
+
+
+:::
+::: {.column width="45%"}
+
+![20 repetitions in each configurations](figs/row_col_sum.jpg)
+
+:::
+::::
+
+## Array storage order 
+
+Matrix in memory = a big array of contiguous rows or columns 
+
+:::: {.columns}
+::: {.column width="70%"}
+
+### Row-major
+
+Memory:
+$$
+\begin{array}{|c|c|c|}
+\hline
+a_{11} & a_{12} & a_{13} \\
+\hline
+\end{array}\
+\begin{array}{|c|c|c|}
+\hline
+a_{21} & a_{22} & a_{23} \\
+\hline
+\end{array}\
+\begin{array}{|c|c|c|}
+\hline
+a_{31} & a_{32} & a_{33} \\
+\hline
+\end{array}
+$$
+
+### Column-major
+
+Memory:
+$$
+\begin{array}{|c|c|c|}
+\hline
+a_{11} & a_{21} & a_{31} \\
+\hline
+\end{array}\
+\begin{array}{|c|c|c|}
+\hline
+a_{12} & a_{22} & a_{32} \\
+\hline
+\end{array}\
+\begin{array}{|c|c|c|}
+\hline
+a_{13} & a_{23} & a_{33} \\
+\hline
+\end{array}
+$$
+
+:::
+::: {.column width="30%"}
+
+![Source: `wikimedia.org`](figs/row_and_column_major_order.png)
+
+:::
+::::
+
+## Accessing array elements in memory
+
+Memory access: **read data from memory by block** 
+
+:::: {.columns}
+::: {.column width="70%"}
+
+To access $a_{11}$: load $\begin{array}{|c|c|c|} \hline a_{11} & a_{12} & a_{13} \\ \hline \end{array}$ into cache
+
+To access $a_{11}$: load $\begin{array}{|c|c|c|} \hline a_{11} & a_{21} & a_{31} \\ \hline \end{array}$ into cache
+
+:::
+::: {.column width="30%"}
+
+![Source: `wikimedia.org`](figs/row_and_column_major_order.png)
+
+:::
+::::
+
+
+## Row-major order and row-wise sum
+
+To compute $a_{11} + a_{12} + a_{13}$ ? 
+
+:::: {.columns}
+::: {.column width="70%"}
+
+:::: incremental
+1. init `res` $=0$
+2. load $\begin{array}{|c|c|c|} \hline a_{11} & a_{12} & a_{13} \\ \hline \end{array}$ into cache
+3. compute `res` $=$ `res` $+ a_{11}$
+4. compute `res` $=$ `res` $+ a_{12}$
+5. compute `res` $=$ `res` $+ a_{13}$
+
+::::
+
+:::
+::: {.column width="30%"}
+
+![Source: `wikimedia.org`](figs/row_and_column_major_order.png)
+:::
+::::
+
+## Column-major order and row-wise sum 
+
+To compute $a_{11} + a_{12} + a_{13}$ ? 
+
+:::: {.columns}
+::: {.column width="70%"}
+
+:::: incremental
+
+1. init `res` $=0$
+2. load $\begin{array}{|c|c|c|} \hline a_{11} & a_{21} & a_{31} \\ \hline \end{array}$ into cache
+3. compute `res` $=$ `res` $+ a_{11}$
+4. load $\begin{array}{|c|c|c|} \hline a_{12} & a_{22} & a_{32} \\ \hline \end{array}$ into cache
+5. compute `res` $=$ `res` $+ a_{12}$
+6. load $\begin{array}{|c|c|c|} \hline a_{13} & a_{23} & a_{33} \\ \hline \end{array}$ into cache
+7. compute `res` $=$ `res` $+ a_{13}$
+More memory accesses $\rightarrow$ time consuming
+
+::::
+
+:::
+::: {.column width="30%"}
+
+![Source: `wikimedia.org`](figs/row_and_column_major_order.png)
+
+:::
+::::
+
+## Memory access to large data 
+
+Example: **"big" matrix** ($4 \times 6$)  $$\tiny \begin{array}{|c|c|c|c|c|c|c|}\hline a_{11} & a_{12} & a_{13} & a_{14} & a_{15} & a_{16} \\ \hline a_{21} & a_{22} & a_{23} & a_{24} & a_{25} & a_{26} \\ \hline a_{31} & a_{32} & a_{33} & a_{34} & a_{35} & a_{36} \\ \hline a_{41} & a_{42} & a_{43} & a_{44} & a_{45} & a_{46} \\ \hline\end{array}$$
+
+Storage in memory (row major): 
+
+$$\tiny
+\begin{array}{|c|c|c|c|c|c|c|}
+\hline
+a_{11} & a_{12} & a_{13} & a_{14} & a_{15} & a_{16} \\
+\hline
+\end{array}
+\begin{array}{|c|c|c|c|c|c|c|}
+\hline
+a_{21} & a_{22} & a_{23} & a_{24} & a_{25} & a_{26} \\
+\hline
+\end{array}
+\begin{array}{|c|c|c|c|c|c|c|}
+\hline
+a_{31} & a_{32} & a_{33} & a_{34} & a_{35} & a_{36} \\
+\hline
+\end{array}
+\begin{array}{|c|c|ccc}
+\hline
+a_{41} & a_{42} & \cdot & \cdot & \cdot \\
+\hline
+\end{array}
+$$
+ 
+Access by **sub-blocks**^[the size of the block depends on the size of the cache] of data (e.g. sub-block of rows or columns)
+
+- Example: load block \small$\begin{array}{|c|c|c|} \hline a_{11} & a_{12} & a_{13} \\ \hline \end{array}$ into cache to access $a_{11}$\normalsize
+
+## Impact of data dimension 
+
+
+Sum of row 1 (row major):
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+1. access block $\begin{array}{|c|c|c|} \hline a_{11} & a_{12} & a_{13} \\ \hline \end{array}$ $$res = res + a_{11} + a_{12} + a_{13}$$
+
+:::
+::: {.column width="50%"}
+
+2. access block $\begin{array}{|c|c|c|} \hline a_{14} & a_{15} & a_{16} \\ \hline \end{array}$ $$res = res + a_{14} + a_{15} + a_{16}$$
+
+:::
+::::
+
+## Impact of data dimension, II
+
+Sum of row 1 (column major):
+
+:::: {.columns}
+::: {.column width="50%"}
+
+1. access block $\begin{array}{|c|c|c|} \hline a_{11} & a_{21} & a_{31} \\ \hline \end{array}$ $$res = res + a_{11}$$
+
+2. access block $\begin{array}{|c|c|c|} \hline a_{12} & a_{22} & a_{32} \\ \hline \end{array}$ $$res = res + a_{12}$$
+
+3. access block $\begin{array}{|c|c|c|} \hline a_{13} & a_{23} & a_{33} \\ \hline \end{array}$ $$res = res + a_{13}$$
+
+:::
+::: {.column width="50%"}
+
+4. access block $\begin{array}{|c|c|c|} \hline a_{14} & a_{24} & a_{34} \\ \hline \end{array}$ $$res = res + a_{14}$$
+
+5. access block $\begin{array}{|c|c|c|} \hline a_{15} & a_{25} & a_{35} \\ \hline \end{array}$ $$res = res + a_{14}$$
+
+6. access block $\begin{array}{|c|c|c|} \hline a_{16} & a_{26} & a_{36} \\ \hline \end{array}$ $$res = res + a_{16}$$
+
+:::
+::::
+
+## Matrix product 
+
+:::: {.columns}
+::: {.column width="50%"}
+- Matrix $A = [a_{ij}]_{i=1:N}^{j=1:P}$ of dimension $N\times{}P$ 
+
+- Matrix $B = [b_{jk}]_{j=1:P}^{k=1:Q}$ of dimension $N\times{}P$ 
+
+- **Matrix product:** $C = A \times B = [c_{ik}]_{i=1:N}^{k=1:Q}$ of dimension $N\times{}Q$ where
+
+$$c_{ik} = \sum_{j=1}^P a_{ij} \times b_{jk}$$
+
+:::
+::: {.column width="50%"}
+
+![Source: `wikimedia.org`](figs/matrix_multiplication.png){ .notransparent width="100%" }
+
+:::
+::::
+
+## Matrix product algorithm
+
+```python
+# input
+matA = np.array(...).reshape(N,P)
+matA = np.array(...).reshape(P,Q)
+# output
+matC = np.zeros((N,Q))
+# algorithm
+for i in range(N):
+  for k in range(Q):
+    for j in range(P):
+      matC[i,k] += matA[i,j] * matB[j,k]
+```
+
+**Exercise:** parallel algorithm?
+
+## (naive) Parallel matrix product
+
+```python
+# input
+matA = np.array(...).reshape(N,P)
+matA = np.array(...).reshape(P,Q)
+# output
+matC = np.zeros((N,Q))
+# algorithm
+@parallel
+for i in range(N):
+  for k in range(Q):
+    for j in range(P):
+      matC[i,k] += matA[i,j] * matB[j,k]
+```
+
+## Divide-and-conquer procedure
+
+- Divide output and input matrices into blocks:
+
+$$
+C = \begin{bmatrix}
+C_{11} & C_{12} \\
+C_{21} & C_{22} \\
+\end{bmatrix},\,
+A = \begin{bmatrix}
+A_{11} & A_{12} \\
+A_{21} & A_{22} \\
+\end{bmatrix},\,
+B = \begin{bmatrix}
+B_{11} & B_{12} \\
+B_{21} & B_{22} \\
+\end{bmatrix}
+$$
+
+- Compute $C = A \times B$ by blocks:
+
+
+$$
+\begin{darray}{rcl}
+\begin{bmatrix}
+C_{11} & C_{12} \\
+C_{21} & C_{22} \\
+\end{bmatrix}  & =
+& \begin{bmatrix}
+A_{11} & A_{12} \\
+A_{21} & A_{22} \\
+\end{bmatrix}
+\begin{bmatrix}
+B_{11} & B_{12} \\
+B_{21} & B_{22} \\
+\end{bmatrix} \\
+& = & \begin{bmatrix}
+A_{11} B_{11} + A_{12} B_{21} & A_{11} B_{12} + A_{12} B_{22}\\
+A_{21} B_{11} + A_{22} B_{21} & A_{21} B_{12} + A_{22} B_{22}\\
+\end{bmatrix}
+\end{darray}
+$$
+
+- **Possible parallelization over sub-block products** $A_{ik} \times B_{kj}$ and then **over result sums** 
+$\rightarrow$ see also "tiled implementation"
+
+## Fibonacci sequence 
+
+**Initialization:** $f_0 = 0$, $f_1 = 1$
+
+**Iteration:** $f_i = f_{i-1} + f_{i-2}$ for any $i \geq 2$ 
+
+**Sequence:** 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, ... 
+
+:::: {.columns}
+::: {.column width="50%"}
+
+**Algorithm:** 
+
+```python
+n = 100
+fib = np.zeros(100)
+fib[0] = 0
+fib[1] = 1
+for i in range(2,n):
+    res[i] = res[i-1] + res[i-2]
+```
+
+:::
+::: {.column width="50%"}
+
+
+- Parallel version? (*NO!*) (at least not directly)
+- $\rightarrow$ result $i$ depends of result from previous iterations ($i-1$ and $i-2$) \smallskip
+- $\rightarrow$ dependency between iterations 
+
+:::
+::::
+
+## Markov chain 
+
+Markov chain: sequence of random variables $(X_i)_{i>1}$ such that $$\mathbb{P}(X_i = x_i \vert X_1 = x_1, X_2 = x_2, \dots , X_{i-1} = x_{i-1}) = \mathbb{P}(X_i = x_i \vert X_{i-1} = x_{i-1})$$
+
+$X_i\in S$ where $S$ is the **state space** 
+
+:::: {.columns}
+::: {.column width="70%"}
+
+Example:
+
+- two states $E$ and $A$, i.e $S = \{A, E\}$ 
+
+- transition probability matrix:
+
+$$
+\begin{array}{cl}
+\begin{array}{cc}
+A & E
+\end{array} \\
+\left(\begin{array}{cc}
+0.6 & 0.4 \\
+0.3 & 0.7 \\
+\end{array}\right) &
+\begin{array}{l}
+A \\
+E
+\end{array}
+\end{array}
+$$
+
+:::
+::: {.column width="30%"}
+
+![](figs/markov_chain.png){ .notransparent }
+
+:::
+::::
+
+:::{ .attribution }
+[wikimedia.org](https://commons.wikimedia.org/wiki/Category:Markov_chains)
+:::
+
+## Markov chain simulation algorithm 
+
+1. Pick an initial state $X_0 = x$ with $x\in S$
+
+2. For $in$ in $1,\dots, N$:
+   - Simulate $X_i\in S$ from the probability distribution given by state $X_{i-1}$ 
+
+For the simulation:
+
+- If $X_{i-1} = A$ then $\mathbb{P}(X_i = A) = 0.6$ and $\mathbb{P}(X_i = E) = 0.4$
+- If $X_{i-1} = E$ then $\mathbb{P}(X_i = A) = 0.7$ and $\mathbb{P}(X_i = E) = 0.3$ 
+
+**Exercise:** parallel algorithm? 
+
+::: {.fragment}
+NO!
+:::
+
+# Conclusion
+
+## Take home message
+
+- **Parallel computing** can be used to **run** computations **faster** (i.e. save time) 
+
+- Relationship between **time gain** and number of tasks run in parallel is **not linear** 
+
+- Potential **bottlenecks** leading to potential performance loss:
+  * management of parallel tasks
+  * overhead for computing resource access
+  * overhead for memory access
+  * concurrent memory access by parallel tasks

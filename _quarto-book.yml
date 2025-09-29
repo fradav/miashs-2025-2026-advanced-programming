@@ -32,7 +32,8 @@ book:
     - Courses/08_SIMD.qmd
     - Courses/09_GPU-Caching-etc.qmd
     - Courses/10_WebGPU-First-App.qmd
-    - Courses/11_WebGPU-matmul.qmd
+    - Courses/11_0_Designing-parallel.qmd
+    - Courses/11_1_WebGPU-matmul.qmd
     - summary.qmd
     - references.qmd
   appendices: 

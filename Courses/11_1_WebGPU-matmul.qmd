@@ -1,0 +1,1312 @@
+---
+title: "Exploring WebGPU Matmul Kernels (OJS)"
+description: "Interactive Observable JS page to experiment with WebGPU matrix multiplication kernels and measure performance in your browser."
+format:
+  html:
+    toc: true
+    # code-fold: show
+    # code-tools: true
+
+execute:
+  echo: false
+categories: [webgpu, wgsl, gpu, matmul, ojs]
+---
+
+> This interactive page re-creates (in spirit) several matrix-multiply (matmul) kernels discussed by Zach Nussbaum in “Optimizing a WebGPU Matmul Kernel for 1TFLOP+ Performance” and lets you run them live with WebGPU + Observable JS. The write-up here is paraphrased; see the original article for the full narrative:
+> https://www.nuss-and-bolts.com/p/optimizing-a-webgpu-matmul-kernel
+
+We’ll build up a few compute shaders in WGSL and compare their throughput:
+
+- Naive 1D kernel (one thread per output element)
+- 1D with many threads per workgroup
+- 2D workgroups (8×8)
+- Tiled/unrolled kernels (1×4 and 4×4 per thread)
+
+You can tweak M, K, N and the kernel, then measure latency and GFLOP/s. This runs entirely in the browser using WebGPU; make sure your browser/device supports it.
+
+## WebGPU setup
+
+```{ojs}
+// Import Plotly for advanced plotting
+Plotly = require("https://cdn.plot.ly/plotly-latest.min.js")
+```
+
+```{ojs}
+gpu = navigator.gpu
+```
+
+```{ojs}
+adapter = gpu && (await navigator.gpu.requestAdapter())
+```
+
+```{ojs}
+// Try to request a device with higher limits for large matrices
+device = adapter && (await adapter.requestDevice({
+  requiredFeatures: adapter.features.has("timestamp-query") ? ["timestamp-query"] : [],
+  requiredLimits: {
+    maxStorageBufferBindingSize: Math.min(adapter.limits.maxStorageBufferBindingSize, 2 * 1024 * 1024 * 1024), // 2GB or adapter max
+    maxBufferSize: Math.min(adapter.limits.maxBufferSize, 2 * 1024 * 1024 * 1024), // 2GB or adapter max
+    maxStorageBuffersPerShaderStage: Math.max(adapter.limits.maxStorageBuffersPerShaderStage, 8),
+    maxComputeWorkgroupStorageSize: Math.max(adapter.limits.maxComputeWorkgroupStorageSize, 32768)
+
+  }
+}))
+```
+
+```{ojs}
+queue = device && device.queue
+```
+
+```{ojs}
+webgpu_ok = !!device
+```
+
+```{ojs}
+// A small status banner
+html`<div class="callout ${webgpu_ok ? 'callout-note' : 'callout-warning'}"><strong>WebGPU</strong>: ${webgpu_ok ? 'OK — device acquired' : 'Not available — try Chrome/Edge/Arc, enable WebGPU, or use a recent macOS'}</div>`
+```
+
+### Helpers (buffers, shader, run)
+
+```{ojs}
+// Create a GPU buffer and optionally initialize with data
+function createBuffer(device, dataOrSize, usage) {
+  if (typeof dataOrSize === 'number') {
+    const n = dataOrSize
+    const size = Number.isFinite(n) && n > 0 ? ((Math.ceil(n / 4) * 4) >>> 0) : 0
+    if (!Number.isFinite(size) || size <= 0) {
+      throw new Error(`Invalid buffer size: ${n}`)
+    }
+    return device.createBuffer({ size, usage })
+  }
+  const data = dataOrSize
+  const [byteLength, size] = [data.byteLength, ((data.byteLength + 3) & ~3)] // 4-byte align
+  const buffer = device.createBuffer({ size, usage, mappedAtCreation: true })
+  new Uint8Array(buffer.getMappedRange()).set(new Uint8Array(data.buffer, data.byteOffset, data.byteLength))
+  buffer.unmap()
+  return buffer
+}
+```
+
+```{ojs}
+// Compile a WGSL compute pipeline
+function makePipeline(device, wgsl) {
+  const module = device.createShaderModule({ code: wgsl })
+  const pipeline = device.createComputePipeline({
+    layout: 'auto',
+    compute: { module, entryPoint: 'main' }
+  })
+  return pipeline
+}
+```
+
+```{ojs}
+// Uniform struct needs 16-byte size; pad after M,K,N
+function makeDimsUniform(device, M, K, N) {
+  const u32 = new Uint32Array([M, K, N, 0]) // pad
+  return createBuffer(device, u32, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST)
+}
+```
+
+```{ojs}
+//| echo: true
+//| code-fold: true
+// CPU reference (for small sizes) to optionally check correctness
+function cpuMatmul(A, B, M, K, N) {
+  const C = new Float32Array(M * N)
+  for (let i = 0; i < M; i++) {
+    for (let j = 0; j < N; j++) {
+      let s = 0
+      for (let k = 0; k < K; k++) s += A[i*K + k] * B[k*N + j]
+      C[i*N + j] = s
+    }
+  }
+  return C
+}
+```
+
+### WGSL kernels
+
+Below are WGSL strings (paraphrased from the ideas in the article). All kernels
+expect the same bindings:
+
+1. `@group(0) @binding(0)` uniform Dimensions { M,K,N,pad }
+2. `@group(0) @binding(1)` storage read A (row-major M×K)
+3. `@group(0) @binding(2)` storage read B (row-major K×N)
+4. `@group(0) @binding(3)` storage read_write C (row-major M×N)
+
+```{ojs}
+//| echo: true
+//| code-fold: true
+wgsl_naive_1d = /* wgsl */ `
+struct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };
+@group(0) @binding(0) var<uniform> dims: Dimensions;
+@group(0) @binding(1) var<storage, read> A: array<f32>;
+@group(0) @binding(2) var<storage, read> B: array<f32>;
+@group(0) @binding(3) var<storage, read_write> C: array<f32>;
+
+@compute @workgroup_size(1)
+fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+  // Handle multi-dimensional dispatch properly
+  let idx = gid.x + gid.y * 65535u + gid.z * 65535u * 65535u;
+  let M = dims.M; let K = dims.K; let N = dims.N;
+  if (idx >= M * N) { return; }
+  let row = idx / N;
+  let col = idx % N;
+  var sum: f32 = 0.0;
+  for (var kk: u32 = 0u; kk < K; kk = kk + 1u) {
+    sum = sum + A[row * K + kk] * B[kk * N + col];
+  }
+  C[row * N + col] = sum;
+}
+`
+```
+
+```{ojs}
+//| echo: true
+//| code-fold: true
+wgsl_1d_many_threads = /* wgsl */ `
+struct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };
+@group(0) @binding(0) var<uniform> dims: Dimensions;
+@group(0) @binding(1) var<storage, read> A: array<f32>;
+@group(0) @binding(2) var<storage, read> B: array<f32>;
+@group(0) @binding(3) var<storage, read_write> C: array<f32>;
+
+@compute @workgroup_size(256)
+fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+  // Handle multi-dimensional dispatch properly  
+  let idx = gid.x + gid.y * 65535u + gid.z * 65535u * 65535u;
+  let M = dims.M; let K = dims.K; let N = dims.N;
+  if (idx >= M * N) { return; }
+  let row = idx / N;
+  let col = idx % N;
+  var sum: f32 = 0.0;
+  for (var kk: u32 = 0u; kk < K; kk = kk + 1u) {
+    sum = sum + A[row * K + kk] * B[kk * N + col];
+  }
+  C[row * N + col] = sum;
+}
+`
+```
+
+```{ojs}
+//| echo: true
+//| code-fold: true
+wgsl_2d_8x8 = /* wgsl */ `
+struct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };
+@group(0) @binding(0) var<uniform> dims: Dimensions;
+@group(0) @binding(1) var<storage, read> A: array<f32>;
+@group(0) @binding(2) var<storage, read> B: array<f32>;
+@group(0) @binding(3) var<storage, read_write> C: array<f32>;
+
+@compute @workgroup_size(8, 8)
+fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+  // Note: swap to favor coalesced access as discussed in the article
+  let row = gid.y; // M
+  let col = gid.x; // N
+  let M = dims.M; let K = dims.K; let N = dims.N;
+  if (row >= M || col >= N) { return; }
+  var sum: f32 = 0.0;
+  for (var kk: u32 = 0u; kk < K; kk = kk + 1u) {
+    sum = sum + A[row * K + kk] * B[kk * N + col];
+  }
+  C[row * N + col] = sum;
+}
+`
+```
+
+```{ojs}
+//| echo: true
+//| code-fold: true
+wgsl_tile_1x4 = /* wgsl */ `
+const BLOCKSIZE: u32 = 16u; // 16x16 threads per workgroup
+const TILE_N: u32 = 4u;     // 4 columns per thread
+struct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };
+@group(0) @binding(0) var<uniform> dims: Dimensions;
+@group(0) @binding(1) var<storage, read> A: array<f32>;
+@group(0) @binding(2) var<storage, read> B: array<f32>;
+@group(0) @binding(3) var<storage, read_write> C: array<f32>;
+
+@compute @workgroup_size(BLOCKSIZE, BLOCKSIZE)
+fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+  let M = dims.M; let K = dims.K; let N = dims.N;
+  let row = gid.y;
+  let col0 = gid.x * TILE_N;
+  if (row >= M || col0 >= N) { return; }
+
+  var s0: f32 = 0.0;
+  var s1: f32 = 0.0;
+  var s2: f32 = 0.0;
+  var s3: f32 = 0.0;
+  for (var kk: u32 = 0u; kk < K; kk = kk + 1u) {
+    let a = A[row * K + kk];
+    let base = kk * N + col0;
+    s0 = s0 + a * B[base + 0u];
+    s1 = s1 + a * B[base + 1u];
+    s2 = s2 + a * B[base + 2u];
+    s3 = s3 + a * B[base + 3u];
+  }
+  C[row * N + col0 + 0u] = s0;
+  if (col0 + 1u < N) { C[row * N + col0 + 1u] = s1; }
+  if (col0 + 2u < N) { C[row * N + col0 + 2u] = s2; }
+  if (col0 + 3u < N) { C[row * N + col0 + 3u] = s3; }
+}
+`
+```
+
+```{ojs}
+//| echo: true
+//| code-fold: true
+wgsl_tile_4x4 = /* wgsl */ `
+const BLOCKSIZE: u32 = 16u;
+const TILE_M: u32 = 4u; // 4 rows per thread
+const TILE_N: u32 = 4u; // 4 cols per thread
+struct Dimensions { M: u32, K: u32, N: u32, _pad: u32 };
+@group(0) @binding(0) var<uniform> dims: Dimensions;
+@group(0) @binding(1) var<storage, read> A: array<f32>;
+@group(0) @binding(2) var<storage, read> B: array<f32>;
+@group(0) @binding(3) var<storage, read_write> C: array<f32>;
+
+@compute @workgroup_size(BLOCKSIZE, BLOCKSIZE)
+fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+  let M = dims.M; let K = dims.K; let N = dims.N;
+  let row0 = gid.y * TILE_M;
+  let col0 = gid.x * TILE_N;
+  if (row0 >= M || col0 >= N) { return; }
+
+  var s: array<array<f32, TILE_N>, TILE_M>;
+  // initialize
+  for (var ii: u32 = 0u; ii < TILE_M; ii = ii + 1u) {
+    for (var jj: u32 = 0u; jj < TILE_N; jj = jj + 1u) {
+      s[ii][jj] = 0.0;
+    }
+  }
+
+  // unrolled accumulation over K stays as a loop (K unknown at compile time)
+  for (var kk: u32 = 0u; kk < K; kk = kk + 1u) {
+    for (var ii: u32 = 0u; ii < TILE_M; ii = ii + 1u) {
+      let a = A[(row0 + ii) * K + kk];
+      let bbase = kk * N + col0;
+      for (var jj: u32 = 0u; jj < TILE_N; jj = jj + 1u) {
+        s[ii][jj] = s[ii][jj] + a * B[bbase + jj];
+      }
+    }
+  }
+
+  for (var ii: u32 = 0u; ii < TILE_M; ii = ii + 1u) {
+    let r = row0 + ii;
+    if (r < M) {
+      for (var jj: u32 = 0u; jj < TILE_N; jj = jj + 1u) {
+        let c = col0 + jj;
+        if (c < N) { C[r * N + c] = s[ii][jj]; }
+      }
+    }
+  }
+}
+`
+```
+
+### Kernel registry and dispatch math
+
+```{ojs}
+kernels = [
+  { 
+    key: 'naive1d', 
+    label: 'Naive 1D (wg_size=1)', 
+    wgsl: wgsl_naive_1d, 
+    dispatch: ({M,N}) => {
+      const total = M*N
+      // Respect 65535 limit per dimension, use 2D dispatch if needed
+      if (total <= 65535) return [total, 1, 1]
+      const x = Math.min(65535, Math.ceil(Math.sqrt(total)))
+      const y = Math.ceil(total / x)
+      return [x, Math.min(65535, y), Math.max(1, Math.ceil(y / 65535))]
+    }, 
+    limits: { recommendMaxMN: 512 } 
+  },
+  { 
+    key: 'oneD256', 
+    label: '1D many threads (256)', 
+    wgsl: wgsl_1d_many_threads, 
+    dispatch: ({M,N}) => {
+      const total = Math.ceil((M*N)/256)
+      if (total <= 65535) return [total, 1, 1]
+      const x = Math.min(65535, Math.ceil(Math.sqrt(total)))
+      const y = Math.ceil(total / x)
+      return [x, Math.min(65535, y), Math.max(1, Math.ceil(y / 65535))]
+    }, 
+    limits: { recommendMaxMN: 1024*1024 } 
+  },
+  { key: 'twoD8x8', label: '2D 8×8', wgsl: wgsl_2d_8x8, dispatch: ({M,N}) => [Math.ceil(N/8), Math.ceil(M/8), 1], limits: { recommendMaxMN: 4096*4096 } },
+  { key: 'tile1x4', label: 'Tiled 1×4 (16×16 wg)', wgsl: wgsl_tile_1x4, dispatch: ({M,N}) => [Math.ceil(N/(16*4)), Math.ceil(M/16), 1], limits: { recommendMaxMN: 4096*4096 } },
+  { key: 'tile4x4', label: 'Tiled 4×4 (16×16 wg)', wgsl: wgsl_tile_4x4, dispatch: ({M,N}) => [Math.ceil(N/(16*4)), Math.ceil(M/(16*4)), 1], limits: { recommendMaxMN: 4096*4096 } }
+]
+
+normalizeKernelKey = value => {
+  if (typeof value === 'string') return value
+  if (value && typeof value === 'object') {
+    if (typeof value.value === 'string') return value.value
+    if (typeof value.key === 'string') return value.key
+  }
+  return kernels[0]?.key ?? 'naive1d'
+}
+```
+
+```{ojs}
+// Non-reactive input controls (mutable)
+mutable m_value = 512
+```
+
+```{ojs}
+mutable k_value = 512
+```
+
+```{ojs}
+mutable n_value = 512
+```
+
+```{ojs}
+mutable kernel_value = 'naive1d'
+```
+
+```{ojs}
+mutable verify_value = false
+```
+
+```{ojs}
+// UI controls that update mutable values but don't trigger reactivity elsewhere
+max_dim = 16384
+
+m_input = {
+  const input = Inputs.range([64, max_dim], {value: mutable m_value, step: 16, label: 'M (rows of A/C)'})
+  input.addEventListener('input', () => mutable m_value = input.value)
+  return input
+}
+```
+
+```{ojs}
+k_input = {
+  const input = Inputs.range([64, max_dim], {value: mutable k_value, step: 16, label: 'K (cols of A / rows of B)'})
+  input.addEventListener('input', () => mutable k_value = input.value)
+  return input
+}
+```
+
+```{ojs}
+n_input = {
+  const input = Inputs.range([64, max_dim], {value: mutable n_value, step: 16, label: 'N (cols of B/C)'})
+  input.addEventListener('input', () => mutable n_value = input.value)
+  return input
+}
+```
+
+```{ojs}
+kernel_input = {
+  const input = Inputs.select(
+    kernels,
+    {
+      label: 'Kernel',
+      format: d => d.label,
+      value: mutable kernel_value,
+      reduce: d => d.key
+    }
+  )
+  input.addEventListener('input', () => mutable kernel_value = input.value)
+  return input
+}
+```
+
+```{ojs}
+verify_input = {
+  const input = Inputs.toggle({label: 'Verify (CPU check if small)', value: mutable verify_value})
+  input.addEventListener('input', () => mutable verify_value = input.value)
+  return input
+}
+```
+
+```{ojs}
+// Group all inputs visually
+html`<div>
+  ${m_input}
+  ${k_input}
+  ${n_input}
+  ${kernel_input}
+  ${verify_input}
+</div>`
+```
+
+```{ojs}
+// Control buttons
+html`<div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+  ${viewof run}
+  ${viewof sweep}
+  ${viewof download_results}
+  ${viewof clear_results}
+</div>`
+```
+
+```{ojs}
+// Internal cache to store history without creating reactive self-dependencies
+results_history_cache = (() => {
+  const data = []
+  return {
+    get value() {
+      return data.slice()
+    },
+    push(item) {
+      data.push(item)
+      return data.slice()
+    },
+    clear() {
+      data.length = 0
+      return data.slice()
+    }
+  }
+})()
+```
+
+```{ojs}
+// Mutable array to store all results
+mutable results_history = []
+```
+
+```{ojs}
+// Only the submit button triggers computation - increment on each click
+viewof run = Inputs.button('Run matmul', { reduce: v => (v ?? 0) + 1 })
+```
+
+```{ojs}
+// Sweep button for running all kernels with power-of-2 dimensions
+viewof sweep = Inputs.button('Sweep all kernels', { reduce: v => (v ?? 0) + 1 })
+```
+
+```{ojs}
+// Download results button
+viewof download_results = Inputs.button('Download CSV', { reduce: v => (v ?? 0) + 1 })
+```
+
+```{ojs}
+// Clear results button
+viewof clear_results = Inputs.button('Clear results', { reduce: v => (v ?? 0) + 1 })
+```
+
+```{ojs}
+// Handle clear button clicks
+clear_handler = {
+  if (clear_results > 0) {
+    const emptied = results_history_cache.clear()
+    mutable results_history = emptied
+  }
+  return clear_results
+}
+```
+
+```{ojs}
+// Handle download button clicks
+download_handler = {
+  if (download_results > 0) {
+    const history = results_history || []
+    if (history.length === 0) {
+      alert('No results to download. Run some tests first.')
+      return
+    }
+    
+    // Convert results to CSV format
+    const csvData = history.map(result => ({
+      'Run': result.runNumber ?? '',
+      'Kernel': result.kernel ?? '',
+      'M': result.M ?? '',
+      'K': result.K ?? '',
+      'N': result.N ?? '',
+      'Memory_MB': result.totalMB ? result.totalMB.toFixed(1) : '',
+      'Dispatch_X': result.dx ?? '',
+      'Dispatch_Y': result.dy ?? '',
+      'Dispatch_Z': result.dz ?? '',
+      'GPU_Time_ms': result.ms ? result.ms.toFixed(2) : '',
+      'Total_Time_ms': result.totalMs ? result.totalMs.toFixed(2) : '',
+      'GPU_Throughput_GFLOPS': result.gflops ? result.gflops.toFixed(2) : '',
+      'CPU_Time_ms': result.cpuTime ? result.cpuTime.toFixed(2) : '',
+      'CPU_Throughput_GFLOPS': result.cpuGflops ? result.cpuGflops.toFixed(2) : '',
+      'GPU_Speedup': (result.cpuTime && result.ms && result.ms > 0) ? (result.cpuTime / result.ms).toFixed(1) : '',
+      'Max_Error_vs_CPU': result.check?.maxAbs ? result.check.maxAbs.toExponential(2) : ''
+    }))
+    
+    // Convert to CSV string
+    const headers = Object.keys(csvData[0])
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => headers.map(header => row[header]).join(','))
+    ].join('\n')
+    
+    // Create and trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `webgpu-matmul-results-${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+  return download_results
+}
+```
+
+```{ojs}
+// Sweep runner - runs all kernels with power-of-2 dimensions
+sweep_results = {
+  if (!sweep) return null
+  
+  if (!webgpu_ok || !device) {
+    const error = 'WebGPU not available'
+    mutable compute_status = { state: 'error', message: error, error }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error }
+  }
+
+  const dimensions = [512, 1024, 2048, 4096]
+  const allKernels = kernels.map(k => k.key)
+  const totalRuns = dimensions.length * allKernels.length
+  let completedRuns = 0
+  
+  mutable compute_status = {
+    state: 'running',
+    message: `Running sweep: 0/${totalRuns} completed`,
+    spinner: true
+  }
+  mutable status_trigger = mutable status_trigger + 1
+  
+  // Yield to browser for status update
+  await new Promise(requestAnimationFrame)
+  
+  try {
+    for (const kernelKey of allKernels) {
+      for (const dim of dimensions) {
+        const dims = { M: dim, K: dim, N: dim }
+        const totalMB = (dim * dim + dim * dim + dim * dim) * 4 / 1024 / 1024
+        
+        // Update status for current run
+        const kernelInfo = kernels.find(k => k.key === kernelKey)
+        const kernelLabel = kernelInfo?.label ?? kernelKey
+        
+        mutable compute_status = {
+          state: 'running',
+          message: `Running sweep: ${completedRuns}/${totalRuns} - ${kernelLabel} ${dim}×${dim}×${dim}`,
+          spinner: true
+        }
+        mutable status_trigger = mutable status_trigger + 1
+        
+        // Yield to browser for status update
+        await new Promise(requestAnimationFrame)
+        
+        const result = await runMatmul(dims, kernelKey, false) // Don't verify during sweep
+        
+        if (result && !result.error) {
+          const enriched = { 
+            ...result, 
+            totalMB,
+            runNumber: Date.now() + completedRuns // Use timestamp + counter for unique IDs
+          }
+          
+          // Append to history
+          const updatedHistory = results_history_cache.push(enriched)
+          mutable results_history = updatedHistory
+        }
+        
+        completedRuns++
+      }
+    }
+    
+    mutable compute_status = {
+      state: 'done',
+      message: `Sweep completed: ${completedRuns}/${totalRuns} runs finished`,
+      spinner: false
+    }
+    mutable status_trigger = mutable status_trigger + 1
+    
+    return { completed: completedRuns, total: totalRuns }
+  } catch (e) {
+    const error = e.message || e.toString()
+    mutable compute_status = { 
+      state: 'error', 
+      message: `Sweep failed: ${error} (completed ${completedRuns}/${totalRuns})`, 
+      error 
+    }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error, completed: completedRuns, total: totalRuns }
+  }
+}
+```
+
+### Runner
+
+```{ojs}
+// Create typed arrays and buffers, dispatch, read back C if needed, and time it
+async function runMatmul({M,K,N}, kernelKey, verify, onStatus = null) {
+  if (!device) return { error: 'No WebGPU device' }
+
+  const totalStart = performance.now()
+
+  const notify = (message, spinning = true) => {
+    if (onStatus) onStatus({ message, spinning })
+  }
+
+  notify('1/9 Initializing computation...')
+  await new Promise(requestAnimationFrame)
+
+  const key = (typeof kernelKey === 'string')
+    ? kernelKey
+    : (kernelKey && typeof kernelKey === 'object' && ('value' in kernelKey || 'key' in kernelKey))
+      ? (kernelKey.value ?? kernelKey.key)
+      : (kernelKey ?? 'twoD8x8')
+  const ker = kernels.find(k => k.key === key)
+  if (!ker) return { error: 'Unknown kernel' }
+
+  M = Math.max(1, Math.floor(+M || 0))
+  K = Math.max(1, Math.floor(+K || 0))
+  N = Math.max(1, Math.floor(+N || 0))
+
+  notify('2/9 Creating input matrices...')
+  await new Promise(requestAnimationFrame)
+
+  const elemA = M*K, elemB = K*N, elemC = M*N
+  const A = new Float32Array(elemA)
+  const B = new Float32Array(elemB)
+  for (let i = 0; i < elemA; i++) A[i] = (Math.sin(i * 17.13) + 1) * 0.5
+  for (let i = 0; i < elemB; i++) B[i] = (Math.cos(i * 9.97) + 1) * 0.5
+
+  notify('3/9 Creating GPU buffers...')
+  await new Promise(requestAnimationFrame)
+
+  const aBuf = createBuffer(device, A, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST)
+  const bBuf = createBuffer(device, B, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST)
+  const bytesC = elemC * 4
+  const sizeBytesC = Math.ceil(bytesC / 4) * 4
+  const cBuf = createBuffer(device, sizeBytesC, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST)
+  const uBuf = makeDimsUniform(device, M, K, N)
+
+  notify('4/9 Setting up GPU pipeline...')
+  await new Promise(requestAnimationFrame)
+
+  const pipeline = makePipeline(device, ker.wgsl)
+  const bind = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [
+    { binding: 0, resource: { buffer: uBuf } },
+    { binding: 1, resource: { buffer: aBuf } },
+    { binding: 2, resource: { buffer: bBuf } },
+    { binding: 3, resource: { buffer: cBuf } },
+  ]})
+
+  const encoder = device.createCommandEncoder()
+  const pass = encoder.beginComputePass()
+  pass.setPipeline(pipeline)
+  pass.setBindGroup(0, bind)
+  const [dx, dy, dz] = ker.dispatch({ M, N })
+  pass.dispatchWorkgroups(dx, dy, dz)
+  pass.end()
+
+  notify('5/9 Submitting GPU work...')
+  await new Promise(requestAnimationFrame)
+
+  const gpuStart = performance.now()
+  device.queue.submit([encoder.finish()])
+
+  notify('6/9 GPU computing...')
+  await device.queue.onSubmittedWorkDone()
+  const gpuEnd = performance.now()
+  const gpuMs = gpuEnd - gpuStart
+
+  notify('7/9 Reading back results...')
+  await new Promise(requestAnimationFrame)
+
+  const readBuf = createBuffer(device, sizeBytesC, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ)
+  const enc2 = device.createCommandEncoder()
+  enc2.copyBufferToBuffer(cBuf, 0, readBuf, 0, sizeBytesC)
+  device.queue.submit([enc2.finish()])
+  await readBuf.mapAsync(GPUMapMode.READ)
+  const C = new Float32Array(readBuf.getMappedRange().slice(0))
+  readBuf.unmap()
+
+  let check = null
+  let cpuTime = null
+  if (verify && M * K <= 1024 * 1024 && K * N <= 1024 * 1024) {
+    notify('8/9 CPU verification...')
+    await new Promise(requestAnimationFrame)
+
+    const cpuStart = performance.now()
+    const ref = cpuMatmul(A, B, M, K, N)
+    const cpuEnd = performance.now()
+    cpuTime = cpuEnd - cpuStart
+
+    let maxAbs = 0
+    for (let i = 0; i < elemC; i++) maxAbs = Math.max(maxAbs, Math.abs(ref[i] - C[i]))
+    check = { maxAbs, cpuTime }
+  } else if (verify) {
+    notify('8/9 Skipping CPU verification (too large)...')
+    await new Promise(requestAnimationFrame)
+  } else {
+    notify('8/9 CPU verification disabled')
+    await new Promise(requestAnimationFrame)
+  }
+
+  const totalEnd = performance.now()
+  const totalMs = totalEnd - totalStart
+
+  notify('9/9 Complete!', false)
+
+  const flops = 2 * M * K * N
+  const gflops = flops / (gpuMs / 1000) / 1e9
+  const cpuGflops = cpuTime ? flops / (cpuTime / 1000) / 1e9 : null
+
+  return {
+    ms: gpuMs,
+    totalMs,
+    gflops,
+    M,
+    K,
+    N,
+    kernel: ker.label,
+    kernelKey: ker.key,
+    dx,
+    dy,
+    dz,
+    check,
+    cpuTime,
+    cpuGflops
+  }
+}
+```
+
+```{ojs}
+// Wrap runMatmul to surface exceptions as error objects so UI can display them
+async function runMatmulSafe(dims, kernel, verify) {
+  try {
+    return await runMatmul(dims, kernel, verify)
+  } catch (e) {
+    return { error: (e && e.message) ? e.message : String(e) }
+  }
+}
+```
+
+```{ojs}
+mutable compute_status = ({
+  state: 'idle',
+  message: 'Idle — ready'
+})
+```
+
+```{ojs}
+mutable status_trigger = 0
+```
+
+```{ojs}
+compute_status_value = {
+  status_trigger; // Force dependency on trigger
+  return mutable compute_status;
+}
+```
+
+```{ojs}
+// WebGPU Matrix Multiplication Runner - only executes on button click
+results = {
+  if (!run) {
+    mutable compute_status = { state: 'idle', message: 'Idle — ready' }
+    mutable status_trigger = mutable status_trigger + 1
+    return null
+  }
+
+  // Capture current values at button click time
+  const currentDims = {
+    M: Math.max(1, Math.floor(Number(mutable m_value) || 0)),
+    K: Math.max(1, Math.floor(Number(mutable k_value) || 0)),
+    N: Math.max(1, Math.floor(Number(mutable n_value) || 0))
+  }
+  const currentKernelValue = mutable kernel_value
+  const currentKernel = normalizeKernelKey(currentKernelValue)
+  const currentVerify = !!mutable verify_value
+
+  const kernelInfo = kernels.find(k => k.key === currentKernel)
+  const kernelLabel = kernelInfo?.label ?? String(currentKernel)
+  
+  if (!webgpu_ok) {
+    const error = 'WebGPU not available'
+    mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error }
+  }
+  
+  if (!device) {
+    const error = 'No WebGPU device'
+    mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error }
+  }
+
+  mutable compute_status = {
+    state: 'running',
+    message: `Running ${kernelLabel} — ${currentDims.M}×${currentDims.K}×${currentDims.N}`,
+    spinner: true,
+    kernelLabel,
+    dims: currentDims
+  }
+  mutable status_trigger = mutable status_trigger + 1
+
+  // Yield to the browser so the status panel can refresh before the GPU work finishes.
+  await new Promise(requestAnimationFrame)
+  
+  try {
+    const { M, K, N } = currentDims
+    const totalMB = (M * K + K * N + M * N) * 4 / 1024 / 1024
+    
+    // Status callback to update phase / spinner state
+    const updateStatus = (statusUpdate) => {
+      const { message, spinning = true } = (typeof statusUpdate === 'string')
+        ? { message: statusUpdate, spinning: true }
+        : statusUpdate || {}
+      mutable compute_status = {
+        state: 'running',
+        message: `${kernelLabel} — ${message}`,
+        spinner: !!spinning,
+        kernelLabel,
+        dims: currentDims
+      }
+      mutable status_trigger = mutable status_trigger + 1
+    }
+    
+  // Call the computation with captured values and status callback
+    const result = await runMatmul(currentDims, currentKernel, currentVerify, updateStatus)
+    
+    if (!result) {
+      const error = 'runMatmul returned null/undefined'
+      mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+      mutable status_trigger = mutable status_trigger + 1
+      return { error }
+    }
+    
+    if (result.error) {
+      const error = result.error
+      mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+      mutable status_trigger = mutable status_trigger + 1
+      return { error }
+    }
+    
+    // Add metadata for display and append to history
+    const enriched = { 
+      ...result, 
+      totalMB, 
+      runNumber: run 
+    }
+
+  // Append to history via cache to avoid self-dependency loops
+  const updatedHistory = results_history_cache.push(enriched)
+  mutable results_history = updatedHistory
+
+    mutable compute_status = {
+      state: 'done',
+      message: `Completed ${kernelLabel} in ${enriched.ms.toFixed(2)} ms GPU (${enriched.totalMs.toFixed(2)} ms total)`,
+      kernelLabel,
+      dims: currentDims,
+      gpuTimeMs: enriched.ms,
+      totalTimeMs: enriched.totalMs,
+      gpuGflops: enriched.gflops,
+      spinner: false
+    }
+    mutable status_trigger = mutable status_trigger + 1
+
+    return enriched
+  } catch (e) {
+    const error = e.message || e.toString()
+    mutable compute_status = { state: 'error', message: error, error, kernelLabel, dims: currentDims }
+    mutable status_trigger = mutable status_trigger + 1
+    return { error }
+  }
+}
+```
+
+```{ojs}
+status_panel = {
+  const status = compute_status_value || { state: 'idle', message: 'Idle — ready' }
+  const container = html`<div class="callout status-panel"></div>`
+  container.classList.add(status.state === 'error' ? 'callout-warning' : 'callout-note')
+
+  if (status.state === 'running' && status.spinner) {
+    if (!document.getElementById('status-spinner-style')) {
+      const style = document.createElement('style')
+      style.id = 'status-spinner-style'
+      style.textContent = `
+        .status-spinner {
+          width: 1.25rem;
+          height: 1.25rem;
+          border: 2px solid rgba(0,0,0,0.1);
+          border-top-color: rgba(0,0,0,0.6);
+          border-radius: 9999px;
+          animation: status-spin 0.8s linear infinite;
+          margin-bottom: 0.5rem;
+        }
+        @keyframes status-spin {
+          to { transform: rotate(360deg); }
+        }
+      `
+      document.head.append(style)
+    }
+    const spinner = document.createElement('div')
+    spinner.className = 'status-spinner'
+    container.append(spinner)
+  }
+
+  const heading = document.createElement('div')
+  heading.style.fontWeight = '600'
+  heading.textContent = status.message ?? 'Idle — ready'
+  container.append(heading)
+
+  if (status.state === 'done' && Number.isFinite(status.gpuGflops)) {
+    const detail = document.createElement('div')
+    detail.textContent = `${status.kernelLabel ?? ''} — ${status.gpuGflops.toFixed(2)} GFLOP/s`
+    container.append(detail)
+  } else if (status.state === 'error' && status.error) {
+    const detail = document.createElement('div')
+    detail.textContent = status.error
+    container.append(detail)
+  } else if (status.dims) {
+    const dims = status.dims
+    const detail = document.createElement('div')
+    detail.textContent = `Dims: ${dims.M}×${dims.K}×${dims.N}`
+    container.append(detail)
+  }
+
+  return container
+}
+```
+
+```{ojs}
+html`${status_panel}`
+```
+
+```{ojs}
+// Display results - shows all results in history
+results_table = {
+  clear_handler; // React to clear button
+  
+  const history = results_history || []
+  // console.log('[results_table] history length:', history.length, history)
+  
+  if (history.length === 0) {
+    return html`<em>Click Run matmul to execute the selected kernel. Results will be added to the table below.</em>`
+  }
+  
+  // Convert all results to table rows
+  const tableRows = history.map(result => {
+    const tableRow = {
+      runNumber: result.runNumber,
+      kernel: result.kernel,
+      shape: { M: result.M, K: result.K, N: result.N },
+      memoryMB: result.totalMB,
+      dispatch: [result.dx, result.dy, result.dz],
+      gpuTimeMs: result.ms,
+      totalTimeMs: result.totalMs,
+      gpuGflops: result.gflops,
+      cpuTimeMs: result.cpuTime,
+      cpuGflops: result.cpuGflops,
+      speedup: (Number.isFinite(result.cpuTime) && Number.isFinite(result.ms) && result.ms > 0)
+        ? result.cpuTime / result.ms
+        : null,
+      maxAbs: result.check?.maxAbs ?? null
+    }
+
+    const dash = '—'
+    return {
+      'Run': tableRow.runNumber,
+      'Kernel': tableRow.kernel,
+      'Dispatch': `[${tableRow.dispatch[0]}, ${tableRow.dispatch[1]}, ${tableRow.dispatch[2]}]`,
+      'GPU Throughput (GFLOP/s)': Number.isFinite(tableRow.gpuGflops) ? tableRow.gpuGflops : dash,
+      'Shape': `(${tableRow.shape.M}×${tableRow.shape.K}) · (${tableRow.shape.K}×${tableRow.shape.N}) → (${tableRow.shape.M}×${tableRow.shape.N})`,
+      'Memory (MB)': Number.isFinite(tableRow.memoryMB) ? tableRow.memoryMB : dash,
+      'GPU Time (ms)': Number.isFinite(tableRow.gpuTimeMs) ? tableRow.gpuTimeMs : dash,
+      'Total Time (ms)': Number.isFinite(tableRow.totalTimeMs) ? tableRow.totalTimeMs : dash,
+      'CPU Time (ms)': Number.isFinite(tableRow.cpuTimeMs) ? tableRow.cpuTimeMs : dash,
+      'CPU Throughput (GFLOP/s)': Number.isFinite(tableRow.cpuGflops) ? tableRow.cpuGflops : dash,
+      'GPU Speedup': Number.isFinite(tableRow.speedup) ? tableRow.speedup : dash,
+      'Max |Δ| vs CPU': Number.isFinite(tableRow.maxAbs) ? tableRow.maxAbs.toExponential(2) : dash
+    }
+  })
+
+  return Inputs.table(tableRows, {
+    sort: "Run",
+    reverse: true, // Show newest results first
+    // compare: {
+    //   "Run": compareNumeric,
+    //   "Memory": compareNumeric,
+    //   "GPU Time": compareNumeric,
+    //   "Total Time": compareNumeric,
+    //   "GPU Throughput": compareNumeric,
+    //   "CPU Time": compareNumeric,
+    //   "CPU Throughput": compareNumeric,
+    //   "GPU Speedup": compareNumeric,
+    //   "Max |Δ| vs CPU": compareNumeric
+    // }
+  })
+}
+```
+
+```{ojs}
+html`${results_table}`
+```
+
+```{ojs}
+results_plot_data = {
+  clear_handler;
+  const history = results_history || []
+  return history.map((entry, index) => ({
+    runNumber: entry.runNumber ?? (index + 1),
+    kernel: entry.kernel,
+    kernelKey: entry.kernelKey ?? entry.kernel,
+    totalMs: entry.totalMs ?? entry.ms ?? null,
+    gpuMs: entry.ms ?? null,
+    gpuGflops: entry.gflops ?? null,
+    cpuGflops: entry.cpuGflops ?? null,
+    memoryMB: entry.totalMB ?? null,
+    dims: entry.dims ?? { M: entry.M, K: entry.K, N: entry.N }
+  }))
+}
+```
+
+```{ojs}
+plot_kernel_colors = {
+  const palette = [
+    "#1f77b4",
+    "#ff7f0e",
+    "#2ca02c",
+    "#d62728",
+    "#9467bd",
+    "#8c564b",
+    "#e377c2",
+    "#7f7f7f",
+    "#bcbd22",
+    "#17becf"
+  ]
+  const domain = kernels.map(k => k.label)
+  const range = domain.map((_, i) => palette[i % palette.length])
+  return { domain, range }
+}
+```
+
+```{ojs}
+results_plots = {
+  clear_handler;
+  const data = results_plot_data ?? []
+  if (!data.length) {
+    return html`<em>Run matmul to populate timing and throughput charts.</em>`
+  }
+
+  const { domain, range } = plot_kernel_colors
+
+  const throughputData = data.filter(d => Number.isFinite(d.gpuGflops))
+  const totalTimeData = data.filter(d => Number.isFinite(d.totalMs))
+
+  if (!throughputData.length && !totalTimeData.length) {
+    return html`<em>No results with throughput or total time available yet.</em>`
+  }
+
+  // Calculate dynamic ticks based on data range
+  const memoryData = data.filter(d => Number.isFinite(d.memoryMB))
+  let dynamicTicks = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
+  
+  if (memoryData.length > 0) {
+    const minMemory = Math.min(...memoryData.map(d => d.memoryMB))
+    const maxMemory = Math.max(...memoryData.map(d => d.memoryMB))
+    
+    // If there's only one unique value or very close range, show fewer ticks
+    if (memoryData.length === 1 || (maxMemory / minMemory) < 2) {
+      // Find the closest tick to the actual value
+      const targetMemory = memoryData[0].memoryMB
+      const closestTick = dynamicTicks.reduce((prev, curr) => 
+        Math.abs(curr - targetMemory) < Math.abs(prev - targetMemory) ? curr : prev
+      )
+      dynamicTicks = [closestTick]
+    } else {
+      // Filter ticks to only show relevant range
+      dynamicTicks = dynamicTicks.filter(tick => tick >= minMemory * 0.5 && tick <= maxMemory * 2)
+    }
+  }
+
+  // Prepare Plotly data
+  const traces = []
+  
+  // Create color mapping for kernels
+  const colorMap = {}
+  domain.forEach((kernel, i) => {
+    colorMap[kernel] = range[i]
+  })
+
+  // Group data by kernel for throughput traces
+  const kernelGroups = {}
+  throughputData.forEach(d => {
+    if (!kernelGroups[d.kernel]) {
+      kernelGroups[d.kernel] = { throughput: [], time: [] }
+    }
+    kernelGroups[d.kernel].throughput.push(d)
+  })
+
+  // Group time data by kernel
+  totalTimeData.forEach(d => {
+    if (!kernelGroups[d.kernel]) {
+      kernelGroups[d.kernel] = { throughput: [], time: [] }
+    }
+    kernelGroups[d.kernel].time.push(d)
+  })
+
+  // Create throughput traces (solid lines)
+  Object.entries(kernelGroups).forEach(([kernel, kernelData]) => {
+    if (kernelData.throughput.length > 0) {
+      const sortedData = kernelData.throughput.sort((a, b) => a.memoryMB - b.memoryMB)
+      traces.push({
+        x: sortedData.map(d => d.memoryMB),
+        y: sortedData.map(d => d.gpuGflops),
+        mode: 'lines+markers',
+        type: 'scatter',
+        name: kernel,
+        line: { color: colorMap[kernel], width: 2 },
+        marker: { color: colorMap[kernel], size: 6 },
+        hovertemplate: sortedData.map(d => {
+          const dims = d.dims || { M: '?', K: '?', N: '?' }
+          return `<b>${d.kernel}</b><br>` +
+                 `Run: #${d.runNumber}<br>` +
+                 `Dims: ${dims.M}×${dims.K}×${dims.N}<br>` +
+                 `Memory: ${d.memoryMB.toFixed(1)} MB<br>` +
+                 `GPU Throughput: ${d.gpuGflops.toFixed(2)} GFLOP/s<extra></extra>`
+        }),
+        yaxis: 'y1'
+      })
+    }
+  })
+
+  // Calculate scaling for secondary y-axis
+  const baseThroughputMax = throughputData.reduce((acc, d) => Math.max(acc, d.gpuGflops), 0)
+  const baseTimeMax = totalTimeData.reduce((acc, d) => Math.max(acc, d.totalMs), 0)
+  const yMax = Math.max(baseThroughputMax, 1)
+  const timeScaleFactor = baseTimeMax > 0 ? yMax / baseTimeMax : 1
+
+  // Create time traces (dashed lines) on secondary y-axis
+  Object.entries(kernelGroups).forEach(([kernel, kernelData]) => {
+    if (kernelData.time.length > 0) {
+      const sortedData = kernelData.time.sort((a, b) => a.memoryMB - b.memoryMB)
+      traces.push({
+        x: sortedData.map(d => d.memoryMB),
+        y: sortedData.map(d => d.totalMs),
+        mode: 'lines+markers',
+        type: 'scatter',
+        name: `${kernel} (time)`,
+        line: { color: colorMap[kernel], width: 2, dash: 'dash' },
+        marker: { 
+          color: 'white', 
+          size: 8, 
+          line: { color: colorMap[kernel], width: 2 },
+          symbol: 'cross'
+        },
+        hovertemplate: sortedData.map(d => {
+          const dims = d.dims || { M: '?', K: '?', N: '?' }
+          return `<b>${d.kernel}</b><br>` +
+                 `Run: #${d.runNumber}<br>` +
+                 `Dims: ${dims.M}×${dims.K}×${dims.N}<br>` +
+                 `Memory: ${d.memoryMB.toFixed(1)} MB<br>` +
+                 `Total Time: ${d.totalMs.toFixed(2)} ms<extra></extra>`
+        }),
+        yaxis: 'y2',
+        showlegend: false
+      })
+    }
+  })
+
+  // Add dummy traces for series style legend
+  traces.push({
+    x: [null],
+    y: [null],
+    mode: 'lines+markers',
+    type: 'scatter',
+    name: '— Throughput (GFLOP/s)',
+    line: { color: '#666', width: 2 },
+    marker: { color: '#666', size: 6 },
+    showlegend: true,
+    yaxis: 'y1'
+  })
+  
+  traces.push({
+    x: [null],
+    y: [null],
+    mode: 'lines+markers',
+    type: 'scatter',
+    name: '- - Time (ms)',
+    line: { color: '#666', width: 2, dash: 'dash' },
+    marker: { 
+      color: 'white', 
+      size: 8, 
+      line: { color: '#666', width: 2 },
+      symbol: 'cross'
+    },
+    showlegend: true,
+    yaxis: 'y2'
+  })
+
+  // Create the plot container
+  const container = html`<div style="width: 100%; height: 450px;"></div>`
+  
+  // Plotly layout
+  const layout = {
+    title: {
+      text: 'WebGPU Matrix Multiplication Performance',
+      // x: 0.5,
+      // y: 1.5,
+      // xanchor: 'center',
+      font: { size: 16 }
+    },
+    xaxis: {
+      type: 'log',
+      title: 'Memory (MB)',
+      tickvals: dynamicTicks,
+      ticktext: dynamicTicks.map(d => d >= 1 ? `${d.toFixed(0)}` : `${d.toFixed(1)}`)
+    },
+    yaxis: {
+      title: 'GPU Throughput (GFLOP/s)',
+      side: 'left'
+    },
+    yaxis2: {
+      title: 'Total Time (ms)',
+      side: 'right',
+      overlaying: 'y'
+    },
+    legend: {
+      x: 1.3,
+      y: 0.8,
+      xanchor: 'left',
+      yanchor: 'top',
+      bgcolor: 'rgba(255,255,255,0.8)',
+      bordercolor: '#ddd',
+      borderwidth: 1,
+      font: { size: 11 }
+    },
+    margin: { l: 80, r: 150, t: 80, b: 80 },
+    hovermode: 'closest'
+  }
+
+  // Create the plot
+  Plotly.newPlot(container, traces, layout, {
+    responsive: true,
+    displayModeBar: false,
+    modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d']
+  })
+
+  return container
+}
+```
+
+```{ojs}
+html`${results_plots}`
+```
+
+## Notes and tips
+
+- This page uses Observable JS cells; code runs reactively in the browser.
+- Performance varies a lot across browsers/GPUs. Numbers shown include submission/synchronization overhead; GPU timestamp queries can refine timing when supported.
+- The kernels here don’t use workgroup-shared memory or subgroups; those can yield further gains on some hardware.
+- Credit: Kernel ideas and the optimization path are inspired by Zach Nussbaum’s article referenced above and by Simon Böhm’s CUDA matmul write-up.

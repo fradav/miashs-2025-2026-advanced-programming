@@ -118,7 +118,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="01_Code-Assistant_files/libs/revealjs/dist/theme/quarto-7c8f58d6973bad71d89b25082f6bfb1b.css">
+  <link rel="stylesheet" href="01_Code-Assistant_files/libs/revealjs/dist/theme/quarto-d544bd66fbdc5badc5a277a2930e2a0b.css">
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -880,34 +880,34 @@ Figure&nbsp;1
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="453" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 452;"><span id="cb4-453"><a href="" aria-hidden="true" tabindex="-1"></a>prefix <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>()<span class="op">.</span><span class="at">classList</span>[<span class="dv">0</span>]<span class="op">;</span></span>
-<span id="cb4-454"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-455"><a href="" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb4-456"><a href="" aria-hidden="true" tabindex="-1"></a>  d3<span class="op">.</span><span class="fu">selectAll</span>(<span class="vs">`.</span><span class="sc">${</span>prefix<span class="sc">}</span><span class="vs">`</span>)<span class="op">.</span><span class="fu">style</span>(<span class="st">"font-size"</span><span class="op">,</span> <span class="st">"16px"</span>)<span class="op">;</span></span>
-<span id="cb4-457"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> iterations <span class="op">=</span> <span class="fu">grad_descent</span>(descent_params<span class="op">.</span><span class="at">x1</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">x2</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">step</span><span class="op">,</span><span class="dv">20</span>)</span>
-<span id="cb4-458"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb4-459"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">aspectRatio</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
-<span id="cb4-460"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x1 →"</span>}<span class="op">,</span></span>
-<span id="cb4-461"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x2 →"</span>}<span class="op">,</span></span>
-<span id="cb4-462"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">600</span><span class="op">,</span></span>
-<span id="cb4-463"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">style</span><span class="op">:</span> {</span>
-<span id="cb4-464"><a href="" aria-hidden="true" tabindex="-1"></a>      <span class="dt">backgroundColor</span><span class="op">:</span> <span class="st">'rgba(0,0,0,0)'</span></span>
-<span id="cb4-465"><a href="" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
-<span id="cb4-466"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb4-467"><a href="" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">contour</span>({</span>
-<span id="cb4-468"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> (x1<span class="op">,</span> x2) <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span>((x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span>)<span class="op">,</span></span>
-<span id="cb4-469"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> minX<span class="op">,</span></span>
-<span id="cb4-470"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y1</span><span class="op">:</span> minX<span class="op">,</span></span>
-<span id="cb4-471"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x2</span><span class="op">:</span> maxX<span class="op">,</span></span>
-<span id="cb4-472"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y2</span><span class="op">:</span> maxX<span class="op">,</span></span>
-<span id="cb4-473"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">showlegend</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb4-474"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">colorscale</span><span class="op">:</span> <span class="st">'RdBu'</span><span class="op">,</span></span>
-<span id="cb4-475"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ncontours</span><span class="op">:</span> <span class="dv">30</span></span>
-<span id="cb4-476"><a href="" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
-<span id="cb4-477"><a href="" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(iterations<span class="op">,</span>{<span class="dt">marker</span><span class="op">:</span> <span class="kw">true</span>})</span>
-<span id="cb4-478"><a href="" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb4-479"><a href="" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb4-480"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="454" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 453;"><span id="cb4-454"><a href="" aria-hidden="true" tabindex="-1"></a>prefix <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>()<span class="op">.</span><span class="at">classList</span>[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb4-455"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-456"><a href="" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb4-457"><a href="" aria-hidden="true" tabindex="-1"></a>  d3<span class="op">.</span><span class="fu">selectAll</span>(<span class="vs">`.</span><span class="sc">${</span>prefix<span class="sc">}</span><span class="vs">`</span>)<span class="op">.</span><span class="fu">style</span>(<span class="st">"font-size"</span><span class="op">,</span> <span class="st">"16px"</span>)<span class="op">;</span></span>
+<span id="cb4-458"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> iterations <span class="op">=</span> <span class="fu">grad_descent</span>(descent_params<span class="op">.</span><span class="at">x1</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">x2</span><span class="op">,</span>descent_params<span class="op">.</span><span class="at">step</span><span class="op">,</span><span class="dv">20</span>)</span>
+<span id="cb4-459"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb4-460"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">aspectRatio</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb4-461"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x1 →"</span>}<span class="op">,</span></span>
+<span id="cb4-462"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x2 →"</span>}<span class="op">,</span></span>
+<span id="cb4-463"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">600</span><span class="op">,</span></span>
+<span id="cb4-464"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">style</span><span class="op">:</span> {</span>
+<span id="cb4-465"><a href="" aria-hidden="true" tabindex="-1"></a>      <span class="dt">backgroundColor</span><span class="op">:</span> <span class="st">'rgba(0,0,0,0)'</span></span>
+<span id="cb4-466"><a href="" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb4-467"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb4-468"><a href="" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">contour</span>({</span>
+<span id="cb4-469"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> (x1<span class="op">,</span> x2) <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span>((x1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> x2 <span class="op">-</span> <span class="dv">11</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x1 <span class="op">+</span> x2<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">7</span>)<span class="op">**</span><span class="dv">2</span>)<span class="op">,</span></span>
+<span id="cb4-470"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> minX<span class="op">,</span></span>
+<span id="cb4-471"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y1</span><span class="op">:</span> minX<span class="op">,</span></span>
+<span id="cb4-472"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x2</span><span class="op">:</span> maxX<span class="op">,</span></span>
+<span id="cb4-473"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y2</span><span class="op">:</span> maxX<span class="op">,</span></span>
+<span id="cb4-474"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">showlegend</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb4-475"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">colorscale</span><span class="op">:</span> <span class="st">'RdBu'</span><span class="op">,</span></span>
+<span id="cb4-476"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ncontours</span><span class="op">:</span> <span class="dv">30</span></span>
+<span id="cb4-477"><a href="" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb4-478"><a href="" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(iterations<span class="op">,</span>{<span class="dt">marker</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb4-479"><a href="" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb4-480"><a href="" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-481"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-4-1" data-nodetype="declaration">
